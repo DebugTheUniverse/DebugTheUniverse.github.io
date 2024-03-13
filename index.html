@@ -106,8 +106,9 @@
 <h5 id="3-移动鼠标到绝对位置"><a href="#3-移动鼠标到绝对位置" class="headerlink" title="3. 移动鼠标到绝对位置"></a>3. 移动鼠标到绝对位置</h5><p>使用<code>pyautogui.moveTo()</code>可将光标移至屏幕任意位置，传入三个参数，前两个分别为位置坐标<code>x</code>与<code>y</code>，第三个<code>duration=</code>用来指定这个动作的耗时。<br>先了解一下计算机显示器的像素坐标系，屏幕左上为原点，x轴指向右侧，y轴指向屏幕底端。</p>
 <center>
 <img src="./assets/img/coordinate-system-of-screen.png" width="30%" height="30%">
-图1 分辨率为1920x1080的屏幕坐标系图片
+图1 分辨率为1920x1080的屏幕坐标系图片<sup>[1]<sup>
 </center>
+
 
 <p>举个例子，让鼠标自动画长方形。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    pyautogui.moveTo(<span class="number">100</span>, <span class="number">100</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">100</span>, <span class="number">400</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">400</span>, <span class="number">400</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">400</span>, <span class="number">100</span>, duration=<span class="number">0.25</span>)</span><br></pre></td></tr></table></figure>
