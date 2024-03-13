@@ -95,7 +95,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>pyautogui可以控制鼠标移动和点击，可以用来实现一些自动化的操作，非常有趣。原书<a target="_blank" rel="noopener" href="https://automatetheboringstuff.com/2e/chapter20/">传送门</a>。</p>
+        <p>pyautogui可以控制鼠标移动和点击，可以用来实现一些自动化的操作，非常有趣。</p>
 <h4 id="先看注意事项"><a href="#先看注意事项" class="headerlink" title="先看注意事项"></a>先看注意事项</h4><p>为避免失控，快速甩动鼠标到屏幕角落以强行退出程序。</p>
 <h5 id="1-安装pyautogui"><a href="#1-安装pyautogui" class="headerlink" title="1. 安装pyautogui"></a>1. 安装pyautogui</h5><p>在Windows的cmd窗口输入指令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyautogui</span><br></pre></td></tr></table></figure>
@@ -103,7 +103,7 @@
 <h5 id="2-确认安装正常"><a href="#2-确认安装正常" class="headerlink" title="2. 确认安装正常"></a>2. 确认安装正常</h5><p>使用<code>pyautogui.size()</code>获取当前屏幕的宽高，返回是一个点对象。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line">wh = pyautogui.size()</span><br><span class="line"><span class="built_in">print</span>(wh.width, wh.height)</span><br></pre></td></tr></table></figure>
 
-<h5 id="3-移动鼠标到绝对位置"><a href="#3-移动鼠标到绝对位置" class="headerlink" title="3. 移动鼠标到绝对位置"></a>3. 移动鼠标到绝对位置</h5><p>使用<code>pyautogui.moveTo()</code>可将光标移至屏幕任意位置，传入三个参数，前两个分别为位置坐标x与y，第三个&#96;&#96;duration&#x3D;’’用来指定这个动作的耗时。<br>先了解一下计算机显示器的像素坐标系，屏幕左上为原点，x轴指向右侧，y轴指向屏幕底端。</p>
+<h5 id="3-移动鼠标到绝对位置"><a href="#3-移动鼠标到绝对位置" class="headerlink" title="3. 移动鼠标到绝对位置"></a>3. 移动鼠标到绝对位置</h5><p>使用<code>pyautogui.moveTo()</code>可将光标移至屏幕任意位置，传入三个参数，前两个分别为位置坐标<code>x</code>与<code>y</code>，第三个<code>duration=</code>用来指定这个动作的耗时。<br>先了解一下计算机显示器的像素坐标系，屏幕左上为原点，x轴指向右侧，y轴指向屏幕底端。</p>
 <center>
 <img src="./assets/img/coordinate-system-of-screen.png" width="30%" height="30%">
 图1 分辨率为1920x1080的屏幕坐标系图片
@@ -112,7 +112,7 @@
 <p>举个例子，让鼠标自动画长方形。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    pyautogui.moveTo(<span class="number">100</span>, <span class="number">100</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">100</span>, <span class="number">400</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">400</span>, <span class="number">400</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">400</span>, <span class="number">100</span>, duration=<span class="number">0.25</span>)</span><br></pre></td></tr></table></figure>
 
-
+<h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><p>[1] <a target="_blank" rel="noopener" href="https://automatetheboringstuff.com/2e/chapter20/">Automate The Boring Stuff, Al Sweigart</a></p>
 
       
     </div>
