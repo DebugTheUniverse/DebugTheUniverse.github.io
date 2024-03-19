@@ -73,6 +73,47 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-OpenCV VideoWriter" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/19/OpenCV%20VideoWriter/" class="article-date">
+  <time class="dt-published" datetime="2024-03-19T09:12:17.069Z" itemprop="datePublished">2024-03-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/03/19/OpenCV%20VideoWriter/">OpenCV VideoWriter</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p>Windows 11<br>python 3.12.2<br>opencv-contrib-python 4.9.0.80</p>
+<h4 id="保存视频问题"><a href="#保存视频问题" class="headerlink" title="保存视频问题"></a>保存视频问题</h4><p>使用<code>VideoWriter</code>保存视频的时候结果只有1kb，显示文件已损坏。</p>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建采集object</span></span><br><span class="line">cap = cv.VideoCapture(<span class="string">&#x27;video.mp4&#x27;</span>) <span class="comment"># 传入-1默认摄像头，也可是摄像头序号0/1/2，或视频文件名称</span></span><br><span class="line"></span><br><span class="line">frame_height = cap.get(<span class="number">3</span>)</span><br><span class="line">frame_width = cap.get(<span class="number">4</span>)</span><br><span class="line">size = (frame_width, frame_height)  <span class="comment"># 使用VideoWriter时输出必须与输入同尺寸</span></span><br><span class="line"></span><br><span class="line">writer = cv2.VideoWriter(<span class="string">&#x27;out.mov&#x27;</span>, cv2.VideoWriter_fourcc(*<span class="string">&#x27;divx&#x27;</span>), <span class="number">25.5</span>, size, isColor=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 输出格式亲测.avi .mov .mp4可用</span></span><br><span class="line"><span class="comment"># fourcc参数divx和mp4v都可用</span></span><br><span class="line"><span class="comment"># 帧率可以是浮点数</span></span><br><span class="line"><span class="comment"># 尺寸是个与源视频同样大小的元组则可用，顺序为（宽，高）</span></span><br><span class="line"><span class="comment"># 如果对图像进行了灰度处理，必须修改isColor为False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> cap.isOpened():</span><br><span class="line">    ret, frame = cap.read()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ret:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;can\&#x27;t recieve frame, exiting...&#x27;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)</span></span><br><span class="line">    out.write(frame)</span><br><span class="line"></span><br><span class="line">    cv2.imshow(<span class="string">&#x27;frame&#x27;</span>, frame)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> cv2.waitKey(<span class="number">1</span>) == <span class="built_in">ord</span>(<span class="string">&#x27;q&#x27;</span>):</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">cap.release()</span><br><span class="line">out.release()</span><br><span class="line">cv2.destroyAllWindows()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/03/19/OpenCV%20VideoWriter/" data-id="clty6czx000008cukehluh2a1" data-title="OpenCV VideoWriter" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-pyautogui" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/03/14/pyautogui/" class="article-date">
@@ -328,6 +369,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/03/19/OpenCV%20VideoWriter/">OpenCV VideoWriter</a>
+          </li>
         
           <li>
             <a href="/2024/03/14/pyautogui/">pyautogui</a>

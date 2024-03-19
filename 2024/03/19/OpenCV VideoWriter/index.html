@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OpenCV VideoWriter | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="环境Windows 11python 3.12.2opencv-contrib-python 4.9.0.80 保存视频问题使用VideoWriter保存视频的时候结果只有1kb，显示文件已损坏。 解决方案1234567891011121314151617181920212223242526272829303132333435import cv2 as cv# 创建采集objectcap &#x3D; cv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV VideoWriter">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/03/19/OpenCV%20VideoWriter/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="环境Windows 11python 3.12.2opencv-contrib-python 4.9.0.80 保存视频问题使用VideoWriter保存视频的时候结果只有1kb，显示文件已损坏。 解决方案1234567891011121314151617181920212223242526272829303132333435import cv2 as cv# 创建采集objectcap &#x3D; cv">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-03-19T09:12:17.069Z">
+<meta property="article:modified_time" content="2024-03-19T09:29:54.768Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OpenCV VideoWriter" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/19/OpenCV%20VideoWriter/" class="article-date">
+  <time class="dt-published" datetime="2024-03-19T09:12:17.069Z" itemprop="datePublished">2024-03-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OpenCV VideoWriter
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p>Windows 11<br>python 3.12.2<br>opencv-contrib-python 4.9.0.80</p>
+<h4 id="保存视频问题"><a href="#保存视频问题" class="headerlink" title="保存视频问题"></a>保存视频问题</h4><p>使用<code>VideoWriter</code>保存视频的时候结果只有1kb，显示文件已损坏。</p>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建采集object</span></span><br><span class="line">cap = cv.VideoCapture(<span class="string">&#x27;video.mp4&#x27;</span>) <span class="comment"># 传入-1默认摄像头，也可是摄像头序号0/1/2，或视频文件名称</span></span><br><span class="line"></span><br><span class="line">frame_height = cap.get(<span class="number">3</span>)</span><br><span class="line">frame_width = cap.get(<span class="number">4</span>)</span><br><span class="line">size = (frame_width, frame_height)  <span class="comment"># 使用VideoWriter时输出必须与输入同尺寸</span></span><br><span class="line"></span><br><span class="line">writer = cv2.VideoWriter(<span class="string">&#x27;out.mov&#x27;</span>, cv2.VideoWriter_fourcc(*<span class="string">&#x27;divx&#x27;</span>), <span class="number">25.5</span>, size, isColor=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 输出格式亲测.avi .mov .mp4可用</span></span><br><span class="line"><span class="comment"># fourcc参数divx和mp4v都可用</span></span><br><span class="line"><span class="comment"># 帧率可以是浮点数</span></span><br><span class="line"><span class="comment"># 尺寸是个与源视频同样大小的元组则可用，顺序为（宽，高）</span></span><br><span class="line"><span class="comment"># 如果对图像进行了灰度处理，必须修改isColor为False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> cap.isOpened():</span><br><span class="line">    ret, frame = cap.read()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ret:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;can\&#x27;t recieve frame, exiting...&#x27;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)</span></span><br><span class="line">    out.write(frame)</span><br><span class="line"></span><br><span class="line">    cv2.imshow(<span class="string">&#x27;frame&#x27;</span>, frame)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> cv2.waitKey(<span class="number">1</span>) == <span class="built_in">ord</span>(<span class="string">&#x27;q&#x27;</span>):</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">cap.release()</span><br><span class="line">out.release()</span><br><span class="line">cv2.destroyAllWindows()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/03/19/OpenCV%20VideoWriter/" data-id="clty6czx000008cukehluh2a1" data-title="OpenCV VideoWriter" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/03/14/pyautogui/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">pyautogui</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/03/19/OpenCV%20VideoWriter/">OpenCV VideoWriter</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/14/pyautogui/">pyautogui</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/">你好世界！</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
