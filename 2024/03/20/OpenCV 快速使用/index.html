@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OpenCV 快速使用 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1. 安装opencv在windows系统中，打开cmd窗口，输入如下代码： 1pip install opencv-contrib-python -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple 使用contrib版本的功能要全面一些，后面的-i及其后是使用清华的源进行下载，会快很多。 检查是否安装成功 12import cv2 as cvprint(cv.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV 快速使用">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="1. 安装opencv在windows系统中，打开cmd窗口，输入如下代码： 1pip install opencv-contrib-python -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple 使用contrib版本的功能要全面一些，后面的-i及其后是使用清华的源进行下载，会快很多。 检查是否安装成功 12import cv2 as cvprint(cv.">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-03-19T16:06:12.810Z">
+<meta property="article:modified_time" content="2024-03-20T16:23:06.948Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OpenCV 快速使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-03-19T16:06:12.810Z" itemprop="datePublished">2024-03-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OpenCV 快速使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h5 id="1-安装opencv"><a href="#1-安装opencv" class="headerlink" title="1. 安装opencv"></a>1. 安装opencv</h5><p>在windows系统中，打开cmd窗口，输入如下代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install opencv-contrib-python -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+<p>使用contrib版本的功能要全面一些，后面的-i及其后是使用清华的源进行下载，会快很多。</p>
+<p>检查是否安装成功</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="built_in">print</span>(cv.__version__)   <span class="comment"># 正常则显示版本号，我的例子是&#x27;4.9.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="2-基础绘制功能"><a href="#2-基础绘制功能" class="headerlink" title="2. 基础绘制功能"></a>2. 基础绘制功能</h5><p><code>cv.line(), cv.circle() , cv.rectangle(), cv.ellipse(), cv.putText()</code>分别用来在图片上绘制直线、圆形、矩形、椭圆、添加文字。他们的参数非常类似，都包含如下几个</p>
+<ul>
+<li>img: 绘制图形的目标图片</li>
+<li>color: 绘制什么颜色的图形</li>
+<li>thickness: 线条的粗细</li>
+<li>lineType: 线型 （没发现区别）</li>
+</ul>
+<p>举个例子</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建一个黑色图片</span></span><br><span class="line">img = np.zeros((<span class="number">512</span>,<span class="number">512</span>,<span class="number">3</span>), np.uint8)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 画一条蓝色对角线，注意颜色排序是BGR，所以（255，0，0）是蓝色</span></span><br><span class="line">cv.line(img,(<span class="number">0</span>,<span class="number">0</span>),(<span class="number">500</span>,<span class="number">500</span>),(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 画矩形</span></span><br><span class="line">cv.rectangle(img, (<span class="number">200</span>, <span class="number">200</span>), (<span class="number">280</span>, <span class="number">300</span>), (<span class="number">255</span>, <span class="number">255</span>, <span class="number">0</span>), <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 圆，指定圆心坐标（300，100），半径100，颜色.., 线宽2</span></span><br><span class="line">cv.circle(img, (<span class="number">300</span>, <span class="number">100</span>), <span class="number">100</span>, (<span class="number">0</span>, <span class="number">255</span>, <span class="number">255</span>), <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#椭圆：图像，椭圆中心，（长轴长度，短轴长度），角度，弧起角度，弧结束角度，（B, G, R), 线宽</span></span><br><span class="line">cv.ellipse(img, (<span class="number">100</span>, <span class="number">300</span>), (<span class="number">50</span>, <span class="number">30</span>), <span class="number">60</span>, <span class="number">0</span>, <span class="number">360</span>, (<span class="number">255</span>, <span class="number">0</span>, <span class="number">255</span>), <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pts = np.array([[<span class="number">10</span>,<span class="number">5</span>],[<span class="number">20</span>,<span class="number">30</span>],[<span class="number">70</span>,<span class="number">20</span>],[<span class="number">50</span>,<span class="number">10</span>]], np.int32)</span><br><span class="line">pts = pts.reshape((-<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制多段线，第三个isClosed 如果设为True，可以自动将多段线闭合成多边形</span></span><br><span class="line">cv.polylines(img, [pts], <span class="literal">False</span>, (<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加文字</span></span><br><span class="line">font = cv.FONT_HERSHEY_COMPLEX</span><br><span class="line">cv.putText(img, <span class="string">&#x27;hello world&#x27;</span>, (<span class="number">40</span>, <span class="number">460</span>),font, <span class="number">1</span>, (<span class="number">0x11</span>,<span class="number">0xaa</span>,<span class="number">0x11</span>),<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cv.imshow(<span class="string">&#x27;draw&#x27;</span>, img)</span><br><span class="line"></span><br><span class="line">cv.waitKey(<span class="number">3000</span>)</span><br><span class="line"></span><br><span class="line">cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-用鼠标绘制"><a href="#3-用鼠标绘制" class="headerlink" title="3. 用鼠标绘制"></a>3. 用鼠标绘制</h5><p>鼠标点击左键，绘制圆形。其中使用到了<code>cv.setMouseCallback</code>来为图像设置回调函数，回调函数<code>draw_cicle</code>接收<code>event</code>以及事件发生时的xy坐标，函数内判断事件类型，进行处理。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"> </span><br><span class="line"><span class="comment"># mouse callback function</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">draw_circle</span>(<span class="params">event,x,y,flags,param</span>):</span><br><span class="line">    <span class="keyword">if</span> event == cv.EVENT_LBUTTONDOWN:</span><br><span class="line">        cv.circle(img,(x,y),<span class="number">100</span>,(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),-<span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Create a black image, a window and bind the function to window</span></span><br><span class="line">img = np.zeros((<span class="number">512</span>,<span class="number">512</span>,<span class="number">3</span>), np.uint8)</span><br><span class="line">cv.namedWindow(<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">cv.setMouseCallback(<span class="string">&#x27;image&#x27;</span>,draw_circle)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">    cv.imshow(<span class="string">&#x27;image&#x27;</span>,img)</span><br><span class="line">    <span class="keyword">if</span> cv.waitKey(<span class="number">20</span>) &amp; <span class="number">0xFF</span> == <span class="number">27</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+<p>更高级的例子，使用m键切换模式，鼠标点击后拖动绘制矩形和圆形。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"> </span><br><span class="line">drawing = <span class="literal">False</span> <span class="comment"># true if mouse is pressed</span></span><br><span class="line">mode = <span class="literal">True</span> <span class="comment"># if True, draw rectangle. Press &#x27;m&#x27; to toggle to curve</span></span><br><span class="line">ix,iy = -<span class="number">1</span>,-<span class="number">1</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># mouse callback function</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">draw_circle</span>(<span class="params">event,x,y,flags,param</span>):</span><br><span class="line">    <span class="keyword">global</span> ix,iy,drawing,mode</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> event == cv.EVENT_LBUTTONDOWN:</span><br><span class="line">        drawing = <span class="literal">True</span></span><br><span class="line">        ix,iy = x,y</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> event == cv.EVENT_MOUSEMOVE:</span><br><span class="line">        <span class="keyword">if</span> drawing == <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> mode == <span class="literal">True</span>:</span><br><span class="line">                cv.rectangle(img,(ix,iy),(x,y),(<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),-<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cv.circle(img,(ix,iy),<span class="built_in">int</span>(<span class="built_in">abs</span>(math.sqrt((x-ix)**<span class="number">2</span>+(y-iy)**<span class="number">2</span>))),(<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>),-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> event == cv.EVENT_LBUTTONUP:</span><br><span class="line">        drawing = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> mode == <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">            <span class="comment">#cv.rectangle(img,(ix,iy),(x,y),(0,255,0),-1)</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">            <span class="comment">#cv.circle(img,(x,y),5,(0,0,255),-1)</span></span><br><span class="line"></span><br><span class="line">img = np.zeros((<span class="number">512</span>,<span class="number">512</span>,<span class="number">3</span>), np.uint8)</span><br><span class="line">cv.namedWindow(<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">cv.setMouseCallback(<span class="string">&#x27;image&#x27;</span>,draw_circle)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">    cv.imshow(<span class="string">&#x27;image&#x27;</span>,img)</span><br><span class="line">    k = cv.waitKey(<span class="number">1</span>) &amp; <span class="number">0xFF</span></span><br><span class="line">    <span class="keyword">if</span> k == <span class="built_in">ord</span>(<span class="string">&#x27;m&#x27;</span>):</span><br><span class="line">        mode = <span class="keyword">not</span> mode</span><br><span class="line">    <span class="keyword">elif</span> k == <span class="number">27</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"> </span><br><span class="line">cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-TrackBar使用"><a href="#4-TrackBar使用" class="headerlink" title="4. TrackBar使用"></a>4. TrackBar使用</h5><p>使用<code>cv.createTrackBar()</code>创建控制条，输入参数为：控制条名称、窗口名称、初始值、最大值、回调函数<br>使用<code>cv.getTrackBarPos()</code>获取控制条当前位置，输入参数：控制条名称、窗口名称<br>OpenCV里面没有按钮，因此可以创建一个最大值为1的控制条，作为开关使用</p>
+<p>举个例子，带有开关的调色板</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">nothing</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Create a black image, a window</span></span><br><span class="line">img = np.zeros((<span class="number">300</span>,<span class="number">512</span>,<span class="number">3</span>), np.uint8)</span><br><span class="line">cv.namedWindow(<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># create trackbars for color change</span></span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;R&#x27;</span>,<span class="string">&#x27;image&#x27;</span>,<span class="number">128</span>,<span class="number">255</span>,nothing)</span><br><span class="line"> </span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;G&#x27;</span>,<span class="string">&#x27;image&#x27;</span>,<span class="number">0</span>,<span class="number">255</span>,nothing)</span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;image&#x27;</span>,<span class="number">0</span>,<span class="number">255</span>,nothing)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># create switch for ON/OFF functionality</span></span><br><span class="line">switch = <span class="string">&#x27;0 : OFF \n1 : ON&#x27;</span></span><br><span class="line">cv.createTrackbar(switch, <span class="string">&#x27;image&#x27;</span>,<span class="number">0</span>,<span class="number">1</span>,nothing)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">    cv.imshow(<span class="string">&#x27;image&#x27;</span>,img)</span><br><span class="line">    k = cv.waitKey(<span class="number">1</span>) &amp; <span class="number">0xFF</span></span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">27</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># get current positions of four trackbars</span></span><br><span class="line">    r = cv.getTrackbarPos(<span class="string">&#x27;R&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">    g = cv.getTrackbarPos(<span class="string">&#x27;G&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">    b = cv.getTrackbarPos(<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">    s = cv.getTrackbarPos(switch,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> s == <span class="number">0</span>:</span><br><span class="line">        img[:] = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        img[:] = [b,g,r]</span><br><span class="line"> </span><br><span class="line">cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+
+<p>更复杂一些的例子，使用控制条改变绘制的颜色画笔尺寸</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"> </span><br><span class="line">drawing = <span class="literal">False</span> <span class="comment"># true if mouse is pressed</span></span><br><span class="line">mode = <span class="literal">True</span> <span class="comment"># if True, draw rectangle. Press &#x27;m&#x27; to toggle to curve</span></span><br><span class="line">ix,iy = -<span class="number">1</span>,-<span class="number">1</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># mouse callback function</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">draw_circle</span>(<span class="params">event,x,y,flags,param</span>):</span><br><span class="line">    <span class="keyword">global</span> ix,iy,drawing,mode</span><br><span class="line">    r = cv.getTrackbarPos(<span class="string">&#x27;r&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">    g = cv.getTrackbarPos(<span class="string">&#x27;g&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">    b = cv.getTrackbarPos(<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">    b_size = cv.getTrackbarPos(<span class="string">&#x27;brush_size&#x27;</span>,<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> event == cv.EVENT_LBUTTONDOWN:</span><br><span class="line">        drawing = <span class="literal">True</span></span><br><span class="line">        ix,iy = x,y</span><br><span class="line">        <span class="keyword">if</span> mode == <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            cv.circle(img,(x,y),b_size,(b,g,r),-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> event == cv.EVENT_MOUSEMOVE:</span><br><span class="line">        <span class="keyword">if</span> drawing == <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> mode == <span class="literal">True</span>:</span><br><span class="line">                cv.rectangle(img,(ix,iy),(x,y),(b,g,r),-<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cv.circle(img,(ix,iy),<span class="built_in">int</span>(<span class="built_in">abs</span>(math.sqrt((x-ix)**<span class="number">2</span>+(y-iy)**<span class="number">2</span>))),(b,g,r),-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> event == cv.EVENT_LBUTTONUP:</span><br><span class="line">        drawing = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> mode == <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">            <span class="comment">#cv.rectangle(img,(ix,iy),(x,y),(0,255,0),-1)</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">            <span class="comment">#cv.circle(img,(x,y),5,(0,0,255),-1)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">nothing</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">img = np.zeros((<span class="number">512</span>,<span class="number">512</span>,<span class="number">3</span>), np.uint8)</span><br><span class="line">cv.namedWindow(<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">cv.setMouseCallback(<span class="string">&#x27;image&#x27;</span>,draw_circle)</span><br><span class="line"></span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;r&#x27;</span>, <span class="string">&#x27;image&#x27;</span>, <span class="number">0</span>, <span class="number">255</span>, nothing)</span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;g&#x27;</span>, <span class="string">&#x27;image&#x27;</span>, <span class="number">0</span>, <span class="number">255</span>, nothing)</span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;image&#x27;</span>, <span class="number">0</span>, <span class="number">255</span>, nothing)</span><br><span class="line">cv.createTrackbar(<span class="string">&#x27;brush_size&#x27;</span>, <span class="string">&#x27;image&#x27;</span>, <span class="number">0</span>, <span class="number">100</span>, nothing)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">    cv.imshow(<span class="string">&#x27;image&#x27;</span>,img)</span><br><span class="line">    k = cv.waitKey(<span class="number">1</span>) &amp; <span class="number">0xFF</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> k == <span class="built_in">ord</span>(<span class="string">&#x27;m&#x27;</span>):</span><br><span class="line">        mode = <span class="keyword">not</span> mode</span><br><span class="line">    <span class="keyword">elif</span> k == <span class="number">27</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"> </span><br><span class="line">cv.destroyAllWindows()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="5-像素-通道-边框操作"><a href="#5-像素-通道-边框操作" class="headerlink" title="5. 像素&#x2F;通道&#x2F;边框操作"></a>5. 像素&#x2F;通道&#x2F;边框操作</h5><ul>
+<li>单像素操作首选<code>array.item()</code>和<code>array.itemset()</code></li>
+<li>通道操作直接用numpy切片选择</li>
+<li>roi不是复制，是view，因此roi的修改会改变原图数据</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">&#x27;bottle.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> img <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, checks with os.path.exists()&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 索引某个像素点</span></span><br><span class="line">px = img[<span class="number">100</span>,<span class="number">100</span>]</span><br><span class="line"><span class="built_in">print</span>(px)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 索引某个像素点的蓝色值</span></span><br><span class="line">px_blue = img[<span class="number">100</span>,<span class="number">100</span>,<span class="number">0</span>]</span><br><span class="line"><span class="built_in">print</span>(px_blue)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改某个像素点的数值</span></span><br><span class="line">img[<span class="number">100</span>,<span class="number">100</span>] = [<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实际上使用Numpy的array.item()和array.itemset()做以上操作会更好</span></span><br><span class="line"><span class="built_in">print</span>(img.item(<span class="number">50</span>,<span class="number">50</span>,<span class="number">0</span>))</span><br><span class="line">img.itemset((<span class="number">50</span>,<span class="number">50</span>,<span class="number">2</span>),<span class="number">255</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取图像尺寸，可以通过有无通道数判断是否彩色，返回tuple （高，宽，通道数）</span></span><br><span class="line"><span class="built_in">print</span>(img.shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取图像大小，即以上尺寸的乘积</span></span><br><span class="line"><span class="built_in">print</span>(img.size)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 图像的数据类型，有很多错误就是由于数据类型不匹配造成的</span></span><br><span class="line"><span class="built_in">print</span>(img.dtype)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ROI选择，将一个区域移动到另外一个区域</span></span><br><span class="line">obj = img[<span class="number">280</span>:<span class="number">340</span>, <span class="number">330</span>:<span class="number">390</span>]</span><br><span class="line">obj[:,:,:] = <span class="number">0</span> <span class="comment"># obj是numpy的一个选择，没有copy，修改之会影响img</span></span><br><span class="line">img[<span class="number">273</span>:<span class="number">333</span>, <span class="number">100</span>:<span class="number">160</span>] = obj</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将彩色图像按通道拆分、组合</span></span><br><span class="line">b, g, r = cv.split(img)</span><br><span class="line">img = cv.merge((b,g,r))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意cv.split耗时，不如使用numpy切片实现</span></span><br><span class="line">img[:,:,<span class="number">2</span>] = <span class="number">255</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 给图片加边，这在卷积模型中常用到，使用cv.copyMakeBorder(),输入：目标图、上、下、左、右宽、类型、颜色（常量类型）</span></span><br><span class="line"><span class="comment"># 类型分为：</span></span><br><span class="line"><span class="comment"># cv.BORDER_CONSTANT常量填充</span></span><br><span class="line"><span class="comment"># cv.BORDER_REFLECT镜像填充如：fedcba|abcdefgh|hgfedcb</span></span><br><span class="line"><span class="comment"># cv.BORDER_REFLECT_101镜像填充如：fedcb|abcdefgh|gfedcb</span></span><br><span class="line"><span class="comment"># cv.BORDER_REPLICATE最后元素重复如：aaaaaa|abcdefgh|hhhhhhh</span></span><br><span class="line"><span class="comment"># cv.BORDER_WRAP头尾相接填充如：cdefgh|abcdefgh|abcdefg</span></span><br><span class="line">img = cv.copyMakeBorder(img,<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>,cv.BORDER_WRAP)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cv.namedWindow(<span class="string">&#x27;image&#x27;</span>)</span><br><span class="line">cv.imshow(<span class="string">&#x27;image&#x27;</span>,img)</span><br><span class="line"></span><br><span class="line">cv.waitKey(<span class="number">2000</span>)</span><br><span class="line"></span><br><span class="line">cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-图像相加与混合"><a href="#6-图像相加与混合" class="headerlink" title="6. 图像相加与混合"></a>6. 图像相加与混合</h5><p>与普通相加的区别，使用<code>cv.add()</code>相加结果大于数据类型范围会设为最大值。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line">x = np.array(<span class="number">250</span>, dtype=np.uint8)</span><br><span class="line">y = np.array(<span class="number">10</span>, dtype=np.uint8)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(cv.add(x,y)) <span class="comment"># x + y = 260 &gt; 255(uint8) 因此 [[255]]</span></span><br><span class="line"><span class="built_in">print</span>(x+y)  <span class="comment"># 260 % 256 = 4 因此 4</span></span><br></pre></td></tr></table></figure>
+
+<p>使用<code>cv.addWighted()</code>将两个图片混合起来，</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;ml.png&#x27;</span>)</span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;opencv.png&#x27;</span>)</span><br><span class="line"><span class="keyword">assert</span> img1 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line"><span class="keyword">assert</span> img2 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#  输入 图像1，系数1，图像2， 系数2，γ</span></span><br><span class="line"><span class="comment"># 系数1 + 系数2 = 1</span></span><br><span class="line"><span class="comment"># γ是添加到每个像素的标量</span></span><br><span class="line">dst = cv.addWeighted(img1,<span class="number">0.6</span>,img2,<span class="number">0.4</span>,<span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line">cv.imshow(<span class="string">&#x27;dst&#x27;</span>,dst)</span><br><span class="line">cv.waitKey(<span class="number">0</span>)</span><br><span class="line">cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+
+<p>按位操作 Bitwise Operations<br>以下是实现将一个logo扣出来贴到另一个图片的例子</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读两张图片</span></span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;bottle.png&#x27;</span>)</span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;opencv.png&#x27;</span>)</span><br><span class="line"><span class="keyword">assert</span> img1 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line"><span class="keyword">assert</span> img2 <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 准备让logo出现在图片的左上，所以创建一个ROI</span></span><br><span class="line">rows,cols,channels = img2.shape</span><br><span class="line">roi = img1[<span class="number">0</span>:rows, <span class="number">0</span>:cols]</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 做一个logo的mask，及非logo区域的mask</span></span><br><span class="line">img2gray = cv.cvtColor(img2,cv.COLOR_BGR2GRAY)</span><br><span class="line">ret, mask = cv.threshold(img2gray, <span class="number">10</span>, <span class="number">255</span>, cv.THRESH_BINARY)</span><br><span class="line">mask_inv = cv.bitwise_not(mask) <span class="comment"># 按位非操作实现非logo区域mask</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 将ROI中logo的图像去掉</span></span><br><span class="line">img1_bg = cv.bitwise_and(roi,roi,mask = mask_inv)</span><br><span class="line">cv.imshow(<span class="string">&#x27;img1_bg&#x27;</span>,img1_bg)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从logo图片中只提取logo的部分</span></span><br><span class="line">img2_fg = cv.bitwise_and(img2,img2,mask = mask)</span><br><span class="line">cv.imshow(<span class="string">&#x27;img2_fg&#x27;</span>,img2_fg)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将提取的logo图形与已经去掉图形的背景图相加</span></span><br><span class="line">dst = cv.add(img1_bg,img2_fg)</span><br><span class="line">img1[<span class="number">0</span>:rows, <span class="number">0</span>:cols ] = dst</span><br><span class="line"> </span><br><span class="line">cv.imshow(<span class="string">&#x27;res&#x27;</span>,img1)</span><br><span class="line">cv.waitKey(<span class="number">0</span>)</span><br><span class="line">cv.destroyAllWindows()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="7-性能检查与优化"><a href="#7-性能检查与优化" class="headerlink" title="7. 性能检查与优化"></a>7. 性能检查与优化</h5><p>使用<code>cv.getTickCount()</code>获取时钟周期，在要判断耗时的程序前后各获取一次，求差<br>使用<code>cv.getTickFrequency()</code>获取时钟频率，耗时（秒） &#x3D; 周期数量 &#x2F; 频率</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line">e1 = cv.getTickCount()  <span class="comment"># 使用time也是一样的</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;do something&#x27;</span>)</span><br><span class="line"></span><br><span class="line">e2 = cv.getTickCount()</span><br><span class="line">t = (e2 - e1) / cv.getTickFrequency()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(t)</span><br></pre></td></tr></table></figure>
+
+<p>性能优化</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="comment">#cv.setUseOptimized(False)  # 默认开了优化，可以手动开关</span></span><br><span class="line">img = cv.imread(<span class="string">&#x27;ml.png&#x27;</span>)</span><br><span class="line">e1 = cv.getTickCount()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>, <span class="number">49</span>, <span class="number">2</span>):</span><br><span class="line">    img1 = cv.medianBlur(img, i)</span><br><span class="line">e2 = cv.getTickCount()</span><br><span class="line">t = (e2 - e1) / cv.getTickFrequency()</span><br><span class="line"><span class="built_in">print</span>(t)</span><br><span class="line"><span class="built_in">print</span>(cv.useOptimized())</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>IPython</code>时可以用它的命令<code>%timeit</code>非常方便地对每行代码用时进行分析<br>创建数组、单个或两个元素运算时，python直接运算以及opencv算法都比numpy快</p>
+<p>性能优化方面的思路：首先以简单的方式实现算法，一旦算法开始工作，分析找到其瓶颈优化之</p>
+<ol>
+<li>尽可能避免在Python中使用循环</li>
+<li>最大可能地将算法向量化，因为numpy和opencv都针对向量运算进行了优化</li>
+<li>非必要不复制<code>array</code>，只使用其<code>views</code><br>如果代码还是慢，考虑用Cython</li>
+</ol>
+<p>附加资源</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://wiki.python.org/moin/PythonSpeed/PerformanceTips">Python Optimization Techniques</a></li>
+<li><a target="_blank" rel="noopener" href="http://scipy-lectures.github.io/advanced/advanced_numpy/index.html#advanced-numpy">Scipy Lecture Notes - Advanced Numpy</a></li>
+<li><a target="_blank" rel="noopener" href="http://pynash.org/2013/03/06/timing-and-profiling/">Timing and Profiling in IPython</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" data-id="cltyl7mrj0000uouk2kd75vha" data-title="OpenCV 快速使用" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          OpenCV 图像处理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/03/19/OpenCV%20VideoWriter/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">OpenCV VideoWriter</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/">OpenCV 图像处理</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/">OpenCV 快速使用</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/19/OpenCV%20VideoWriter/">OpenCV VideoWriter</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/14/pyautogui/">pyautogui</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/">你好世界！</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
