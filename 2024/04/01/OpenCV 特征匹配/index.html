@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OpenCV 特征匹配 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1. 暴力匹配暴力匹配使用一些距离计算两组特征描述之间的匹配度 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051import numpy as npimport cv2 as cvimport matplotlib.pyplot as plt img1 &#x3D; cv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV 特征匹配">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="1. 暴力匹配暴力匹配使用一些距离计算两组特征描述之间的匹配度 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051import numpy as npimport cv2 as cvimport matplotlib.pyplot as plt img1 &#x3D; cv">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-04-01T07:04:04.768Z">
+<meta property="article:modified_time" content="2024-04-02T04:07:10.625Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OpenCV 特征匹配" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" class="article-date">
+  <time class="dt-published" datetime="2024-04-01T07:04:04.768Z" itemprop="datePublished">2024-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OpenCV 特征匹配
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="1-暴力匹配"><a href="#1-暴力匹配" class="headerlink" title="1. 暴力匹配"></a>1. 暴力匹配</h4><p>暴力匹配使用一些距离计算两组特征描述之间的匹配度</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 ORB </span></span><br><span class="line"><span class="comment"># Initiate ORB detector</span></span><br><span class="line">orb = cv.ORB_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with ORB</span></span><br><span class="line">kp1, des1 = orb.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = orb.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># create BFMatcher object</span></span><br><span class="line">bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=<span class="literal">True</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Match descriptors.</span></span><br><span class="line">matches = bf.<span class="keyword">match</span>(des1,des2)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Sort them in the order of their distance.</span></span><br><span class="line">matches = <span class="built_in">sorted</span>(matches, key = <span class="keyword">lambda</span> x:x.distance)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Draw first 10 matches.</span></span><br><span class="line">img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:<span class="number">15</span>],<span class="literal">None</span>,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3),plt.title(<span class="string">&#x27;ORB&#x27;</span>),plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 SIFT</span></span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># BFMatcher with default params</span></span><br><span class="line">bf = cv.BFMatcher()</span><br><span class="line">matches = bf.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Apply ratio test</span></span><br><span class="line">good = []</span><br><span class="line"><span class="keyword">for</span> m,n <span class="keyword">in</span> matches:</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.35</span>*n.distance:</span><br><span class="line">    good.append([m])</span><br><span class="line"> </span><br><span class="line"><span class="comment"># cv.drawMatchesKnn expects list of lists as matches.</span></span><br><span class="line">img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,good,<span class="literal">None</span>,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3),plt.title(<span class="string">&#x27;SIFT&#x27;</span>),plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-基于FLANN的匹配"><a href="#2-基于FLANN的匹配" class="headerlink" title="2. 基于FLANN的匹配"></a>2. 基于FLANN的匹配</h4><p>FLANN是近似最近邻的快速库.包含了针对大型高维特征快速最近邻搜索优化的算法集.在大数据集上比BFMatcher更好.<br>使用FLANN,需要传入索引字典<code>IndexParams</code>描述所用算法及其参数.如需要使用SIFT&#x2F;SURF等,传入如下内容</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>而使用ORB,使用如下,参数要自己调整,文档中建议的不一定最符合实际使用</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FLANN_INDEX_LSH = <span class="number">6</span></span><br><span class="line">index_params= <span class="built_in">dict</span>(algorithm = FLANN_INDEX_LSH,</span><br><span class="line">    table_number = <span class="number">6</span>, <span class="comment"># 12</span></span><br><span class="line">    key_size = <span class="number">12</span>, <span class="comment"># 20</span></span><br><span class="line">    multi_probe_level = <span class="number">1</span>) <span class="comment">#2</span></span><br></pre></td></tr></table></figure>
+<p>第二个字典是SearchParams,定义应该递归遍历索引中的树的次数,这个值越高精度越高,但是同样会消耗更多的时间</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># FLANN parameters</span></span><br><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br><span class="line">search_params = <span class="built_in">dict</span>(checks=<span class="number">50</span>) <span class="comment"># or pass empty dictionary</span></span><br><span class="line"> </span><br><span class="line">flann = cv.FlannBasedMatcher(index_params,search_params)</span><br><span class="line"> </span><br><span class="line">matches = flann.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Need to draw only good matches, so create a mask</span></span><br><span class="line">matchesMask = [[<span class="number">0</span>,<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matches))]</span><br><span class="line"> </span><br><span class="line"><span class="comment"># ratio test as per Lowe&#x27;s paper</span></span><br><span class="line"><span class="keyword">for</span> i,(m,n) <span class="keyword">in</span> <span class="built_in">enumerate</span>(matches):</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.7</span>*n.distance:</span><br><span class="line">    matchesMask[i]=[<span class="number">1</span>,<span class="number">0</span>]</span><br><span class="line"> </span><br><span class="line">draw_params = <span class="built_in">dict</span>(matchColor = (<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),</span><br><span class="line"> singlePointColor = (<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),</span><br><span class="line"> matchesMask = matchesMask,</span><br><span class="line"> flags = cv.DrawMatchesFlags_DEFAULT)</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,matches,<span class="literal">None</span>,**draw_params)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3,),plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-特征匹配与单应实现物体查找"><a href="#3-特征匹配与单应实现物体查找" class="headerlink" title="3. 特征匹配与单应实现物体查找"></a>3. 特征匹配与单应实现物体查找</h4><p>前述的匹配是在另一张图片中寻找目标物体的一些部分.使用<code>cv.findHomography()</code>,传入两图片的点,可以找到物体在两个图片中的视角转换. 然后可以用<code>cv.perspectiveTransform</code>找到目标.至少需要4个正确的点来找到这个转换矩阵.</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">MIN_MATCH_COUNT = <span class="number">10</span></span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br><span class="line">search_params = <span class="built_in">dict</span>(checks = <span class="number">50</span>)</span><br><span class="line"> </span><br><span class="line">flann = cv.FlannBasedMatcher(index_params, search_params)</span><br><span class="line"> </span><br><span class="line">matches = flann.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># store all the good matches as per Lowe&#x27;s ratio test.</span></span><br><span class="line">good = []</span><br><span class="line"><span class="keyword">for</span> m,n <span class="keyword">in</span> matches:</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.7</span>*n.distance:</span><br><span class="line">    good.append(m)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(good)&gt;MIN_MATCH_COUNT:</span><br><span class="line"> src_pts = np.float32([ kp1[m.queryIdx].pt <span class="keyword">for</span> m <span class="keyword">in</span> good ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> dst_pts = np.float32([ kp2[m.trainIdx].pt <span class="keyword">for</span> m <span class="keyword">in</span> good ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"> M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,<span class="number">5.0</span>)</span><br><span class="line"> matchesMask = mask.ravel().tolist()</span><br><span class="line"> </span><br><span class="line"> h,w = img1.shape</span><br><span class="line"> pts = np.float32([ [<span class="number">0</span>,<span class="number">0</span>],[<span class="number">0</span>,h-<span class="number">1</span>],[w-<span class="number">1</span>,h-<span class="number">1</span>],[w-<span class="number">1</span>,<span class="number">0</span>] ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> dst = cv.perspectiveTransform(pts,M)</span><br><span class="line"> </span><br><span class="line"> img2 = cv.polylines(img2,[np.int32(dst)],<span class="literal">True</span>,<span class="number">255</span>,<span class="number">3</span>, cv.LINE_AA)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line"> <span class="built_in">print</span>( <span class="string">&quot;Not enough matches are found - &#123;&#125;/&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">len</span>(good), MIN_MATCH_COUNT) )</span><br><span class="line"> matchesMask = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">draw_params = <span class="built_in">dict</span>(matchColor = (<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>), <span class="comment"># draw matches in green color</span></span><br><span class="line"> singlePointColor = <span class="literal">None</span>,</span><br><span class="line"> matchesMask = matchesMask, <span class="comment"># draw only inliers</span></span><br><span class="line"> flags = <span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawMatches(img1,kp1,img2,kp2,good,<span class="literal">None</span>,**draw_params)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3, <span class="string">&#x27;gray&#x27;</span>),plt.show()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" data-id="cluglu6mb0001i8uk4q3bc161" data-title="OpenCV 特征匹配" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">OpenCV相机畸变校准</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/">OpenCV相机畸变校准</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/21/OpenCV%20%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/">OpenCV 特征提取与描述</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/">OpenCV 图像处理</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/">OpenCV 快速使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

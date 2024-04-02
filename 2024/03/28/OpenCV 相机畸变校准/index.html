@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OpenCV相机畸变校准 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="理论相机包含了径向畸变和切向畸变。径向畸变可以让实际中的直线在图像中弯曲，这种效应离图像中心越远越强烈。径向畸变表示为    切向畸变来自于镜片与传感器之间的平行度误差，导致有一些区域图像看起来比实际要近。 切向畸变表示为    因此需要找到如下畸变系数     此外，我们还需要获取相机的内参和外参。内参包括了焦距（f_x, f_y）和光学中心（c_x, c_y），可用来创建一个相机矩阵。而相机矩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV相机畸变校准">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="理论相机包含了径向畸变和切向畸变。径向畸变可以让实际中的直线在图像中弯曲，这种效应离图像中心越远越强烈。径向畸变表示为    切向畸变来自于镜片与传感器之间的平行度误差，导致有一些区域图像看起来比实际要近。 切向畸变表示为    因此需要找到如下畸变系数     此外，我们还需要获取相机的内参和外参。内参包括了焦距（f_x, f_y）和光学中心（c_x, c_y），可用来创建一个相机矩阵。而相机矩">
+<meta property="og:locale">
+<meta property="og:image" content="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/assets/img/radial_dist.jpg">
+<meta property="og:image" content="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/assets/img/tangential_dist.jpg">
+<meta property="og:image" content="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/assets/img/dist_coef.jpg">
+<meta property="og:image" content="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/assets/img/camera_mtx.jpg">
+<meta property="article:published_time" content="2024-03-28T09:24:44.689Z">
+<meta property="article:modified_time" content="2024-03-28T10:36:33.314Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/assets/img/radial_dist.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OpenCV 相机畸变校准" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/" class="article-date">
+  <time class="dt-published" datetime="2024-03-28T09:24:44.689Z" itemprop="datePublished">2024-03-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OpenCV相机畸变校准
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h4><p>相机包含了径向畸变和切向畸变。<br>径向畸变可以让实际中的直线在图像中弯曲，这种效应离图像中心越远越强烈。<br>径向畸变表示为</p>
+<center>
+<img src="./assets/img/radial_dist.jpg" width="80%" height="80%">
+</center>
+切向畸变来自于镜片与传感器之间的平行度误差，导致有一些区域图像看起来比实际要近。
+切向畸变表示为
+<center>
+<img src="./assets/img/tangential_dist.jpg" width="80%" height="80%">
+</center>
+因此需要找到如下畸变系数
+<center>
+<img src="./assets/img/dist_coef.jpg" width="50%" height="50%">
+</center>
+
+<p>此外，我们还需要获取相机的内参和外参。内参包括了焦距（f_x, f_y）和光学中心（c_x, c_y），可用来创建一个相机矩阵。而相机矩阵也是消除一个相机畸变需要的。相机矩阵是相机固有的属性，一旦求得，可以复用到同一相机的所有图片。</p>
+<center>
+<img src="./assets/img/camera_mtx.jpg" width="50%" height="50%">
+</center>
+外参对应了将3D点转换到一个坐标系的平移向量和旋转向量
+
+<p>通常在立体视觉应用中，校正镜头畸变是必须的事情。校正的原理是，提供一些完好定义的样本图片（例如，棋盘图、圆点图），已知其上特征点的真实相对坐标，也知道对应点在图像上的坐标，就可以计算出来畸变系数。至少提供10张样本图片以确保好的效果。</p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><p>相机校正需要的输入是一系列3D真实点坐标和对应的2D图像坐标。在图像中找到2D坐标没有任何问题。但真实3D点坐标有点难了。为了简化，认为棋盘格都是在XY平面固定的，这样Z全是0，事情好办了起来。<br>在代码中,3D点是<code>object points</code>, 2D点是<code>image points</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"></span><br><span class="line">criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, <span class="number">30</span>, <span class="number">0.001</span>)</span><br><span class="line"></span><br><span class="line">objp = np.zeros((<span class="number">6</span>*<span class="number">9</span>, <span class="number">3</span>), np.float32)</span><br><span class="line">objp[:,:<span class="number">2</span>] = np.mgrid[<span class="number">0</span>:<span class="number">9</span>, <span class="number">0</span>:<span class="number">6</span>].T.reshape(-<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">objpoints = []  <span class="comment"># 真实世界的3D坐标</span></span><br><span class="line">imgpoints = []  <span class="comment"># 图像中的2D坐标</span></span><br><span class="line"></span><br><span class="line">images = glob.glob(<span class="string">&#x27;chessboard/*.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> images:</span><br><span class="line">    img = cv.imread(fname)</span><br><span class="line">    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 寻找棋盘的角点</span></span><br><span class="line">    ret, corners = cv.findChessboardCorners(gray, (<span class="number">9</span>,<span class="number">6</span>),<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果找到了，加入目标点、图像点</span></span><br><span class="line">    <span class="keyword">if</span> ret == <span class="literal">True</span>:</span><br><span class="line">        objpoints.append(objp)</span><br><span class="line">        corners2 = cv.cornerSubPix(gray, corners, (<span class="number">11</span>,<span class="number">11</span>),(-<span class="number">1</span>,-<span class="number">1</span>),criteria)</span><br><span class="line">        imgpoints.append(corners2)</span><br><span class="line"></span><br><span class="line">        cv.drawChessboardCorners(img,(<span class="number">9</span>,<span class="number">6</span>),corners2,ret)</span><br><span class="line">        cv.imshow(<span class="string">&#x27;img&#x27;</span>, img)</span><br><span class="line">        cv.waitKey(<span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 校正 返回：ret、相机矩阵、扭曲系数、旋转向量s、平移向量s</span></span><br><span class="line">ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-<span class="number">1</span>], <span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 存储为npz文件，便于读取使用</span></span><br><span class="line">np.savez(<span class="string">&#x27;cameracalib&#x27;</span>,mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)</span><br><span class="line">calib_file = np.load(<span class="string">&#x27;cameracalib.npz&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(calib_file[<span class="string">&#x27;mtx&#x27;</span>])</span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">&#x27;chessboard/left12.jpg&#x27;</span>)</span><br><span class="line">h, w = img.shape[:<span class="number">2</span>]</span><br><span class="line">newcameramtx, roi = cv.getOptimalNewCameraMatrix(calib_file[<span class="string">&#x27;mtx&#x27;</span>], calib_file[<span class="string">&#x27;dist&#x27;</span>], (w,h), <span class="number">1</span>, (w,h))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 消除畸变</span></span><br><span class="line">dst = cv.undistort(img,mtx, dist, <span class="literal">None</span>, newcameramtx)</span><br><span class="line">x,y,w,h = roi</span><br><span class="line">dst1 = dst[y:y+h, x:x+w]</span><br><span class="line">cv.imshow(<span class="string">&#x27;ds1&#x27;</span>,dst1)</span><br><span class="line">cv.imwrite(<span class="string">&#x27;calibresult.png&#x27;</span>, dst1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 另一种方法消除畸变</span></span><br><span class="line">mapx, mapy = cv.initUndistortRectifyMap(mtx, dist, <span class="literal">None</span>, newcameramtx, (w,h), <span class="number">5</span>)</span><br><span class="line">dst2 = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)</span><br><span class="line">dst2 = dst2[y:y+h, x:x+w]</span><br><span class="line">cv.imshow(<span class="string">&#x27;ds2&#x27;</span>,dst2)</span><br><span class="line"></span><br><span class="line">cv.waitKey(<span class="number">0</span>)</span><br><span class="line">cv.destroyAllWindows()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/" data-id="club3o6ez0000skukhea93hpf" data-title="OpenCV相机畸变校准" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          OpenCV 特征匹配
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/03/21/OpenCV%20%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">OpenCV 特征提取与描述</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/">OpenCV相机畸变校准</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/21/OpenCV%20%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/">OpenCV 特征提取与描述</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/">OpenCV 图像处理</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/">OpenCV 快速使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
