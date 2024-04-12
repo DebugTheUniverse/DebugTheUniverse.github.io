@@ -73,6 +73,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-微信运动自动点赞" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/" class="article-date">
+  <time class="dt-published" datetime="2024-04-12T10:48:37.191Z" itemprop="datePublished">2024-04-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/">微信运动自动点赞</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>通过USB调试在电脑显示并可操作手机屏幕<br>使用pyautogui获取屏幕图像<br>使用opencv处理和模板匹配，识别需要点击的区域<br>使用pyautogui点击，并滚动下一页</p>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="安卓手机"><a href="#安卓手机" class="headerlink" title="安卓手机"></a>安卓手机</h5><ol>
+<li>激活开发者模式</li>
+<li>在开发者选项中勾选“允许USB调试”</li>
+<li>用USB线缆连接电脑</li>
+</ol>
+<h5 id="电脑"><a href="#电脑" class="headerlink" title="电脑"></a>电脑</h5><ol>
+<li>打开软件scrcpy.exe，正常可看到并操控手机屏幕，软件官网<a target="_blank" rel="noopener" href="https://scrcpy.org/">scrcpy</a></li>
+<li>将窗口调整到固定位置，使用截图工具将待点击的心形图截图保存为<code>heart.jpg</code></li>
+<li>在同一文件夹创建并运行Python脚本如下</li>
+</ol>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设定点击的间隔时长</span></span><br><span class="line">pyautogui.PAUSE = <span class="number">0.02</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">match_click</span>(<span class="params">image, templ</span>):</span><br><span class="line">    <span class="keyword">assert</span> image <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line">    <span class="comment"># 二值化操作，选用了阈值240，如果发现完全不工作，在0-255之间调整一下</span></span><br><span class="line">    ret,img = cv.threshold(image,<span class="number">240</span>,<span class="number">255</span>,cv.THRESH_BINARY)</span><br><span class="line">    <span class="comment"># 模板图片，保存好的</span></span><br><span class="line">    template = cv.imread(templ,cv.IMREAD_GRAYSCALE)</span><br><span class="line">    <span class="keyword">assert</span> template <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line">    h, w = template.shape[:<span class="number">2</span>]</span><br><span class="line">    <span class="comment"># 匹配模板</span></span><br><span class="line">    res = cv.matchTemplate(img, template, cv.TM_CCOEFF_NORMED)</span><br><span class="line">    <span class="comment"># 只保留高置信度结果</span></span><br><span class="line">    threshold = <span class="number">0.8</span></span><br><span class="line">    loc = np.where( res &gt;= threshold)</span><br><span class="line">    <span class="keyword">for</span> pt <span class="keyword">in</span> <span class="built_in">zip</span>(*loc[::-<span class="number">1</span>]):</span><br><span class="line">        <span class="comment"># 点击</span></span><br><span class="line">        pyautogui.click(pt[<span class="number">0</span>],pt[<span class="number">1</span>], button=<span class="string">&#x27;left&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">12</span>):</span><br><span class="line">        pyautogui.scroll(-<span class="number">100</span>)</span><br><span class="line">        time.sleep(<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line">time.sleep(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 获取截屏图像</span></span><br><span class="line">        img = pyautogui.screenshot()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 从PIL转OpenCV</span></span><br><span class="line">        img = cv.cvtColor(np.asarray(img),cv.COLOR_RGB2GRAY) </span><br><span class="line">        </span><br><span class="line">        match_click(img, <span class="string">&#x27;heart.jpg&#x27;</span>)</span><br><span class="line">      </span><br><span class="line">        i +=<span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;第&#123;&#125;页&#x27;</span>.<span class="built_in">format</span>(i))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;没有发现目标&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="存在的Bug"><a href="#存在的Bug" class="headerlink" title="存在的Bug"></a>存在的Bug</h4><ol>
+<li>不能避免给自己点赞，导致进入自己的微信运动主页而中断。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/" data-id="cluwkgrpc0000r8ukf3jz0ly4" data-title="微信运动自动点赞" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-OpenCV 特征匹配" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" class="article-date">
@@ -833,6 +887,10 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
       <ul>
         
           <li>
+            <a href="/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/">微信运动自动点赞</a>
+          </li>
+        
+          <li>
             <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
           </li>
         
@@ -846,10 +904,6 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
         
           <li>
             <a href="/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/">OpenCV 图像处理</a>
-          </li>
-        
-          <li>
-            <a href="/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/">OpenCV 快速使用</a>
           </li>
         
       </ul>
