@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Pandas入门 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="导入库1import pandas as pd 创建数据在Pandas中有两种核心数据：DataFrame和Series 创建DataFrameDataFrame是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record 12pd.DataFrame(&#123;&#x27;Yes&#x27;:[50,21], &#x27;No&#x27;:[131,2]&#125;)pd.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandas入门">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/04/17/Pandas%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="导入库1import pandas as pd 创建数据在Pandas中有两种核心数据：DataFrame和Series 创建DataFrameDataFrame是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record 12pd.DataFrame(&#123;&#x27;Yes&#x27;:[50,21], &#x27;No&#x27;:[131,2]&#125;)pd.">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-04-17T04:06:34.879Z">
+<meta property="article:modified_time" content="2024-04-17T11:38:52.261Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Pandas入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/17/Pandas%E5%85%A5%E9%97%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-04-17T04:06:34.879Z" itemprop="datePublished">2024-04-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Pandas入门
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="导入库"><a href="#导入库" class="headerlink" title="导入库"></a>导入库</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<h4 id="创建数据"><a href="#创建数据" class="headerlink" title="创建数据"></a>创建数据</h4><p>在Pandas中有两种核心数据：<code>DataFrame</code>和<code>Series</code></p>
+<p>创建DataFrame<br><code>DataFrame</code>是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Yes&#x27;</span>:[<span class="number">50</span>,<span class="number">21</span>], <span class="string">&#x27;No&#x27;</span>:[<span class="number">131</span>,<span class="number">2</span>]&#125;)</span><br><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Bob&#x27;</span>: [<span class="string">&#x27;I liked it.&#x27;</span>, <span class="string">&#x27;It was awful.&#x27;</span>], <span class="string">&#x27;Sue&#x27;</span>: [<span class="string">&#x27;Pretty good.&#x27;</span>, <span class="string">&#x27;Bland.&#x27;</span>]&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>行标被称为<code>Index</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Bob&#x27;</span>: [<span class="string">&#x27;I liked it.&#x27;</span>, <span class="string">&#x27;It was awful.&#x27;</span>], </span><br><span class="line">              <span class="string">&#x27;Sue&#x27;</span>: [<span class="string">&#x27;Pretty good.&#x27;</span>, <span class="string">&#x27;Bland.&#x27;</span>]&#125;,</span><br><span class="line">             index=[<span class="string">&#x27;Product A&#x27;</span>, <span class="string">&#x27;Product B&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>创建Series</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.Series([<span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>], index=[<span class="string">&#x27;2015 Sales&#x27;</span>, <span class="string">&#x27;2016 Sales&#x27;</span>, <span class="string">&#x27;2017 Sales&#x27;</span>], name=<span class="string">&#x27;Product A&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews = pd.read_csv(<span class="string">&quot;filename.csv&quot;</span>)</span><br><span class="line">wine_reviews = pd.read_csv(<span class="string">&quot;filename.csv&quot;</span>,index_col=<span class="number">0</span>) <span class="comment"># 使用Excel文档中已有的index</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="观察数据"><a href="#观察数据" class="headerlink" title="观察数据"></a>观察数据</h4><p>看形状、看头看尾</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews.shape</span><br><span class="line">wine_reviews.head()</span><br><span class="line">wine_reviews.tail()</span><br></pre></td></tr></table></figure>
+
+<h4 id="保存数据"><a href="#保存数据" class="headerlink" title="保存数据"></a>保存数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews.to_csv(<span class="string">&#x27;savefilename.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>基本索引方式</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.country</span><br><span class="line">reviews[<span class="string">&#x27;country&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>pandas中有<code>loc</code>和<code>iloc</code>方法，都是先行row后列column，与基本方式相反</p>
+<p>基于index的索引</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.iloc[:, <span class="number">0</span>] <span class="comment"># 获取第一列</span></span><br><span class="line">reviews.iloc[-<span class="number">5</span>:] <span class="comment"># 最后5行</span></span><br></pre></td></tr></table></figure>
+
+<p>基于标签的索引</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.loc[<span class="number">0</span>, <span class="string">&#x27;country&#x27;</span>] <span class="comment"># 获取第一行，country列的元素</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用<code>loc</code>索引0：10就是0,…,10<br>使用<code>iloc</code>索引0：10就是0,…,9</p>
+<p>基于标签判断的缩影</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">italian_wines = reviews[reviews.country == <span class="string">&#x27;Italy&#x27;</span>]</span><br><span class="line">top_oceania_wines = reviews.loc[(reviews.country.isin([<span class="string">&#x27;Australia&#x27;</span>,<span class="string">&#x27;New Zealand&#x27;</span>])) &amp; (reviews.points&gt;=<span class="number">95</span>)]</span><br></pre></td></tr></table></figure>
+
+<h4 id="不重复元素"><a href="#不重复元素" class="headerlink" title="不重复元素"></a>不重复元素</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.country.unique()</span><br></pre></td></tr></table></figure>
+
+<h4 id="元素计数"><a href="#元素计数" class="headerlink" title="元素计数"></a>元素计数</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.country.value_count()</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用map"><a href="#使用map" class="headerlink" title="使用map()"></a>使用map()</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.points.<span class="built_in">map</span>(<span class="keyword">lambda</span> p: p - review_points_mean)</span><br></pre></td></tr></table></figure>
+<p>传给<code>map()</code>的function每次接收Series中的一个值，返回一个新的Series包含所有被function转换后的值</p>
+<p>同样的操作可以用<code>apply()</code>实现</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">remean_points</span>(<span class="params">row</span>):</span><br><span class="line">    row.points = row.points - review_points_mean</span><br><span class="line">    <span class="keyword">return</span> row</span><br><span class="line"></span><br><span class="line">reviews.apply(remean_points, axis=<span class="string">&#x27;columns&#x27;</span>) <span class="comment"># axis=index 时则应用函数到每列</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="idxmax"><a href="#idxmax" class="headerlink" title="idxmax()"></a>idxmax()</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bargain_idx = (reviews.points / reviews.price).idxmax()</span><br><span class="line">bargain_wine = reviews.loc[bargain_idx,<span class="string">&#x27;title&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h4 id="grouping-和-sorting"><a href="#grouping-和-sorting" class="headerlink" title="grouping 和 sorting"></a>grouping 和 sorting</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.groupby(<span class="string">&#x27;points&#x27;</span>).points.count()</span><br><span class="line">reviews.groupby(<span class="string">&#x27;winery&#x27;</span>).apply(<span class="keyword">lambda</span> df: df.title.iloc[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p><code>agg()</code>函数可以实现同时运行多种函数</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.groupby([<span class="string">&#x27;country&#x27;</span>]).price.agg([<span class="built_in">len</span>, <span class="built_in">min</span>, <span class="built_in">max</span>])</span><br></pre></td></tr></table></figure>
+
+<p>多索引</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = reviews.groupby([<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;province&#x27;</span>]).description.agg([<span class="built_in">len</span>])</span><br></pre></td></tr></table></figure>
+<p>复原</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed.reset_index()</span><br></pre></td></tr></table></figure>
+
+<p>Sorting</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = countries_reviewed.reset_index()</span><br><span class="line">countries_reviewed.sort_values(by=<span class="string">&#x27;len&#x27;</span>)  <span class="comment"># 默认ascending = True</span></span><br><span class="line"><span class="comment"># 使用index排序</span></span><br><span class="line">countries_reviewed.sort_index()</span><br><span class="line"><span class="comment"># 使用两个同时排序</span></span><br><span class="line">countries_reviewed.sort_values(by=[<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;len&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<h4 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews_written = reviews.groupby(<span class="string">&#x27;taster_twitter_handle&#x27;</span>).size()</span><br><span class="line"></span><br><span class="line">reviews_written = reviews.groupby(<span class="string">&#x27;taster_twitter_handle&#x27;</span>).taster_twitter_handle.count()</span><br></pre></td></tr></table></figure>
+
+<h4 id="数据类型和缺失值"><a href="#数据类型和缺失值" class="headerlink" title="数据类型和缺失值"></a>数据类型和缺失值</h4><p>数据类型</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews.price.dtype</span><br><span class="line"><span class="comment"># 更改类型</span></span><br><span class="line">reviews.points.astype(<span class="string">&#x27;float64&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>丢失值<code>NaN</code>，类型是<code>float64</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews[pd.isnull(reviews.country)]</span><br></pre></td></tr></table></figure>
+
+<p>替换丢失值是常见操作，例如替换为<code>Unknown</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.region_2.fillna(<span class="string">&#x27;Unknown&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>替换正常值</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.taster_twitter_handle.replace(<span class="string">&quot;@kerinokeefe&quot;</span>, <span class="string">&quot;@kerino&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="重命名"><a href="#重命名" class="headerlink" title="重命名"></a>重命名</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给column重命名</span></span><br><span class="line">reviews.rename(columns=&#123;<span class="string">&#x27;points&#x27;</span>: <span class="string">&#x27;score&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给index重命名</span></span><br><span class="line">reviews.rename(index=&#123;<span class="number">0</span>:<span class="string">&#x27;FirstEntry&#x27;</span>,<span class="number">1</span>:<span class="string">&#x27;SecondEntry&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>行和列都可以有自己的名字属性</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.rename_axis(<span class="string">&quot;wines&quot;</span>, axis=<span class="string">&#x27;rows&#x27;</span>).rename_axis(<span class="string">&quot;fields&quot;</span>, axis=<span class="string">&#x27;columns&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="组合数据的三种方式"><a href="#组合数据的三种方式" class="headerlink" title="组合数据的三种方式"></a>组合数据的三种方式</h4><p><code>concat()</code>,<code>join()</code>,<code>merge()</code>，后者与join类似</p>
+<pre><code class="py"># concat() 组合具有相同column的数据
+canadian_youtube = pd.read_csv(&quot;../input/youtube-new/CAvideos.csv&quot;)
+british_youtube = pd.read_csv(&quot;../input/youtube-new/GBvideos.csv&quot;)
+
+pd.concat([canadian_youtube, british_youtube])
+
+# join() 组合具有相同index的数据
+left = canadian_youtube.set_index([&#39;title&#39;, &#39;trending_date&#39;])
+right = british_youtube.set_index([&#39;title&#39;, &#39;trending_date&#39;])
+
+left.join(right, lsuffix=&#39;_CAN&#39;, rsuffix=&#39;_UK&#39;) # 后两个参数是后缀必须
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/17/Pandas%E5%85%A5%E9%97%A8/" data-id="clv3quf8y0001fcukb6ai7rzg" data-title="Pandas入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/04/17/Pandas%E5%85%A5%E9%97%A8/">Pandas入门</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/">微信运动自动点赞</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/">OpenCV相机畸变校准</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
