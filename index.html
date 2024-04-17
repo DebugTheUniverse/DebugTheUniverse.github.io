@@ -169,19 +169,7 @@
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.rename_axis(<span class="string">&quot;wines&quot;</span>, axis=<span class="string">&#x27;rows&#x27;</span>).rename_axis(<span class="string">&quot;fields&quot;</span>, axis=<span class="string">&#x27;columns&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h4 id="组合数据的三种方式"><a href="#组合数据的三种方式" class="headerlink" title="组合数据的三种方式"></a>组合数据的三种方式</h4><p><code>concat()</code>,<code>join()</code>,<code>merge()</code>，后者与join类似</p>
-<pre><code class="py"># concat() 组合具有相同column的数据
-canadian_youtube = pd.read_csv(&quot;../input/youtube-new/CAvideos.csv&quot;)
-british_youtube = pd.read_csv(&quot;../input/youtube-new/GBvideos.csv&quot;)
-
-pd.concat([canadian_youtube, british_youtube])
-
-# join() 组合具有相同index的数据
-left = canadian_youtube.set_index([&#39;title&#39;, &#39;trending_date&#39;])
-right = british_youtube.set_index([&#39;title&#39;, &#39;trending_date&#39;])
-
-left.join(right, lsuffix=&#39;_CAN&#39;, rsuffix=&#39;_UK&#39;) # 后两个参数是后缀必须
-</code></pre>
-
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># concat() 组合具有相同column的数据</span></span><br><span class="line">canadian_youtube = pd.read_csv(<span class="string">&quot;../input/youtube-new/CAvideos.csv&quot;</span>)</span><br><span class="line">british_youtube = pd.read_csv(<span class="string">&quot;../input/youtube-new/GBvideos.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line">pd.concat([canadian_youtube, british_youtube])</span><br><span class="line"></span><br><span class="line"><span class="comment"># join() 组合具有相同index的数据</span></span><br><span class="line">left = canadian_youtube.set_index([<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;trending_date&#x27;</span>])</span><br><span class="line">right = british_youtube.set_index([<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;trending_date&#x27;</span>])</span><br><span class="line"></span><br><span class="line">left.join(right, lsuffix=<span class="string">&#x27;_CAN&#x27;</span>, rsuffix=<span class="string">&#x27;_UK&#x27;</span>) <span class="comment"># 后两个参数是后缀必须</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
