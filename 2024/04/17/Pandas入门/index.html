@@ -14,7 +14,7 @@
 <meta property="og:description" content="导入库1import pandas as pd 创建数据在Pandas中有两种核心数据：DataFrame和Series 创建DataFrameDataFrame是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record 12pd.DataFrame(&#123;&#x27;Yes&#x27;:[50,21], &#x27;No&#x27;:[131,2]&#125;)pd.">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-04-17T04:06:34.879Z">
-<meta property="article:modified_time" content="2024-04-17T11:48:34.880Z">
+<meta property="article:modified_time" content="2024-04-18T00:39:54.542Z">
 <meta property="article:author" content="Jim Huang">
 <meta name="twitter:card" content="summary">
   
@@ -99,14 +99,13 @@
       
         <h4 id="导入库"><a href="#导入库" class="headerlink" title="导入库"></a>导入库</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
 <h4 id="创建数据"><a href="#创建数据" class="headerlink" title="创建数据"></a>创建数据</h4><p>在Pandas中有两种核心数据：<code>DataFrame</code>和<code>Series</code></p>
-<p>创建DataFrame<br><code>DataFrame</code>是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record</p>
+<h4 id="创建DataFrame"><a href="#创建DataFrame" class="headerlink" title="创建DataFrame"></a>创建DataFrame</h4><p><code>DataFrame</code>是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Yes&#x27;</span>:[<span class="number">50</span>,<span class="number">21</span>], <span class="string">&#x27;No&#x27;</span>:[<span class="number">131</span>,<span class="number">2</span>]&#125;)</span><br><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Bob&#x27;</span>: [<span class="string">&#x27;I liked it.&#x27;</span>, <span class="string">&#x27;It was awful.&#x27;</span>], <span class="string">&#x27;Sue&#x27;</span>: [<span class="string">&#x27;Pretty good.&#x27;</span>, <span class="string">&#x27;Bland.&#x27;</span>]&#125;)</span><br></pre></td></tr></table></figure>
 
 <p>行标被称为<code>Index</code></p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Bob&#x27;</span>: [<span class="string">&#x27;I liked it.&#x27;</span>, <span class="string">&#x27;It was awful.&#x27;</span>], </span><br><span class="line">              <span class="string">&#x27;Sue&#x27;</span>: [<span class="string">&#x27;Pretty good.&#x27;</span>, <span class="string">&#x27;Bland.&#x27;</span>]&#125;,</span><br><span class="line">             index=[<span class="string">&#x27;Product A&#x27;</span>, <span class="string">&#x27;Product B&#x27;</span>])</span><br></pre></td></tr></table></figure>
 
-<p>创建Series</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.Series([<span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>], index=[<span class="string">&#x27;2015 Sales&#x27;</span>, <span class="string">&#x27;2016 Sales&#x27;</span>, <span class="string">&#x27;2017 Sales&#x27;</span>], name=<span class="string">&#x27;Product A&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="创建Series"><a href="#创建Series" class="headerlink" title="创建Series"></a>创建Series</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.Series([<span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>], index=[<span class="string">&#x27;2015 Sales&#x27;</span>, <span class="string">&#x27;2016 Sales&#x27;</span>, <span class="string">&#x27;2017 Sales&#x27;</span>], name=<span class="string">&#x27;Product A&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h4 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews = pd.read_csv(<span class="string">&quot;filename.csv&quot;</span>)</span><br><span class="line">wine_reviews = pd.read_csv(<span class="string">&quot;filename.csv&quot;</span>,index_col=<span class="number">0</span>) <span class="comment"># 使用Excel文档中已有的index</span></span><br></pre></td></tr></table></figure>
 
@@ -118,15 +117,12 @@
 <h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>基本索引方式</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.country</span><br><span class="line">reviews[<span class="string">&#x27;country&#x27;</span>]</span><br></pre></td></tr></table></figure>
 <p>pandas中有<code>loc</code>和<code>iloc</code>方法，都是先行row后列column，与基本方式相反</p>
-<p>基于index的索引</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.iloc[:, <span class="number">0</span>] <span class="comment"># 获取第一列</span></span><br><span class="line">reviews.iloc[-<span class="number">5</span>:] <span class="comment"># 最后5行</span></span><br></pre></td></tr></table></figure>
+<h4 id="基于index的索引"><a href="#基于index的索引" class="headerlink" title="基于index的索引"></a>基于index的索引</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.iloc[:, <span class="number">0</span>] <span class="comment"># 获取第一列</span></span><br><span class="line">reviews.iloc[-<span class="number">5</span>:] <span class="comment"># 最后5行</span></span><br></pre></td></tr></table></figure>
 
-<p>基于标签的索引</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.loc[<span class="number">0</span>, <span class="string">&#x27;country&#x27;</span>] <span class="comment"># 获取第一行，country列的元素</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="基于标签的索引"><a href="#基于标签的索引" class="headerlink" title="基于标签的索引"></a>基于标签的索引</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.loc[<span class="number">0</span>, <span class="string">&#x27;country&#x27;</span>] <span class="comment"># 获取第一行，country列的元素</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>使用<code>loc</code>索引0：10就是0,…,10<br>使用<code>iloc</code>索引0：10就是0,…,9</p>
-<p>基于标签判断的缩影</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">italian_wines = reviews[reviews.country == <span class="string">&#x27;Italy&#x27;</span>]</span><br><span class="line">top_oceania_wines = reviews.loc[(reviews.country.isin([<span class="string">&#x27;Australia&#x27;</span>,<span class="string">&#x27;New Zealand&#x27;</span>])) &amp; (reviews.points&gt;=<span class="number">95</span>)]</span><br></pre></td></tr></table></figure>
+<h4 id="基于标签判断的缩影"><a href="#基于标签判断的缩影" class="headerlink" title="基于标签判断的缩影"></a>基于标签判断的缩影</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">italian_wines = reviews[reviews.country == <span class="string">&#x27;Italy&#x27;</span>]</span><br><span class="line">top_oceania_wines = reviews.loc[(reviews.country.isin([<span class="string">&#x27;Australia&#x27;</span>,<span class="string">&#x27;New Zealand&#x27;</span>])) &amp; (reviews.points&gt;=<span class="number">95</span>)]</span><br></pre></td></tr></table></figure>
 
 <h4 id="不重复元素"><a href="#不重复元素" class="headerlink" title="不重复元素"></a>不重复元素</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.country.unique()</span><br></pre></td></tr></table></figure>
 
@@ -143,18 +139,14 @@
 <p><code>agg()</code>函数可以实现同时运行多种函数</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.groupby([<span class="string">&#x27;country&#x27;</span>]).price.agg([<span class="built_in">len</span>, <span class="built_in">min</span>, <span class="built_in">max</span>])</span><br></pre></td></tr></table></figure>
 
-<p>多索引</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = reviews.groupby([<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;province&#x27;</span>]).description.agg([<span class="built_in">len</span>])</span><br></pre></td></tr></table></figure>
-<p>复原</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed.reset_index()</span><br></pre></td></tr></table></figure>
+<h4 id="多索引"><a href="#多索引" class="headerlink" title="多索引"></a>多索引</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = reviews.groupby([<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;province&#x27;</span>]).description.agg([<span class="built_in">len</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="复原"><a href="#复原" class="headerlink" title="复原"></a>复原</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed.reset_index()</span><br></pre></td></tr></table></figure>
 
-<p>Sorting</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = countries_reviewed.reset_index()</span><br><span class="line">countries_reviewed.sort_values(by=<span class="string">&#x27;len&#x27;</span>)  <span class="comment"># 默认ascending = True</span></span><br><span class="line"><span class="comment"># 使用index排序</span></span><br><span class="line">countries_reviewed.sort_index()</span><br><span class="line"><span class="comment"># 使用两个同时排序</span></span><br><span class="line">countries_reviewed.sort_values(by=[<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;len&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="Sorting"><a href="#Sorting" class="headerlink" title="Sorting"></a>Sorting</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = countries_reviewed.reset_index()</span><br><span class="line">countries_reviewed.sort_values(by=<span class="string">&#x27;len&#x27;</span>)  <span class="comment"># 默认ascending = True</span></span><br><span class="line"><span class="comment"># 使用index排序</span></span><br><span class="line">countries_reviewed.sort_index()</span><br><span class="line"><span class="comment"># 使用两个同时排序</span></span><br><span class="line">countries_reviewed.sort_values(by=[<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;len&#x27;</span>])</span><br></pre></td></tr></table></figure>
 
 <h4 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews_written = reviews.groupby(<span class="string">&#x27;taster_twitter_handle&#x27;</span>).size()</span><br><span class="line"></span><br><span class="line">reviews_written = reviews.groupby(<span class="string">&#x27;taster_twitter_handle&#x27;</span>).taster_twitter_handle.count()</span><br></pre></td></tr></table></figure>
 
-<h4 id="数据类型和缺失值"><a href="#数据类型和缺失值" class="headerlink" title="数据类型和缺失值"></a>数据类型和缺失值</h4><p>数据类型</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews.price.dtype</span><br><span class="line"><span class="comment"># 更改类型</span></span><br><span class="line">reviews.points.astype(<span class="string">&#x27;float64&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="数据类型和缺失值"><a href="#数据类型和缺失值" class="headerlink" title="数据类型和缺失值"></a>数据类型和缺失值</h4><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews.price.dtype</span><br><span class="line"><span class="comment"># 更改类型</span></span><br><span class="line">reviews.points.astype(<span class="string">&#x27;float64&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>丢失值<code>NaN</code>，类型是<code>float64</code></p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews[pd.isnull(reviews.country)]</span><br></pre></td></tr></table></figure>
@@ -162,13 +154,11 @@
 <p>替换丢失值是常见操作，例如替换为<code>Unknown</code></p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.region_2.fillna(<span class="string">&#x27;Unknown&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
-<p>替换正常值</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.taster_twitter_handle.replace(<span class="string">&quot;@kerinokeefe&quot;</span>, <span class="string">&quot;@kerino&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="替换正常值"><a href="#替换正常值" class="headerlink" title="替换正常值"></a>替换正常值</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.taster_twitter_handle.replace(<span class="string">&quot;@kerinokeefe&quot;</span>, <span class="string">&quot;@kerino&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <h4 id="重命名"><a href="#重命名" class="headerlink" title="重命名"></a>重命名</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给column重命名</span></span><br><span class="line">reviews.rename(columns=&#123;<span class="string">&#x27;points&#x27;</span>: <span class="string">&#x27;score&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给index重命名</span></span><br><span class="line">reviews.rename(index=&#123;<span class="number">0</span>:<span class="string">&#x27;FirstEntry&#x27;</span>,<span class="number">1</span>:<span class="string">&#x27;SecondEntry&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
 
-<p>行和列都可以有自己的名字属性</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.rename_axis(<span class="string">&quot;wines&quot;</span>, axis=<span class="string">&#x27;rows&#x27;</span>).rename_axis(<span class="string">&quot;fields&quot;</span>, axis=<span class="string">&#x27;columns&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="行和列都可以有自己的名字属性"><a href="#行和列都可以有自己的名字属性" class="headerlink" title="行和列都可以有自己的名字属性"></a>行和列都可以有自己的名字属性</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.rename_axis(<span class="string">&quot;wines&quot;</span>, axis=<span class="string">&#x27;rows&#x27;</span>).rename_axis(<span class="string">&quot;fields&quot;</span>, axis=<span class="string">&#x27;columns&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h4 id="组合数据的三种方式"><a href="#组合数据的三种方式" class="headerlink" title="组合数据的三种方式"></a>组合数据的三种方式</h4><p><code>concat()</code>,<code>join()</code>,<code>merge()</code>，后者与join类似</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># concat() 组合具有相同column的数据</span></span><br><span class="line">canadian_youtube = pd.read_csv(<span class="string">&quot;../input/youtube-new/CAvideos.csv&quot;</span>)</span><br><span class="line">british_youtube = pd.read_csv(<span class="string">&quot;../input/youtube-new/GBvideos.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line">pd.concat([canadian_youtube, british_youtube])</span><br><span class="line"></span><br><span class="line"><span class="comment"># join() 组合具有相同index的数据</span></span><br><span class="line">left = canadian_youtube.set_index([<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;trending_date&#x27;</span>])</span><br><span class="line">right = british_youtube.set_index([<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;trending_date&#x27;</span>])</span><br><span class="line"></span><br><span class="line">left.join(right, lsuffix=<span class="string">&#x27;_CAN&#x27;</span>, rsuffix=<span class="string">&#x27;_UK&#x27;</span>) <span class="comment"># 后两个参数是后缀必须</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -184,6 +174,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          机器学习中级
+        
+      </div>
+    </a>
   
   
     <a href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" id="article-nav-older" class="article-nav-link-wrap">
@@ -226,6 +225,10 @@
       <ul>
         
           <li>
+            <a href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/">机器学习中级</a>
+          </li>
+        
+          <li>
             <a href="/2024/04/17/Pandas%E5%85%A5%E9%97%A8/">Pandas入门</a>
           </li>
         
@@ -239,10 +242,6 @@
         
           <li>
             <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
-          </li>
-        
-          <li>
-            <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/">OpenCV相机畸变校准</a>
           </li>
         
       </ul>
