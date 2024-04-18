@@ -73,6 +73,44 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-深度学习入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-04-18T10:48:46.899Z" itemprop="datePublished">2024-04-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">深度学习入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" data-id="clv54epb900001suk16z94v78" data-title="深度学习入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-机器学习中级" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/" class="article-date">
@@ -226,66 +264,6 @@
     </div>
     <footer class="article-footer">
       <a data-url="https://debugtheuniverse.github.io/2024/04/17/Pandas%E5%85%A5%E9%97%A8/" data-id="clv3quf8y0001fcukb6ai7rzg" data-title="Pandas入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-机器学习入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" class="article-date">
-  <time class="dt-published" datetime="2024-04-16T09:54:31.667Z" itemprop="datePublished">2024-04-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="机器学习入门"><a href="#机器学习入门" class="headerlink" title="机器学习入门 "></a>机器学习入门 </h2><h4 id="使用Pandas打开csv数据"><a href="#使用Pandas打开csv数据" class="headerlink" title="使用Pandas打开csv数据"></a>使用Pandas打开csv数据</h4><p>Pandas中数据是DataFrame，保存的数据类似一个Excel的sheet，或者SQL中的一个table</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment"># save filepath to variable for easier access</span></span><br><span class="line">melbourne_file_path = <span class="string">&#x27;../input/melbourne-housing-snapshot/melb_data.csv&#x27;</span></span><br><span class="line"><span class="comment"># read the data and store data in DataFrame titled melbourne_data</span></span><br><span class="line">melbourne_data = pd.read_csv(melbourne_file_path) </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="了解数据"><a href="#了解数据" class="headerlink" title="了解数据"></a>了解数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># print a summary of the data in Melbourne data</span></span><br><span class="line">melbourne_data.describe()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有列索引</span></span><br><span class="line"><span class="built_in">print</span>(melbourne_data.columns)</span><br></pre></td></tr></table></figure>
-
-<h4 id="设定Target"><a href="#设定Target" class="headerlink" title="设定Target"></a>设定Target</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y = melbourne_data[<span class="string">&#x27;SalePrice&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
-<h4 id="设定Input"><a href="#设定Input" class="headerlink" title="设定Input"></a>设定Input</h4><p>在所有列索引中选择需要的作为输入特征，如</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">feature_names = [<span class="string">&#x27;LotArea&#x27;</span>,<span class="string">&#x27;YearBuilt&#x27;</span>,<span class="string">&#x27;1stFlrSF&#x27;</span>,<span class="string">&#x27;2ndFlrSF&#x27;</span>,<span class="string">&#x27;FullBath&#x27;</span>,<span class="string">&#x27;BedroomAbvGr&#x27;</span>,<span class="string">&#x27;TotRmsAbvGrd&#x27;</span>]</span><br><span class="line">X = melbourne_data[feature_names]</span><br><span class="line"><span class="comment"># 观察输入数据</span></span><br><span class="line"><span class="built_in">print</span>(X.describe())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="数据划分-train-X、train-y、val-X、val-y"><a href="#数据划分-train-X、train-y、val-X、val-y" class="headerlink" title="数据划分 train_X、train_y、val_X、val_y"></a>数据划分 train_X、train_y、val_X、val_y</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">train_X, train_y, val_X, val_y = train_test_split(X,y,random_state=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置和拟合Model"><a href="#配置和拟合Model" class="headerlink" title="配置和拟合Model"></a>配置和拟合Model</h4><p>以<code>DecisionTreeRegressor</code>为例</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeRegressor</span><br><span class="line">melbourne_model = DecisionTreeRegressor(random_state=<span class="number">1</span>)</span><br><span class="line">melbourne_model.fit(train_X, train_y)</span><br></pre></td></tr></table></figure>
-
-<h4 id="做预测"><a href="#做预测" class="headerlink" title="做预测"></a>做预测</h4><p>输入X为例</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predictions = melbourne_model.predict(val_X)</span><br></pre></td></tr></table></figure>
-
-<h4 id="模型验证"><a href="#模型验证" class="headerlink" title="模型验证"></a>模型验证</h4><p>以Mean Absolute Error（MAE）为例</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_absolute_error</span><br><span class="line">val_mae = mean_absolute_error(melbourne_model.predict(val_X), val_y)</span><br></pre></td></tr></table></figure>
-
-<h4 id="调参时候的操作方法"><a href="#调参时候的操作方法" class="headerlink" title="调参时候的操作方法"></a>调参时候的操作方法</h4><p>以寻找最大叶节点为例</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_mae</span>(<span class="params">max_leaf_nodes, train_X, val_X, train_y, val_y</span>):</span><br><span class="line">    model = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes, random_state=<span class="number">0</span>)</span><br><span class="line">    model.fit(train_X, train_y)</span><br><span class="line">    preds_val = model.predict(val_X)</span><br><span class="line">    mae = mean_absolute_error(val_y, preds_val)</span><br><span class="line">    <span class="keyword">return</span>(mae)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用不同的最大叶节点</span></span><br><span class="line">candidate_max_leaf_nodes = [<span class="number">5</span>, <span class="number">25</span>, <span class="number">50</span>, <span class="number">100</span>, <span class="number">250</span>, <span class="number">500</span>]</span><br><span class="line"><span class="comment"># Store the best value of max_leaf_nodes (it will be either 5, 25, 50, 100, 250 or 500)</span></span><br><span class="line">maes = [get_mae(mln,train_X, val_X, train_y, val_y) <span class="keyword">for</span> mln <span class="keyword">in</span> candidate_max_leaf_nodes]</span><br><span class="line">best_tree_size = candidate_max_leaf_nodes[maes.index(<span class="built_in">min</span>(maes))]</span><br><span class="line"><span class="built_in">print</span>(best_tree_size)</span><br></pre></td></tr></table></figure>
-
-<h4 id="使用全部data拟合Model"><a href="#使用全部data拟合Model" class="headerlink" title="使用全部data拟合Model"></a>使用全部data拟合Model</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于前述最佳参数建立模型，如最大叶节点100</span></span><br><span class="line">final_model = DecisionTreeRegressor(max_leaf_nodes=<span class="number">100</span>)</span><br><span class="line"><span class="comment"># 使用所有数据参与训练</span></span><br><span class="line">final_model.fit(X,y)</span><br></pre></td></tr></table></figure>
-
-<h4 id="使用其他算法"><a href="#使用其他算法" class="headerlink" title="使用其他算法"></a>使用其他算法</h4><p>随机森林Random Forest 是比决策树更容易得到好结果的模型</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.metric <span class="keyword">import</span> mean_absolute_error</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define the model. Set random_state to 1</span></span><br><span class="line">rf_model = RandomForestRegressor(random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># fit your model</span></span><br><span class="line">rf_model.fit(train_X, train_y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Calculate the mean absolute error of your Random Forest model on the validation data</span></span><br><span class="line">rf_val_mae = mean_absolute_error(rf_model.predict(val_X),val_y)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Validation MAE for Random Forest Model: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rf_val_mae))</span><br></pre></td></tr></table></figure>
-
-<h4 id="在kaggle打比赛"><a href="#在kaggle打比赛" class="headerlink" title="在kaggle打比赛"></a>在kaggle打比赛</h4><p>首先需要加入比赛<code>join competition</code><br>然后运行后在<code>kaggle/working</code>中生成<code>submission.csv</code><br>点击<code>submit</code>即可</p>
-<h4 id="继续折腾"><a href="#继续折腾" class="headerlink" title="继续折腾"></a>继续折腾</h4><p>试验是最好的手段，尝试选用不同的features</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" data-id="clv3quf900002fcuk66mjh6sg" data-title="" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
       
       
       
@@ -890,15 +868,15 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
       <ul>
         
           <li>
+            <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">深度学习入门</a>
+          </li>
+        
+          <li>
             <a href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/">机器学习中级</a>
           </li>
         
           <li>
             <a href="/2024/04/17/Pandas%E5%85%A5%E9%97%A8/">Pandas入门</a>
-          </li>
-        
-          <li>
-            <a href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">(no title)</a>
           </li>
         
           <li>
