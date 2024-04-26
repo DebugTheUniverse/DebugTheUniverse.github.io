@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>计算机视觉入门 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="卷积网络图像分类器一个卷积神经网络通常包含了base和head两个部分。base是用于提取特征，head用于对特征进行分类（就与机器学习里面的一样）。 读取数据123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263# I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机视觉入门">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="卷积网络图像分类器一个卷积神经网络通常包含了base和head两个部分。base是用于提取特征，head用于对特征进行分类（就与机器学习里面的一样）。 读取数据123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263# I">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-04-20T01:07:41.765Z">
+<meta property="article:modified_time" content="2024-04-20T08:36:33.988Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-计算机视觉入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-04-20T01:07:41.765Z" itemprop="datePublished">2024-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      计算机视觉入门
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="卷积网络图像分类器"><a href="#卷积网络图像分类器" class="headerlink" title="卷积网络图像分类器"></a>卷积网络图像分类器</h3><p>一个卷积神经网络通常包含了base和head两个部分。base是用于提取特征，head用于对特征进行分类（就与机器学习里面的一样）。</p>
+<h4 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Imports</span></span><br><span class="line"><span class="keyword">import</span> os, warnings</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> gridspec</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.preprocessing <span class="keyword">import</span> image_dataset_from_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Reproducability</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">set_seed</span>(<span class="params">seed=<span class="number">31415</span></span>):</span><br><span class="line">    np.random.seed(seed)</span><br><span class="line">    tf.random.set_seed(seed)</span><br><span class="line">    os.environ[<span class="string">&#x27;PYTHONHASHSEED&#x27;</span>] = <span class="built_in">str</span>(seed)</span><br><span class="line">    os.environ[<span class="string">&#x27;TF_DETERMINISTIC_OPS&#x27;</span>] = <span class="string">&#x27;1&#x27;</span></span><br><span class="line">set_seed(<span class="number">31415</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set Matplotlib defaults</span></span><br><span class="line">plt.rc(<span class="string">&#x27;figure&#x27;</span>, autolayout=<span class="literal">True</span>)</span><br><span class="line">plt.rc(<span class="string">&#x27;axes&#x27;</span>, labelweight=<span class="string">&#x27;bold&#x27;</span>, labelsize=<span class="string">&#x27;large&#x27;</span>,</span><br><span class="line">       titleweight=<span class="string">&#x27;bold&#x27;</span>, titlesize=<span class="number">18</span>, titlepad=<span class="number">10</span>)</span><br><span class="line">plt.rc(<span class="string">&#x27;image&#x27;</span>, cmap=<span class="string">&#x27;magma&#x27;</span>)</span><br><span class="line">warnings.filterwarnings(<span class="string">&quot;ignore&quot;</span>) <span class="comment"># to clean up output cells</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load training and validation sets</span></span><br><span class="line">ds_train_ = image_dataset_from_directory(</span><br><span class="line">    <span class="string">&#x27;../input/car-or-truck/train&#x27;</span>,</span><br><span class="line">    labels=<span class="string">&#x27;inferred&#x27;</span>,</span><br><span class="line">    label_mode=<span class="string">&#x27;binary&#x27;</span>,</span><br><span class="line">    image_size=[<span class="number">128</span>, <span class="number">128</span>],</span><br><span class="line">    interpolation=<span class="string">&#x27;nearest&#x27;</span>,</span><br><span class="line">    batch_size=<span class="number">64</span>,</span><br><span class="line">    shuffle=<span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line">ds_valid_ = image_dataset_from_directory(</span><br><span class="line">    <span class="string">&#x27;../input/car-or-truck/valid&#x27;</span>,</span><br><span class="line">    labels=<span class="string">&#x27;inferred&#x27;</span>,</span><br><span class="line">    label_mode=<span class="string">&#x27;binary&#x27;</span>,</span><br><span class="line">    image_size=[<span class="number">128</span>, <span class="number">128</span>],</span><br><span class="line">    interpolation=<span class="string">&#x27;nearest&#x27;</span>,</span><br><span class="line">    batch_size=<span class="number">64</span>,</span><br><span class="line">    shuffle=<span class="literal">False</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Data Pipeline</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">convert_to_float</span>(<span class="params">image, label</span>):</span><br><span class="line">    image = tf.image.convert_image_dtype(image, dtype=tf.float32)</span><br><span class="line">    <span class="keyword">return</span> image, label</span><br><span class="line"></span><br><span class="line">AUTOTUNE = tf.data.experimental.AUTOTUNE</span><br><span class="line">ds_train = (</span><br><span class="line">    ds_train_</span><br><span class="line">    .<span class="built_in">map</span>(convert_to_float)</span><br><span class="line">    .cache()</span><br><span class="line">    .prefetch(buffer_size=AUTOTUNE)</span><br><span class="line">)</span><br><span class="line">ds_valid = (</span><br><span class="line">    ds_valid_</span><br><span class="line">    .<span class="built_in">map</span>(convert_to_float)</span><br><span class="line">    .cache()</span><br><span class="line">    .prefetch(buffer_size=AUTOTUNE)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="读取预训练base"><a href="#读取预训练base" class="headerlink" title="读取预训练base"></a>读取预训练base</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pretrained_base = tf.keras.models.load_model(</span><br><span class="line">    <span class="string">&#x27;../input/cv-course-models/cv-course-models/vgg16-pretrained-base&#x27;</span>,</span><br><span class="line">)</span><br><span class="line">pretrained_base.trainable = <span class="literal">False</span> <span class="comment"># 直接使用在大规模数据训练好的head也叫Transfer Learning，不在小规模数据中改动</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="接上head后训练"><a href="#接上head后训练" class="headerlink" title="接上head后训练"></a>接上head后训练</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    pretrained_base,</span><br><span class="line">    layers.Flatten(),</span><br><span class="line">    layers.Dense(<span class="number">6</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>, activation=<span class="string">&#x27;sigmoid&#x27;</span>),</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[<span class="string">&#x27;binary_accuracy&#x27;</span>],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">history = model.fit(</span><br><span class="line">    ds_train,</span><br><span class="line">    validation_data=ds_valid,</span><br><span class="line">    epochs=<span class="number">30</span>,</span><br><span class="line">    verbose=<span class="number">0</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">history_frame = pd.DataFrame(history.history)</span><br><span class="line">history_frame.loc[:, [<span class="string">&#x27;loss&#x27;</span>, <span class="string">&#x27;val_loss&#x27;</span>]].plot()</span><br><span class="line">history_frame.loc[:, [<span class="string">&#x27;binary_accuracy&#x27;</span>, <span class="string">&#x27;val_binary_accuracy&#x27;</span>]].plot()</span><br></pre></td></tr></table></figure>
+
+<h4 id="filter-detect-condense"><a href="#filter-detect-condense" class="headerlink" title="filter detect condense"></a>filter detect condense</h4><p>在head中，使用filters对input图像进行过滤，然后使用relu实现detect效果，再用maxpooling实现condense<br>先relu后maxpooling就有intensifying的效果</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Conv2D(filters=<span class="number">64</span>, kernel_size=<span class="number">3</span>), <span class="comment"># activation is None</span></span><br><span class="line">    layers.MaxPool2D(pool_size=<span class="number">2</span>),</span><br><span class="line">    <span class="comment"># More layers follow</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<h4 id="Maxpooling-具有平移不变性"><a href="#Maxpooling-具有平移不变性" class="headerlink" title="Maxpooling 具有平移不变性"></a>Maxpooling 具有平移不变性</h4><p>原理是将shape以内的最大数据作为shape的新数据，因此对于最大值所在的位置是不在乎的，因此位置不敏感了</p>
+<h4 id="关于滑动窗口"><a href="#关于滑动窗口" class="headerlink" title="关于滑动窗口"></a>关于滑动窗口</h4><p>特征提取过程有：1. 使用conv层filter；2. 使用relu层detect；3. 使用maximum pooling来condense<br>其中，conv和maximum的操作都是按照滑动窗口来实现的。<br>滑动窗口大小由<code>kernel_size</code>给定，每次滑动距离由<code>strides</code>给定，使用何种类型边缘处理由<code>padding</code>给定。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Conv2D(filters=<span class="number">64</span>,</span><br><span class="line">                  kernel_size=<span class="number">3</span>,</span><br><span class="line">                  strides=<span class="number">1</span>,</span><br><span class="line">                  padding=<span class="string">&#x27;same&#x27;</span>,</span><br><span class="line">                  activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.MaxPool2D(pool_size=<span class="number">2</span>,</span><br><span class="line">                     strides=<span class="number">1</span>,</span><br><span class="line">                     padding=<span class="string">&#x27;same&#x27;</span>)</span><br><span class="line">    <span class="comment"># More layers follow</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<p>为了获得更多的特征用于分类，conv的strides一般是（1，1）。而maximum pooling的strides通常为（2，2），（3，3）而不超过窗口本身。</p>
+<p>边界处理使用<code>padding=&#39;valid&#39;</code>会让conv完全在图内部运行，会导致输出尺寸缩小。使用<code>padding=&#39;same&#39;</code>会在输入图像周围加上几圈0，使得输出尺寸不变。</p>
+<h4 id="感受野-receptive-field"><a href="#感受野-receptive-field" class="headerlink" title="感受野 receptive field"></a>感受野 receptive field</h4><p>多层conv和maximum pooling后的一个unit对应input的区域</p>
+<h3 id="数据扩增-Data-Augmentation"><a href="#数据扩增-Data-Augmentation" class="headerlink" title="数据扩增 Data Augmentation"></a>数据扩增 Data Augmentation</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"><span class="comment"># these are a new feature in TF 2.2</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.layers.experimental <span class="keyword">import</span> preprocessing</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pretrained_base = tf.keras.models.load_model(</span><br><span class="line">    <span class="string">&#x27;../input/cv-course-models/cv-course-models/vgg16-pretrained-base&#x27;</span>,</span><br><span class="line">)</span><br><span class="line">pretrained_base.trainable = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    <span class="comment"># Preprocessing</span></span><br><span class="line">    preprocessing.RandomFlip(<span class="string">&#x27;horizontal&#x27;</span>), <span class="comment"># flip left-to-right</span></span><br><span class="line">    preprocessing.RandomContrast(<span class="number">0.5</span>), <span class="comment"># contrast change by up to 50%</span></span><br><span class="line">    <span class="comment"># Base</span></span><br><span class="line">    pretrained_base,</span><br><span class="line">    <span class="comment"># Head</span></span><br><span class="line">    layers.Flatten(),</span><br><span class="line">    layers.Dense(<span class="number">6</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>, activation=<span class="string">&#x27;sigmoid&#x27;</span>),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/" data-id="clvg47z9x000220uk6dm887i1" data-title="计算机视觉入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          目标识别
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">深度学习入门</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/04/24/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8BDatasets%E6%A0%BC%E5%BC%8F/">目标检测Datasets格式</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5/">计算机视觉常用概念</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/">目标识别</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/">计算机视觉入门</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">深度学习入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

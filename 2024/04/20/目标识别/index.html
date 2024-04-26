@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>目标识别 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Deep Residual Learning for Image RecognitionKaiming He大神2015发表 Abstract越深的model越难训练。而大神的方法可以比以前网络更深（152层）的同时还易于optimize。 Introduction深度学习刚开始认为model层数越多越好，然后发现到一定程度增加层数会有退化degradation的效果，所谓梯度消失&#x2F;爆炸">
+<meta property="og:type" content="article">
+<meta property="og:title" content="目标识别">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="Deep Residual Learning for Image RecognitionKaiming He大神2015发表 Abstract越深的model越难训练。而大神的方法可以比以前网络更深（152层）的同时还易于optimize。 Introduction深度学习刚开始认为model层数越多越好，然后发现到一定程度增加层数会有退化degradation的效果，所谓梯度消失&#x2F;爆炸">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-04-20T09:13:48.789Z">
+<meta property="article:modified_time" content="2024-04-24T00:40:30.548Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-目标识别" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/" class="article-date">
+  <time class="dt-published" datetime="2024-04-20T09:13:48.789Z" itemprop="datePublished">2024-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      目标识别
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="Deep-Residual-Learning-for-Image-Recognition"><a href="#Deep-Residual-Learning-for-Image-Recognition" class="headerlink" title="Deep Residual Learning for Image Recognition"></a>Deep Residual Learning for Image Recognition</h3><p>Kaiming He大神2015发表</p>
+<h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>越深的model越难训练。而大神的方法可以比以前网络更深（152层）的同时还易于optimize。</p>
+<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>深度学习刚开始认为model层数越多越好，然后发现到一定程度增加层数会有退化degradation的效果，所谓梯度消失&#x2F;爆炸问题。<br>所以这里提出的方法是F(x)+x，在网络中就相当于增加可以跨越一层或者多层的捷径，关键是这操作还不需要增加模型参数和计算复杂度。<br>摆试验结论：对照组层数增加误差增加，而resnet轻松享受增加层数带来的好处</p>
+<h4 id="试验结果"><a href="#试验结果" class="headerlink" title="试验结果"></a>试验结果</h4><p>单模型resnet152的top-5 error达到了4.49%，6个不同深度的模型组合达到了 3.57%<br>普通网络18层精度比34层高。而resnet18比普通18收敛快。<br>resnet1202比resnet101差，可能是因为参数相对于数据集太大导致。</p>
+<h3 id="PVANet-Lightweight-Deep-Neural-Networks-for-Real-time-Object-Detection"><a href="#PVANet-Lightweight-Deep-Neural-Networks-for-Real-time-Object-Detection" class="headerlink" title="PVANet : Lightweight Deep Neural Networks for Real-time Object Detection"></a>PVANet : Lightweight Deep Neural Networks for Real-time Object Detection</h3><p>Sanghoon Hong 2016发表</p>
+<h4 id="Abstract-1"><a href="#Abstract-1" class="headerlink" title="Abstract"></a>Abstract</h4><p>减少计算量的情况下提高多类别分类任务精度，使用less channels with more layers。结果是voc2007的mAP达83.8%，voc2012达82.5%（第二）。计算量是resnet101的12.3%。</p>
+<h3 id="Rich-feature-hierarchies-for-accurate-object-detection-and-semantic-segmentation-RCNN"><a href="#Rich-feature-hierarchies-for-accurate-object-detection-and-semantic-segmentation-RCNN" class="headerlink" title="Rich feature hierarchies for accurate object detection and semantic segmentation (RCNN)"></a>Rich feature hierarchies for accurate object detection and semantic segmentation (RCNN)</h3><p>Ross Girshick 2014发表</p>
+<h4 id="Abstract-2"><a href="#Abstract-2" class="headerlink" title="Abstract"></a>Abstract</h4><p>提出方法比先前的组合模型在VOC2012提高mAP约30%，达到53.3%。</p>
+<h4 id="Introduction-1"><a href="#Introduction-1" class="headerlink" title="Introduction"></a>Introduction</h4><p>关注如何用一个深层模型来定位目标，仅使用少量标注检测数据训练一个高容量的模型<br>定位此前滑动窗口被用了近20年，最佳模型OverFeat在ILSVRC2013的mAP是24.3%，而rcnn达到了31.4%。<br>有监督的预训练加上特定领域的微调。</p>
+<ol>
+<li>输入图片</li>
+<li>提取约2000个与类别无关的proposals</li>
+<li>使用一个大CNN模型提取每个proposal的特征</li>
+<li>使用特定类别的SVM对proposals进行分类</li>
+</ol>
+<h4 id="bbox-regression"><a href="#bbox-regression" class="headerlink" title="bbox regression"></a>bbox regression</h4><p>将预测的bbox P与gt的bbox G之间做一个映射<br>G_x &#x3D; P_w * d_x(P) + P_x<br>G_y &#x3D; P_h * d_y(P) + P_y<br>G_w &#x3D; P_w * exp(d_w(P))<br>G_h &#x3D; P_h * exp(d_h(P))</p>
+<p>第pool5特征的线性函数<br>d_#(P) &#x3D; w_#^T * phi_5(P)  其中#表示x,y,w,h</p>
+<p>用ridge regression学习w_#，而其target<br>t_x &#x3D; (G_x - P_x)&#x2F;P_w<br>t_y &#x3D; (G_y - P_y)&#x2F;P_h<br>t_w &#x3D; log(G_w&#x2F;P_w)<br>t_h &#x3D; log(G_h&#x2F;P_h)</p>
+<p>只对与gt的IoU高于0.6的P进行学习，其他的丢弃</p>
+<h3 id="Spatial-Pyramid-Pooling-in-Deep-Convolutional-Networks-for-Visual-Recognition"><a href="#Spatial-Pyramid-Pooling-in-Deep-Convolutional-Networks-for-Visual-Recognition" class="headerlink" title="Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition"></a>Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition</h3><p>Kaiming He 2014发布<br>SPP-net可以确保输出的尺寸不变，不管输入图片的尺寸。这个方法只计算一次特征图，然后对随机区域pool到固定长度的representation，然后训练detector。<br>实现比RCNN快24-102倍情况下效果还略好。<br>对特征图分别进行全部pool得1个256维的向量，再分4块pool得4个256维向量，再分16块pool得到16个256维向量，把这些向量组合起来，得到21*256维的向量（固定长度），再接全连接层。</p>
+<h3 id="Fast-R-CNN-Ross-Girshick"><a href="#Fast-R-CNN-Ross-Girshick" class="headerlink" title="Fast R-CNN Ross Girshick"></a>Fast R-CNN Ross Girshick</h3><p>训练VGG比R-CNN快9倍，测试快213倍，精度还要高些。比SPPnet训练3倍，测试快10倍，精度也高些。<br>一个模型直接包括定位和识别。<br>RCNN慢是因为每次都需要重新计算特征图，而SPPnet一次计算特征图有共享的效果所以快。这两种方法也都是需要分步操作的。</p>
+<ol>
+<li>输入图像和多个roi到全卷积网络FCN，输入的ROI被prejecting到特征图上面的roi。</li>
+<li>对特征图roi进行pool到固定尺寸，再使用全连接层FCs变成特征</li>
+<li>每个特征roi都最终连了两个输出：softmax probabilities、per-class bbox regression offsets</li>
+<li>使用多任务loss进行end-to-end 训练。</li>
+</ol>
+<p>Truncated SVD减少推理时间30%。</p>
+<h3 id="Faster-R-CNN-Towards-Real-Time-Object-Detection-with-Region-Proposal-Networks"><a href="#Faster-R-CNN-Towards-Real-Time-Object-Detection-with-Region-Proposal-Networks" class="headerlink" title="Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks"></a>Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks</h3><p>Shaoqing Ren 2015<br>提出RPN网络，将全卷积的特征与检测分享，同时给出目标位置和类别分数，达到接近零cost的proposal。拿下ILSVRC and COCO的2015第一名。</p>
+<p>在共享的特征图的最后一层上，用一个nxn的窗口进行滑动（3x3感受野约171ZF和228VGG）,nxn进行卷积引出两个分支cls和reg，每个窗口设定了最大proposal数量k，因此cls为是目标或不是目标2个因此是2k个，而reg就是4k个了</p>
+<h3 id="You-Only-Look-Once-Unified-Real-Time-Object-Detection"><a href="#You-Only-Look-Once-Unified-Real-Time-Object-Detection" class="headerlink" title="You Only Look Once: Unified, Real-Time Object Detection"></a>You Only Look Once: Unified, Real-Time Object Detection</h3><p>Joseph Redmon 2015<br>将目标检测问题构建为regression用以获得分离的边界框类别概率。极快。相较于其他方法的定位精度稍逊，但不太可能误判背景。</p>
+<ol>
+<li>resize输入到448x448</li>
+<li>运行cnn</li>
+<li>根据模型的confidence对检测结果进行阈值处理</li>
+</ol>
+<p>YOLO看全局信息，比fast rcnn少一半的背景误差。</p>
+<p>将输入图片划分为SxS的grid，每个grid预测B个bbox和C个概率，因此编成S * S * (B<em>5 + C)的预测<br>每个bbox后面附赠一个有目标的confidence，因此是B</em>5<br>类别数量C</p>
+<p>YOLO的泛化性能强。即只在VOC2007训练，然后在Picasso dataset和people-art dataset做测试，比R-CNN强（而R-CNN在VOC2007的mAP最高）</p>
+<h3 id="Inside-Outside-Net-Detecting-Objects-in-Context-with-Skip-Pooling-and-Recurrent-Neural-Networks"><a href="#Inside-Outside-Net-Detecting-Objects-in-Context-with-Skip-Pooling-and-Recurrent-Neural-Networks" class="headerlink" title="Inside-Outside Net: Detecting Objects in Context with Skip Pooling and Recurrent Neural Networks"></a>Inside-Outside Net: Detecting Objects in Context with Skip Pooling and Recurrent Neural Networks</h3><p>Sean Bell 2015<br>PASCAL VOC 2012的mAP达到76.4%，在MS COCO dataset，mAP有33.1%<br>将roi外部的contextual信息用RNNs考虑进来，其余部分有点像SPPnet的操作+RCNN的detection</p>
+<h3 id="R-FCN-Object-Detection-via-Region-based-Fully-Convolutional-Networks"><a href="#R-FCN-Object-Detection-via-Region-based-Fully-Convolutional-Networks" class="headerlink" title="R-FCN: Object Detection via Region-based Fully Convolutional Networks"></a>R-FCN: Object Detection via Region-based Fully Convolutional Networks</h3><p>Jifeng Dai</p>
+<p>VOC2007的mAP达83.6%，比Faster R-CNN快2.5-40倍</p>
+<h3 id="SSD-Single-Shot-MultiBox-Detector"><a href="#SSD-Single-Shot-MultiBox-Detector" class="headerlink" title="SSD: Single Shot MultiBox Detector"></a>SSD: Single Shot MultiBox Detector</h3><p>Wei Liu</p>
+<p>voc2007达到mAP 72.1%，比Faster rcnn快<br>有8x8和4x4的特征图grid，在每一个位置有几个不同长宽比的默认框，将其与gt框重叠的为positive，其余作为negative，每个框有4个坐标和c个confidence</p>
+<h3 id="YOLO9000-YOLO-V2"><a href="#YOLO9000-YOLO-V2" class="headerlink" title="YOLO9000 (YOLO V2)"></a>YOLO9000 (YOLO V2)</h3><p>应用了BN，提高了输入resolution，不限定输入图像尺寸，等操作，better、faster、stronger</p>
+<h3 id="YOLOv3"><a href="#YOLOv3" class="headerlink" title="YOLOv3"></a>YOLOv3</h3><p>借鉴Resnet设计的darknet53，提高了小目标检测能力；增加了多尺度特征融合，即下采样和上采样融合。将softmax改为logistic支持多标签。<br>YOLO原作者因为技术被用作军事和隐私而退出。</p>
+<h3 id="YOLOv4"><a href="#YOLOv4" class="headerlink" title="YOLOv4"></a>YOLOv4</h3><p>ultralytics 增加了一些功能，权序列连接 (WRC)、跨阶段部分连接 (CSP)、交叉迷你批归一化 (CmBN)、自对抗训练 (SAT)、误激活、马赛克数据增强、DropBlock 正则化和 CIoU 损失</p>
+<h3 id="YOLOv5"><a href="#YOLOv5" class="headerlink" title="YOLOv5"></a>YOLOv5</h3><p>ultralytics 无锚点分割Ultralytics Head，优化准确性与速度之间的权衡，多种预训练模型</p>
+<h3 id="YOLOv6"><a href="#YOLOv6" class="headerlink" title="YOLOv6"></a>YOLOv6</h3><p>美团<br>双向串行 (BiC) 模块：YOLOv6 在探测器的颈部引入了双向并联（BiC）模块，可增强定位信号并提高性能，而速度降低可忽略不计。<br>锚点辅助训练（AAT）策略：该模型提出的 AAT 可同时享受基于锚和无锚范式的优势，而不会降低推理效率。<br>增强型骨干和颈部设计：通过深化 YOLOv6，在骨干和颈部加入另一个阶段，该模型在高分辨率输入的 COCO 数据集上实现了最先进的性能。<br>自蒸馏策略：为了提高 YOLOv6 较小模型的性能，我们采用了一种新的自蒸馏策略，在训练过程中增强辅助回归分支，在推理过程中去除辅助回归分支，以避免速度明显下降。</p>
+<h3 id="YOLOv7-Trainable-bag-of-freebies-sets-new-state-of-the-art-for-real-time-object-detectors"><a href="#YOLOv7-Trainable-bag-of-freebies-sets-new-state-of-the-art-for-real-time-object-detectors" class="headerlink" title="YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors"></a>YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors</h3><p>Chien-Yao Wang 2022<br>模型重新参数化：YOLOv7 提出了一种有计划的重新参数化模型，这是一种适用于不同网络层的策略，具有梯度传播路径的概念。</p>
+<p>动态标签分配：多输出层模型的训练提出了一个新问题：”如何为不同分支的输出分配动态目标？为了解决这个问题，YOLOv7 引入了一种新的标签分配方法，即从粗到细的引导标签分配法。</p>
+<p>扩展和复合缩放YOLOv7 为实时对象检测器提出了 “扩展 “和 “复合缩放 “方法，可有效利用参数和计算。</p>
+<p>效率：YOLOv7 提出的方法能有效减少最先进的实时物体检测器约 40% 的参数和 50% 的计算量，推理速度更快，检测精度更高。</p>
+<h3 id="YOLOv8"><a href="#YOLOv8" class="headerlink" title="YOLOv8"></a>YOLOv8</h3><p>Ultralytics<br>先进的骨干和颈部架构： YOLOv8 采用了最先进的骨干和颈部架构，从而提高了特征提取和物体检测性能。<br>无锚分裂Ultralytics 头： YOLOv8 采用无锚分裂Ultralytics 头，与基于锚的方法相比，它有助于提高检测过程的准确性和效率。<br>优化精度与速度之间的权衡： YOLOv8 专注于保持精度与速度之间的最佳平衡，适用于各种应用领域的实时目标检测任务。<br>各种预训练模型： YOLOv8 提供一系列预训练模型，以满足各种任务和性能要求，从而更容易为您的特定用例找到合适的模型。</p>
+<h3 id="YOLOv9"><a href="#YOLOv9" class="headerlink" title="YOLOv9"></a>YOLOv9</h3><p>YOLOv9 在其架构中加入了可逆函数，以降低信息退化的风险<br>PGI 是 YOLOv9 为解决信息瓶颈问题而引入的一个新概念，可确保在深层网络中保留重要数据。这样就能生成可靠的梯度，促进模型的准确更新，提高整体检测性能。<br>GELAN 是一项战略性的架构进步，使 YOLOv9 能够实现更高的参数利用率和计算效率。<br>YOLOv9c 模型尤其凸显了架构优化的有效性。与 YOLOv7 AF 相比，它的运行参数减少了 42%，计算需求减少了 21%，但精度却不相上下，这表明 YOLOv9 的效率有了显著提高。此外，YOLOv9e 模型还为大型模型设立了新标准，其参数比 YOLOv7 AF 少 15%，计算需求比 YOLOv7 AF 少 25%。 YOLOv8x相比，参数减少了 15%，计算需求减少了 25%，同时 AP 增量提高了 1.7%。<br>这些结果展示了 YOLOv9 在模型设计方面的战略性进步，强调了它在提高效率的同时并没有降低实时物体检测任务所必需的精度。该模型不仅突破了性能指标的界限，而且强调了计算效率的重要性，使其成为计算机视觉领域的一项关键性发展。</p>
+<h3 id="Segment-Anything"><a href="#Segment-Anything" class="headerlink" title="Segment Anything"></a>Segment Anything</h3><p>Alexander Kirillov 2023<br>在大语言模型中网络级别的大数据训练可以让NLP模型泛化到未见数据。这种容量与prompt engineering常在一起使用。cv目前缺少大量的数据。<br>提出SA-1B分割数据集，比现有任何都大400倍以上</p>
+<p>自动标注是SAM 的一项重要功能，允许用户使用预先训练好的检测模型生成分割数据集。这一功能可以快速、准确地标注大量图像，避免了耗时的人工标注。</p>
+<h3 id="RT-DTER"><a href="#RT-DTER" class="headerlink" title="RT-DTER"></a>RT-DTER</h3><p>百度 2023<br>极快，效果好的一个detection model</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/" data-id="clvg47z9s000020ukftzs6qae" data-title="目标识别" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/04/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          计算机视觉常用概念
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">计算机视觉入门</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/04/24/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8BDatasets%E6%A0%BC%E5%BC%8F/">目标检测Datasets格式</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5/">计算机视觉常用概念</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/">目标识别</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/">计算机视觉入门</a>
+          </li>
+        
+          <li>
+            <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">深度学习入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
