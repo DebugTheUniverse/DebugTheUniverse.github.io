@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Python 赋值引用、拷贝 | 黄河水澄的技术专栏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="参考文章link 变量和对象之间的关系为引用1 第一次赋值时，即创建，之后 再次赋值 将会 改变 变量的值。2 变量名本身是没有类型的，类型只存在对象中，变量只是引用了对象。3 所有的变量，必须 在使用前 赋值，使用未赋值的变量会产生错误。 Python对象三要素：Id，Type，ValueId：唯一标识一个对象Type：标识对象的类型Value：对象的值&#x3D;&#x3D; 指值相等。is">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 赋值引用、拷贝">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/index.html">
+<meta property="og:site_name" content="黄河水澄的技术专栏">
+<meta property="og:description" content="参考文章link 变量和对象之间的关系为引用1 第一次赋值时，即创建，之后 再次赋值 将会 改变 变量的值。2 变量名本身是没有类型的，类型只存在对象中，变量只是引用了对象。3 所有的变量，必须 在使用前 赋值，使用未赋值的变量会产生错误。 Python对象三要素：Id，Type，ValueId：唯一标识一个对象Type：标识对象的类型Value：对象的值&#x3D;&#x3D; 指值相等。is">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-05-06T14:59:58.961Z">
+<meta property="article:modified_time" content="2024-05-06T15:18:00.578Z">
+<meta property="article:author" content="Jim Huang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="黄河水澄的技术专栏" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">黄河水澄的技术专栏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">分享有用的知识</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Python 赋值引用、拷贝" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/" class="article-date">
+  <time class="dt-published" datetime="2024-05-06T14:59:58.961Z" itemprop="datePublished">2024-05-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Python 赋值引用、拷贝
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>参考文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265179766">link</a></p>
+<h4 id="变量和对象之间的关系为引用"><a href="#变量和对象之间的关系为引用" class="headerlink" title="变量和对象之间的关系为引用"></a>变量和对象之间的关系为引用</h4><p>1 第一次赋值时，即创建，之后 再次赋值 将会 改变 变量的值。<br>2 变量名本身是没有类型的，类型只存在对象中，变量只是引用了对象。<br>3 所有的变量，必须 在使用前 赋值，使用未赋值的变量会产生错误。</p>
+<h4 id="Python对象三要素：Id，Type，Value"><a href="#Python对象三要素：Id，Type，Value" class="headerlink" title="Python对象三要素：Id，Type，Value"></a>Python对象三要素：Id，Type，Value</h4><p>Id：唯一标识一个对象<br>Type：标识对象的类型<br>Value：对象的值<br>&#x3D;&#x3D; 指值相等。<br>is 指地址相等，即指引用相等。</p>
+<p>变量是一个系统表的元素，拥有指向对象的连接的空间。<br>对象是分配的一块内存，有足够的空间去表示它们所代表的值。<br>引用是自动形成的从变量到对象的指针。</p>
+<h4 id="python里面复制对象时因对象而异，如list"><a href="#python里面复制对象时因对象而异，如list" class="headerlink" title="python里面复制对象时因对象而异，如list"></a>python里面复制对象时因对象而异，如list</h4><p>values[:] 复制操作是所谓的「浅复制」(shallow copy)<br>存在问题:当被复制的list里有引用元素时，浅复制后的list中还是会共享改引用，导致相互干扰</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">0</span>, [<span class="number">1</span>, <span class="number">2</span>], <span class="number">3</span>]</span><br><span class="line">b = a[:]</span><br><span class="line">a[<span class="number">0</span>] = <span class="number">8</span></span><br><span class="line">a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">9</span></span><br><span class="line"><span class="comment">#a 为 [8, [1, 9], 3]，</span></span><br><span class="line"><span class="comment">#b 为 [0, [1, 9], 3]。</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="正确复制嵌套元素是进行“深复制”（deep-copy）"><a href="#正确复制嵌套元素是进行“深复制”（deep-copy）" class="headerlink" title="正确复制嵌套元素是进行“深复制”（deep copy）"></a>正确复制嵌套元素是进行“深复制”（deep copy）</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> copy</span><br><span class="line"> </span><br><span class="line">a = [<span class="number">0</span>, [<span class="number">1</span>, <span class="number">2</span>], <span class="number">3</span>]</span><br><span class="line">b = copy.deepcopy(a)</span><br><span class="line">a[<span class="number">0</span>] = <span class="number">8</span></span><br><span class="line">a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">9</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="引用和拷贝"><a href="#引用和拷贝" class="headerlink" title="引用和拷贝"></a>引用和拷贝</h4><p>没有限制条件的分片表达式（L[:]）能够复制序列，但此法只能浅层复制。</p>
+<p>字典 copy 方法，D.copy() 能够复制字典，但此法只能浅层复制。</p>
+<p>有些内置函数，例如 list，能够生成拷贝 list(L)。</p>
+<p>copy 标准库模块能够生成完整拷贝：deepcopy 本质上是递归 copy。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/" data-id="cm04p1s1j0003nguk0apw28wm" data-title="Python 赋值引用、拷贝" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          配置Qt与OpenCV
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/05/04/C++%E5%9F%BA%E7%A1%80/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">C++ 基础</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/05/">May 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/08/22/Kalman%E6%BB%A4%E6%B3%A2/">Kalman滤波</a>
+          </li>
+        
+          <li>
+            <a href="/2024/05/14/Python%20advanced/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/">配置Qt与OpenCV</a>
+          </li>
+        
+          <li>
+            <a href="/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/">Python 赋值引用、拷贝</a>
+          </li>
+        
+          <li>
+            <a href="/2024/05/04/C++%E5%9F%BA%E7%A1%80/">C++ 基础</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Jim Huang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

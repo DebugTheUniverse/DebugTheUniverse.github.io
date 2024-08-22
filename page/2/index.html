@@ -73,6 +73,343 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-机器学习中级" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/" class="article-date">
+  <time class="dt-published" datetime="2024-04-18T00:50:57.359Z" itemprop="datePublished">2024-04-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/">机器学习中级</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="解决丢失值"><a href="#解决丢失值" class="headerlink" title="解决丢失值"></a>解决丢失值</h3><h4 id="删除不完整列"><a href="#删除不完整列" class="headerlink" title="删除不完整列"></a>删除不完整列</h4><p>最简单直接，但是会浪费很多数据</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Get names of columns with missing values</span></span><br><span class="line">cols_with_missing = [col <span class="keyword">for</span> col <span class="keyword">in</span> X_train.columns</span><br><span class="line">                     <span class="keyword">if</span> X_train[col].isnull().<span class="built_in">any</span>()]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Drop columns in training and validation data</span></span><br><span class="line">reduced_X_train = X_train.drop(cols_with_missing, axis=<span class="number">1</span>)</span><br><span class="line">reduced_X_valid = X_valid.drop(cols_with_missing, axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="插补"><a href="#插补" class="headerlink" title="插补"></a>插补</h4><p>在缺失处填上诸如列均值的方法，但要根据缺失项目的实际特征来决定是否应该这样做</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer</span><br><span class="line"></span><br><span class="line"><span class="comment"># Imputation</span></span><br><span class="line">my_imputer = SimpleImputer()</span><br><span class="line">imputed_X_train = pd.DataFrame(my_imputer.fit_transform(X_train))</span><br><span class="line">imputed_X_valid = pd.DataFrame(my_imputer.transform(X_valid))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Imputation removed column names; put them back</span></span><br><span class="line">imputed_X_train.columns = X_train.columns</span><br><span class="line">imputed_X_valid.columns = X_valid.columns</span><br></pre></td></tr></table></figure>
+<h4 id="插补-拓展"><a href="#插补-拓展" class="headerlink" title="插补-拓展"></a>插补-拓展</h4><p>补上新值，新增一列布尔值表示是否为插补值</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Make copy to avoid changing original data (when imputing)</span></span><br><span class="line">X_train_plus = X_train.copy()</span><br><span class="line">X_valid_plus = X_valid.copy()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Make new columns indicating what will be imputed</span></span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> cols_with_missing:</span><br><span class="line">    X_train_plus[col + <span class="string">&#x27;_was_missing&#x27;</span>] = X_train_plus[col].isnull()</span><br><span class="line">    X_valid_plus[col + <span class="string">&#x27;_was_missing&#x27;</span>] = X_valid_plus[col].isnull()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Imputation</span></span><br><span class="line">my_imputer = SimpleImputer()</span><br><span class="line">imputed_X_train_plus = pd.DataFrame(my_imputer.fit_transform(X_train_plus))</span><br><span class="line">imputed_X_valid_plus = pd.DataFrame(my_imputer.transform(X_valid_plus))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Imputation removed column names; put them back</span></span><br><span class="line">imputed_X_train_plus.columns = X_train_plus.columns</span><br><span class="line">imputed_X_valid_plus.columns = X_valid_plus.columns</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Categorical-分类数据"><a href="#Categorical-分类数据" class="headerlink" title="Categorical 分类数据"></a>Categorical 分类数据</h3><p>一个类别数据，例如问你有什么品牌的车，答“大众”、“丰田”、“奔驰”等</p>
+<h4 id="处理类别数据的3个方法"><a href="#处理类别数据的3个方法" class="headerlink" title="处理类别数据的3个方法"></a>处理类别数据的3个方法</h4><ol>
+<li><p>如果没有很重要数据，drop丢掉该变量</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Get list of categorical variables</span></span><br><span class="line">s = (X_train.dtypes == <span class="string">&#x27;object&#x27;</span>)</span><br><span class="line">object_cols = <span class="built_in">list</span>(s[s].index)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Categorical variables:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(object_cols)</span><br><span class="line"></span><br><span class="line">drop_X_train = X_train.select_dtypes(exclude=[<span class="string">&#x27;object&#x27;</span>])</span><br><span class="line">drop_X_valid = X_valid.select_dtypes(exclude=[<span class="string">&#x27;object&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;MAE from Approach 1 (Drop categorical variables):&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(score_dataset(drop_X_train, drop_X_valid, y_train, y_valid))</span><br></pre></td></tr></table></figure></li>
+<li><p>序数编码：为每一个类别制定数字，适用于强度指标如“强”、“中”、“弱”</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OrdinalEncoder</span><br><span class="line"></span><br><span class="line"><span class="comment"># Make copy to avoid changing original data </span></span><br><span class="line">label_X_train = X_train.copy()</span><br><span class="line">label_X_valid = X_valid.copy()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Apply ordinal encoder to each column with categorical data</span></span><br><span class="line">ordinal_encoder = OrdinalEncoder()</span><br><span class="line">label_X_train[object_cols] = ordinal_encoder.fit_transform(X_train[object_cols])</span><br><span class="line">label_X_valid[object_cols] = ordinal_encoder.transform(X_valid[object_cols])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;MAE from Approach 2 (Ordinal Encoding):&quot;</span>) </span><br><span class="line"><span class="built_in">print</span>(score_dataset(label_X_train, label_X_valid, y_train, y_valid))</span><br></pre></td></tr></table></figure>
+<p>使用序数编码时，如果训练数据中的变量与测试数据变量不一样，会出现问题因此需要避免</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Categorical columns in the training data</span></span><br><span class="line">object_cols = [col <span class="keyword">for</span> col <span class="keyword">in</span> X_train.columns <span class="keyword">if</span> X_train[col].dtype == <span class="string">&quot;object&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Columns that can be safely ordinal encoded</span></span><br><span class="line">good_label_cols = [col <span class="keyword">for</span> col <span class="keyword">in</span> object_cols <span class="keyword">if</span> </span><br><span class="line">                   <span class="built_in">set</span>(X_valid[col]).issubset(<span class="built_in">set</span>(X_train[col]))]</span><br><span class="line">        </span><br><span class="line"><span class="comment"># Problematic columns that will be dropped from the dataset</span></span><br><span class="line">bad_label_cols = <span class="built_in">list</span>(<span class="built_in">set</span>(object_cols)-<span class="built_in">set</span>(good_label_cols))</span><br><span class="line">        </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Categorical columns that will be ordinal encoded:&#x27;</span>, good_label_cols)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;\nCategorical columns that will be dropped from the dataset:&#x27;</span>, bad_label_cols)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>One-hot Encoding:创建类别数变量相同的变量，每行只有一个1，其他都是0，适用于无序类别，即名义变量nominal variables</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"></span><br><span class="line"><span class="comment"># Apply one-hot encoder to each column with categorical data</span></span><br><span class="line">OH_encoder = OneHotEncoder(handle_unknown=<span class="string">&#x27;ignore&#x27;</span>, sparse=<span class="literal">False</span>)</span><br><span class="line">OH_cols_train = pd.DataFrame(OH_encoder.fit_transform(X_train[object_cols]))</span><br><span class="line">OH_cols_valid = pd.DataFrame(OH_encoder.transform(X_valid[object_cols]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># One-hot encoding removed index; put it back</span></span><br><span class="line">OH_cols_train.index = X_train.index</span><br><span class="line">OH_cols_valid.index = X_valid.index</span><br><span class="line"></span><br><span class="line"><span class="comment"># Remove categorical columns (will replace with one-hot encoding)</span></span><br><span class="line">num_X_train = X_train.drop(object_cols, axis=<span class="number">1</span>)</span><br><span class="line">num_X_valid = X_valid.drop(object_cols, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add one-hot encoded columns to numerical features</span></span><br><span class="line">OH_X_train = pd.concat([num_X_train, OH_cols_train], axis=<span class="number">1</span>)</span><br><span class="line">OH_X_valid = pd.concat([num_X_valid, OH_cols_valid], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ensure all columns have string type</span></span><br><span class="line">OH_X_train.columns = OH_X_train.columns.astype(<span class="built_in">str</span>)</span><br><span class="line">OH_X_valid.columns = OH_X_valid.columns.astype(<span class="built_in">str</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;MAE from Approach 3 (One-Hot Encoding):&quot;</span>) </span><br><span class="line"><span class="built_in">print</span>(score_dataset(OH_X_train, OH_X_valid, y_train, y_valid))</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="Pipline-批处理"><a href="#Pipline-批处理" class="headerlink" title="Pipline 批处理"></a>Pipline 批处理</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line"><span class="comment"># Read the data</span></span><br><span class="line">X_full = pd.read_csv(<span class="string">&#x27;../input/train.csv&#x27;</span>, index_col=<span class="string">&#x27;Id&#x27;</span>)</span><br><span class="line">X_test_full = pd.read_csv(<span class="string">&#x27;../input/test.csv&#x27;</span>, index_col=<span class="string">&#x27;Id&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Remove rows with missing target, separate target from predictors</span></span><br><span class="line">X_full.dropna(axis=<span class="number">0</span>, subset=[<span class="string">&#x27;SalePrice&#x27;</span>], inplace=<span class="literal">True</span>)</span><br><span class="line">y = X_full.SalePrice</span><br><span class="line">X_full.drop([<span class="string">&#x27;SalePrice&#x27;</span>], axis=<span class="number">1</span>, inplace=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Break off validation set from training data</span></span><br><span class="line">X_train_full, X_valid_full, y_train, y_valid = train_test_split(X_full, y, </span><br><span class="line">                                                                train_size=<span class="number">0.8</span>, test_size=<span class="number">0.2</span>,</span><br><span class="line">                                                                random_state=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &quot;Cardinality&quot; means the number of unique values in a column</span></span><br><span class="line"><span class="comment"># Select categorical columns with relatively low cardinality (convenient but arbitrary)</span></span><br><span class="line">categorical_cols = [cname <span class="keyword">for</span> cname <span class="keyword">in</span> X_train_full.columns <span class="keyword">if</span></span><br><span class="line">                    X_train_full[cname].nunique() &lt; <span class="number">10</span> <span class="keyword">and</span> </span><br><span class="line">                    X_train_full[cname].dtype == <span class="string">&quot;object&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Select numerical columns</span></span><br><span class="line">numerical_cols = [cname <span class="keyword">for</span> cname <span class="keyword">in</span> X_train_full.columns <span class="keyword">if</span> </span><br><span class="line">                X_train_full[cname].dtype <span class="keyword">in</span> [<span class="string">&#x27;int64&#x27;</span>, <span class="string">&#x27;float64&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Keep selected columns only</span></span><br><span class="line">my_cols = categorical_cols + numerical_cols</span><br><span class="line">X_train = X_train_full[my_cols].copy()</span><br><span class="line">X_valid = X_valid_full[my_cols].copy()</span><br><span class="line">X_test = X_test_full[my_cols].copy()</span><br></pre></td></tr></table></figure>
+<p>看下面</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.compose <span class="keyword">import</span> ColumnTransformer</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_absolute_error</span><br><span class="line"></span><br><span class="line"><span class="comment"># Preprocessing for numerical data</span></span><br><span class="line">numerical_transformer = SimpleImputer(strategy=<span class="string">&#x27;constant&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Preprocessing for categorical data</span></span><br><span class="line">categorical_transformer = Pipeline(steps=[</span><br><span class="line">    (<span class="string">&#x27;imputer&#x27;</span>, SimpleImputer(strategy=<span class="string">&#x27;most_frequent&#x27;</span>)),</span><br><span class="line">    (<span class="string">&#x27;onehot&#x27;</span>, OneHotEncoder(handle_unknown=<span class="string">&#x27;ignore&#x27;</span>))</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Bundle preprocessing for numerical and categorical data</span></span><br><span class="line">preprocessor = ColumnTransformer(</span><br><span class="line">    transformers=[</span><br><span class="line">        (<span class="string">&#x27;num&#x27;</span>, numerical_transformer, numerical_cols),</span><br><span class="line">        (<span class="string">&#x27;cat&#x27;</span>, categorical_transformer, categorical_cols)</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define model</span></span><br><span class="line">model = RandomForestRegressor(n_estimators=<span class="number">100</span>, random_state=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Bundle preprocessing and modeling code in a pipeline</span></span><br><span class="line">clf = Pipeline(steps=[(<span class="string">&#x27;preprocessor&#x27;</span>, preprocessor),</span><br><span class="line">                      (<span class="string">&#x27;model&#x27;</span>, model)</span><br><span class="line">                     ])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Preprocessing of training data, fit model </span></span><br><span class="line">clf.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Preprocessing of validation data, get predictions</span></span><br><span class="line">preds = clf.predict(X_valid)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;MAE:&#x27;</span>, mean_absolute_error(y_valid, preds))</span><br></pre></td></tr></table></figure>
+
+<h3 id="data-leakage"><a href="#data-leakage" class="headerlink" title="data leakage"></a>data leakage</h3><p>data leakage是训练时包括目标的信息，在预测时却没有该项信息，从而在训练集和验证集表现很好，但是在实际应用或者测试集表现不好。<br>target leakage: 以目标值为因素进行变化的任何变量都应该舍弃,如判断是否感冒，就应该把吃感冒药这种变量舍去<br>Train-Test 污染：人会根据测试结果调整预处理方式</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/" data-id="clv54c5ys0000okuk5xithf5s" data-title="机器学习中级" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Pandas入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/17/Pandas%E5%85%A5%E9%97%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-04-17T04:06:34.879Z" itemprop="datePublished">2024-04-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/17/Pandas%E5%85%A5%E9%97%A8/">Pandas入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="导入库"><a href="#导入库" class="headerlink" title="导入库"></a>导入库</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<h4 id="创建数据"><a href="#创建数据" class="headerlink" title="创建数据"></a>创建数据</h4><p>在Pandas中有两种核心数据：<code>DataFrame</code>和<code>Series</code></p>
+<h4 id="创建DataFrame"><a href="#创建DataFrame" class="headerlink" title="创建DataFrame"></a>创建DataFrame</h4><p><code>DataFrame</code>是一个表格，包含多个独立条目的序列，每个条目下面是一列数据。每一行叫record</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Yes&#x27;</span>:[<span class="number">50</span>,<span class="number">21</span>], <span class="string">&#x27;No&#x27;</span>:[<span class="number">131</span>,<span class="number">2</span>]&#125;)</span><br><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Bob&#x27;</span>: [<span class="string">&#x27;I liked it.&#x27;</span>, <span class="string">&#x27;It was awful.&#x27;</span>], <span class="string">&#x27;Sue&#x27;</span>: [<span class="string">&#x27;Pretty good.&#x27;</span>, <span class="string">&#x27;Bland.&#x27;</span>]&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>行标被称为<code>Index</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;Bob&#x27;</span>: [<span class="string">&#x27;I liked it.&#x27;</span>, <span class="string">&#x27;It was awful.&#x27;</span>], </span><br><span class="line">              <span class="string">&#x27;Sue&#x27;</span>: [<span class="string">&#x27;Pretty good.&#x27;</span>, <span class="string">&#x27;Bland.&#x27;</span>]&#125;,</span><br><span class="line">             index=[<span class="string">&#x27;Product A&#x27;</span>, <span class="string">&#x27;Product B&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建Series"><a href="#创建Series" class="headerlink" title="创建Series"></a>创建Series</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.Series([<span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>], index=[<span class="string">&#x27;2015 Sales&#x27;</span>, <span class="string">&#x27;2016 Sales&#x27;</span>, <span class="string">&#x27;2017 Sales&#x27;</span>], name=<span class="string">&#x27;Product A&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews = pd.read_csv(<span class="string">&quot;filename.csv&quot;</span>)</span><br><span class="line">wine_reviews = pd.read_csv(<span class="string">&quot;filename.csv&quot;</span>,index_col=<span class="number">0</span>) <span class="comment"># 使用Excel文档中已有的index</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="观察数据"><a href="#观察数据" class="headerlink" title="观察数据"></a>观察数据</h4><p>看形状、看头看尾</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews.shape</span><br><span class="line">wine_reviews.head()</span><br><span class="line">wine_reviews.tail()</span><br></pre></td></tr></table></figure>
+
+<h4 id="保存数据"><a href="#保存数据" class="headerlink" title="保存数据"></a>保存数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wine_reviews.to_csv(<span class="string">&#x27;savefilename.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>基本索引方式</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.country</span><br><span class="line">reviews[<span class="string">&#x27;country&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>pandas中有<code>loc</code>和<code>iloc</code>方法，都是先行row后列column，与基本方式相反</p>
+<h4 id="基于index的索引"><a href="#基于index的索引" class="headerlink" title="基于index的索引"></a>基于index的索引</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.iloc[:, <span class="number">0</span>] <span class="comment"># 获取第一列</span></span><br><span class="line">reviews.iloc[-<span class="number">5</span>:] <span class="comment"># 最后5行</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="基于标签的索引"><a href="#基于标签的索引" class="headerlink" title="基于标签的索引"></a>基于标签的索引</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.loc[<span class="number">0</span>, <span class="string">&#x27;country&#x27;</span>] <span class="comment"># 获取第一行，country列的元素</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用<code>loc</code>索引0：10就是0,…,10<br>使用<code>iloc</code>索引0：10就是0,…,9</p>
+<h4 id="基于标签判断的缩影"><a href="#基于标签判断的缩影" class="headerlink" title="基于标签判断的缩影"></a>基于标签判断的缩影</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">italian_wines = reviews[reviews.country == <span class="string">&#x27;Italy&#x27;</span>]</span><br><span class="line">top_oceania_wines = reviews.loc[(reviews.country.isin([<span class="string">&#x27;Australia&#x27;</span>,<span class="string">&#x27;New Zealand&#x27;</span>])) &amp; (reviews.points&gt;=<span class="number">95</span>)]</span><br></pre></td></tr></table></figure>
+
+<h4 id="不重复元素"><a href="#不重复元素" class="headerlink" title="不重复元素"></a>不重复元素</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.country.unique()</span><br></pre></td></tr></table></figure>
+
+<h4 id="元素计数"><a href="#元素计数" class="headerlink" title="元素计数"></a>元素计数</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.country.value_count()</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用map"><a href="#使用map" class="headerlink" title="使用map()"></a>使用map()</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.points.<span class="built_in">map</span>(<span class="keyword">lambda</span> p: p - review_points_mean)</span><br></pre></td></tr></table></figure>
+<p>传给<code>map()</code>的function每次接收Series中的一个值，返回一个新的Series包含所有被function转换后的值</p>
+<p>同样的操作可以用<code>apply()</code>实现</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">remean_points</span>(<span class="params">row</span>):</span><br><span class="line">    row.points = row.points - review_points_mean</span><br><span class="line">    <span class="keyword">return</span> row</span><br><span class="line"></span><br><span class="line">reviews.apply(remean_points, axis=<span class="string">&#x27;columns&#x27;</span>) <span class="comment"># axis=index 时则应用函数到每列</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="idxmax"><a href="#idxmax" class="headerlink" title="idxmax()"></a>idxmax()</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bargain_idx = (reviews.points / reviews.price).idxmax()</span><br><span class="line">bargain_wine = reviews.loc[bargain_idx,<span class="string">&#x27;title&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h4 id="grouping-和-sorting"><a href="#grouping-和-sorting" class="headerlink" title="grouping 和 sorting"></a>grouping 和 sorting</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reviews.groupby(<span class="string">&#x27;points&#x27;</span>).points.count()</span><br><span class="line">reviews.groupby(<span class="string">&#x27;winery&#x27;</span>).apply(<span class="keyword">lambda</span> df: df.title.iloc[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p><code>agg()</code>函数可以实现同时运行多种函数</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.groupby([<span class="string">&#x27;country&#x27;</span>]).price.agg([<span class="built_in">len</span>, <span class="built_in">min</span>, <span class="built_in">max</span>])</span><br></pre></td></tr></table></figure>
+
+<h4 id="多索引"><a href="#多索引" class="headerlink" title="多索引"></a>多索引</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = reviews.groupby([<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;province&#x27;</span>]).description.agg([<span class="built_in">len</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="复原"><a href="#复原" class="headerlink" title="复原"></a>复原</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed.reset_index()</span><br></pre></td></tr></table></figure>
+
+<h4 id="Sorting"><a href="#Sorting" class="headerlink" title="Sorting"></a>Sorting</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">countries_reviewed = countries_reviewed.reset_index()</span><br><span class="line">countries_reviewed.sort_values(by=<span class="string">&#x27;len&#x27;</span>)  <span class="comment"># 默认ascending = True</span></span><br><span class="line"><span class="comment"># 使用index排序</span></span><br><span class="line">countries_reviewed.sort_index()</span><br><span class="line"><span class="comment"># 使用两个同时排序</span></span><br><span class="line">countries_reviewed.sort_values(by=[<span class="string">&#x27;country&#x27;</span>, <span class="string">&#x27;len&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+<h4 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews_written = reviews.groupby(<span class="string">&#x27;taster_twitter_handle&#x27;</span>).size()</span><br><span class="line"></span><br><span class="line">reviews_written = reviews.groupby(<span class="string">&#x27;taster_twitter_handle&#x27;</span>).taster_twitter_handle.count()</span><br></pre></td></tr></table></figure>
+
+<h4 id="数据类型和缺失值"><a href="#数据类型和缺失值" class="headerlink" title="数据类型和缺失值"></a>数据类型和缺失值</h4><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reviews.price.dtype</span><br><span class="line"><span class="comment"># 更改类型</span></span><br><span class="line">reviews.points.astype(<span class="string">&#x27;float64&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>丢失值<code>NaN</code>，类型是<code>float64</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews[pd.isnull(reviews.country)]</span><br></pre></td></tr></table></figure>
+
+<p>替换丢失值是常见操作，例如替换为<code>Unknown</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.region_2.fillna(<span class="string">&#x27;Unknown&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="替换正常值"><a href="#替换正常值" class="headerlink" title="替换正常值"></a>替换正常值</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.taster_twitter_handle.replace(<span class="string">&quot;@kerinokeefe&quot;</span>, <span class="string">&quot;@kerino&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="重命名"><a href="#重命名" class="headerlink" title="重命名"></a>重命名</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给column重命名</span></span><br><span class="line">reviews.rename(columns=&#123;<span class="string">&#x27;points&#x27;</span>: <span class="string">&#x27;score&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给index重命名</span></span><br><span class="line">reviews.rename(index=&#123;<span class="number">0</span>:<span class="string">&#x27;FirstEntry&#x27;</span>,<span class="number">1</span>:<span class="string">&#x27;SecondEntry&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="行和列都可以有自己的名字属性"><a href="#行和列都可以有自己的名字属性" class="headerlink" title="行和列都可以有自己的名字属性"></a>行和列都可以有自己的名字属性</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reviews.rename_axis(<span class="string">&quot;wines&quot;</span>, axis=<span class="string">&#x27;rows&#x27;</span>).rename_axis(<span class="string">&quot;fields&quot;</span>, axis=<span class="string">&#x27;columns&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="组合数据的三种方式"><a href="#组合数据的三种方式" class="headerlink" title="组合数据的三种方式"></a>组合数据的三种方式</h4><p><code>concat()</code>,<code>join()</code>,<code>merge()</code>，后者与join类似</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># concat() 组合具有相同column的数据</span></span><br><span class="line">canadian_youtube = pd.read_csv(<span class="string">&quot;../input/youtube-new/CAvideos.csv&quot;</span>)</span><br><span class="line">british_youtube = pd.read_csv(<span class="string">&quot;../input/youtube-new/GBvideos.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line">pd.concat([canadian_youtube, british_youtube])</span><br><span class="line"></span><br><span class="line"><span class="comment"># join() 组合具有相同index的数据</span></span><br><span class="line">left = canadian_youtube.set_index([<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;trending_date&#x27;</span>])</span><br><span class="line">right = british_youtube.set_index([<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;trending_date&#x27;</span>])</span><br><span class="line"></span><br><span class="line">left.join(right, lsuffix=<span class="string">&#x27;_CAN&#x27;</span>, rsuffix=<span class="string">&#x27;_UK&#x27;</span>) <span class="comment"># 后两个参数是后缀必须</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/17/Pandas%E5%85%A5%E9%97%A8/" data-id="clv3quf8y0001fcukb6ai7rzg" data-title="Pandas入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-机器学习入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-04-16T09:54:31.667Z" itemprop="datePublished">2024-04-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">机器学习入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="使用Pandas打开csv数据"><a href="#使用Pandas打开csv数据" class="headerlink" title="使用Pandas打开csv数据"></a>使用Pandas打开csv数据</h4><p>Pandas中数据是DataFrame，保存的数据类似一个Excel的sheet，或者SQL中的一个table</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment"># save filepath to variable for easier access</span></span><br><span class="line">melbourne_file_path = <span class="string">&#x27;../input/melbourne-housing-snapshot/melb_data.csv&#x27;</span></span><br><span class="line"><span class="comment"># read the data and store data in DataFrame titled melbourne_data</span></span><br><span class="line">melbourne_data = pd.read_csv(melbourne_file_path) </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="了解数据"><a href="#了解数据" class="headerlink" title="了解数据"></a>了解数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># print a summary of the data in Melbourne data</span></span><br><span class="line">melbourne_data.describe()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示所有列索引</span></span><br><span class="line"><span class="built_in">print</span>(melbourne_data.columns)</span><br></pre></td></tr></table></figure>
+
+<h4 id="设定Target"><a href="#设定Target" class="headerlink" title="设定Target"></a>设定Target</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y = melbourne_data[<span class="string">&#x27;SalePrice&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h4 id="设定Input"><a href="#设定Input" class="headerlink" title="设定Input"></a>设定Input</h4><p>在所有列索引中选择需要的作为输入特征，如</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">feature_names = [<span class="string">&#x27;LotArea&#x27;</span>,<span class="string">&#x27;YearBuilt&#x27;</span>,<span class="string">&#x27;1stFlrSF&#x27;</span>,<span class="string">&#x27;2ndFlrSF&#x27;</span>,<span class="string">&#x27;FullBath&#x27;</span>,<span class="string">&#x27;BedroomAbvGr&#x27;</span>,<span class="string">&#x27;TotRmsAbvGrd&#x27;</span>]</span><br><span class="line">X = melbourne_data[feature_names]</span><br><span class="line"><span class="comment"># 观察输入数据</span></span><br><span class="line"><span class="built_in">print</span>(X.describe())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="数据划分-train-X、train-y、val-X、val-y"><a href="#数据划分-train-X、train-y、val-X、val-y" class="headerlink" title="数据划分 train_X、train_y、val_X、val_y"></a>数据划分 train_X、train_y、val_X、val_y</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">train_X, train_y, val_X, val_y = train_test_split(X,y,random_state=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置和拟合Model"><a href="#配置和拟合Model" class="headerlink" title="配置和拟合Model"></a>配置和拟合Model</h4><p>以<code>DecisionTreeRegressor</code>为例</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeRegressor</span><br><span class="line">melbourne_model = DecisionTreeRegressor(random_state=<span class="number">1</span>)</span><br><span class="line">melbourne_model.fit(train_X, train_y)</span><br></pre></td></tr></table></figure>
+
+<h4 id="做预测"><a href="#做预测" class="headerlink" title="做预测"></a>做预测</h4><p>输入X为例</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predictions = melbourne_model.predict(val_X)</span><br></pre></td></tr></table></figure>
+
+<h4 id="模型验证"><a href="#模型验证" class="headerlink" title="模型验证"></a>模型验证</h4><p>以Mean Absolute Error（MAE）为例</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_absolute_error</span><br><span class="line">val_mae = mean_absolute_error(melbourne_model.predict(val_X), val_y)</span><br></pre></td></tr></table></figure>
+
+<h4 id="调参时候的操作方法"><a href="#调参时候的操作方法" class="headerlink" title="调参时候的操作方法"></a>调参时候的操作方法</h4><p>以寻找最大叶节点为例</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_mae</span>(<span class="params">max_leaf_nodes, train_X, val_X, train_y, val_y</span>):</span><br><span class="line">    model = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes, random_state=<span class="number">0</span>)</span><br><span class="line">    model.fit(train_X, train_y)</span><br><span class="line">    preds_val = model.predict(val_X)</span><br><span class="line">    mae = mean_absolute_error(val_y, preds_val)</span><br><span class="line">    <span class="keyword">return</span>(mae)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用不同的最大叶节点</span></span><br><span class="line">candidate_max_leaf_nodes = [<span class="number">5</span>, <span class="number">25</span>, <span class="number">50</span>, <span class="number">100</span>, <span class="number">250</span>, <span class="number">500</span>]</span><br><span class="line"><span class="comment"># Store the best value of max_leaf_nodes (it will be either 5, 25, 50, 100, 250 or 500)</span></span><br><span class="line">maes = [get_mae(mln,train_X, val_X, train_y, val_y) <span class="keyword">for</span> mln <span class="keyword">in</span> candidate_max_leaf_nodes]</span><br><span class="line">best_tree_size = candidate_max_leaf_nodes[maes.index(<span class="built_in">min</span>(maes))]</span><br><span class="line"><span class="built_in">print</span>(best_tree_size)</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用全部data拟合Model"><a href="#使用全部data拟合Model" class="headerlink" title="使用全部data拟合Model"></a>使用全部data拟合Model</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于前述最佳参数建立模型，如最大叶节点100</span></span><br><span class="line">final_model = DecisionTreeRegressor(max_leaf_nodes=<span class="number">100</span>)</span><br><span class="line"><span class="comment"># 使用所有数据参与训练</span></span><br><span class="line">final_model.fit(X,y)</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用其他算法"><a href="#使用其他算法" class="headerlink" title="使用其他算法"></a>使用其他算法</h4><p>随机森林Random Forest 是比决策树更容易得到好结果的模型</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.metric <span class="keyword">import</span> mean_absolute_error</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define the model. Set random_state to 1</span></span><br><span class="line">rf_model = RandomForestRegressor(random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># fit your model</span></span><br><span class="line">rf_model.fit(train_X, train_y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Calculate the mean absolute error of your Random Forest model on the validation data</span></span><br><span class="line">rf_val_mae = mean_absolute_error(rf_model.predict(val_X),val_y)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Validation MAE for Random Forest Model: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rf_val_mae))</span><br></pre></td></tr></table></figure>
+
+<h4 id="在kaggle打比赛"><a href="#在kaggle打比赛" class="headerlink" title="在kaggle打比赛"></a>在kaggle打比赛</h4><p>首先需要加入比赛<code>join competition</code><br>然后运行后在<code>kaggle/working</code>中生成<code>submission.csv</code><br>点击<code>submit</code>即可</p>
+<h4 id="继续折腾"><a href="#继续折腾" class="headerlink" title="继续折腾"></a>继续折腾</h4><p>试验是最好的手段，尝试选用不同的features</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" data-id="clv54jjvg0000rkuk7fvbb8rd" data-title="机器学习入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-微信运动自动点赞" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/" class="article-date">
+  <time class="dt-published" datetime="2024-04-12T10:48:37.191Z" itemprop="datePublished">2024-04-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/">微信运动自动点赞</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>通过USB调试在电脑显示并可操作手机屏幕<br>使用pyautogui获取屏幕图像<br>使用opencv处理和模板匹配，识别需要点击的区域<br>使用pyautogui点击，并滚动下一页</p>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="安卓手机"><a href="#安卓手机" class="headerlink" title="安卓手机"></a>安卓手机</h5><ol>
+<li>激活开发者模式</li>
+<li>在开发者选项中勾选“允许USB调试”</li>
+<li>用USB线缆连接电脑</li>
+</ol>
+<h5 id="电脑"><a href="#电脑" class="headerlink" title="电脑"></a>电脑</h5><ol>
+<li>打开软件scrcpy.exe，正常可看到并操控手机屏幕，软件官网<a target="_blank" rel="noopener" href="https://scrcpy.org/">scrcpy</a></li>
+<li>将窗口调整到固定位置，使用截图工具将待点击的心形图截图保存为<code>heart.jpg</code></li>
+<li>在同一文件夹创建并运行Python脚本如下</li>
+</ol>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设定点击的间隔时长</span></span><br><span class="line">pyautogui.PAUSE = <span class="number">0.02</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">match_click</span>(<span class="params">image, templ</span>):</span><br><span class="line">    <span class="keyword">assert</span> image <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line">    <span class="comment"># 二值化操作，选用了阈值240，如果发现完全不工作，在0-255之间调整一下</span></span><br><span class="line">    ret,img = cv.threshold(image,<span class="number">240</span>,<span class="number">255</span>,cv.THRESH_BINARY)</span><br><span class="line">    <span class="comment"># 模板图片，保存好的</span></span><br><span class="line">    template = cv.imread(templ,cv.IMREAD_GRAYSCALE)</span><br><span class="line">    <span class="keyword">assert</span> template <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, <span class="string">&quot;file could not be read, check with os.path.exists()&quot;</span></span><br><span class="line">    h, w = template.shape[:<span class="number">2</span>]</span><br><span class="line">    <span class="comment"># 匹配模板</span></span><br><span class="line">    res = cv.matchTemplate(img, template, cv.TM_CCOEFF_NORMED)</span><br><span class="line">    <span class="comment"># 只保留高置信度结果</span></span><br><span class="line">    threshold = <span class="number">0.8</span></span><br><span class="line">    loc = np.where( res &gt;= threshold)</span><br><span class="line">    <span class="keyword">for</span> pt <span class="keyword">in</span> <span class="built_in">zip</span>(*loc[::-<span class="number">1</span>]):</span><br><span class="line">        <span class="comment"># 点击</span></span><br><span class="line">        pyautogui.click(pt[<span class="number">0</span>],pt[<span class="number">1</span>], button=<span class="string">&#x27;left&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">12</span>):</span><br><span class="line">        pyautogui.scroll(-<span class="number">100</span>)</span><br><span class="line">        time.sleep(<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line">time.sleep(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 获取截屏图像</span></span><br><span class="line">        img = pyautogui.screenshot()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 从PIL转OpenCV</span></span><br><span class="line">        img = cv.cvtColor(np.asarray(img),cv.COLOR_RGB2GRAY) </span><br><span class="line">        </span><br><span class="line">        match_click(img, <span class="string">&#x27;heart.jpg&#x27;</span>)</span><br><span class="line">      </span><br><span class="line">        i +=<span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;第&#123;&#125;页&#x27;</span>.<span class="built_in">format</span>(i))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;没有发现目标&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="存在的Bug"><a href="#存在的Bug" class="headerlink" title="存在的Bug"></a>存在的Bug</h4><ol>
+<li>不能避免给自己点赞，导致进入自己的微信运动主页而中断。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/12/%E5%BE%AE%E4%BF%A1%E8%BF%90%E5%8A%A8%E8%87%AA%E5%8A%A8%E7%82%B9%E8%B5%9E/" data-id="cluwkgrpc0000r8ukf3jz0ly4" data-title="微信运动自动点赞" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OpenCV 特征匹配" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" class="article-date">
+  <time class="dt-published" datetime="2024-04-01T07:04:04.768Z" itemprop="datePublished">2024-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="1-暴力匹配"><a href="#1-暴力匹配" class="headerlink" title="1. 暴力匹配"></a>1. 暴力匹配</h4><p>暴力匹配使用一些距离计算两组特征描述之间的匹配度</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 ORB </span></span><br><span class="line"><span class="comment"># Initiate ORB detector</span></span><br><span class="line">orb = cv.ORB_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with ORB</span></span><br><span class="line">kp1, des1 = orb.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = orb.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># create BFMatcher object</span></span><br><span class="line">bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=<span class="literal">True</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Match descriptors.</span></span><br><span class="line">matches = bf.<span class="keyword">match</span>(des1,des2)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Sort them in the order of their distance.</span></span><br><span class="line">matches = <span class="built_in">sorted</span>(matches, key = <span class="keyword">lambda</span> x:x.distance)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Draw first 10 matches.</span></span><br><span class="line">img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:<span class="number">15</span>],<span class="literal">None</span>,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3),plt.title(<span class="string">&#x27;ORB&#x27;</span>),plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 SIFT</span></span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># BFMatcher with default params</span></span><br><span class="line">bf = cv.BFMatcher()</span><br><span class="line">matches = bf.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Apply ratio test</span></span><br><span class="line">good = []</span><br><span class="line"><span class="keyword">for</span> m,n <span class="keyword">in</span> matches:</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.35</span>*n.distance:</span><br><span class="line">    good.append([m])</span><br><span class="line"> </span><br><span class="line"><span class="comment"># cv.drawMatchesKnn expects list of lists as matches.</span></span><br><span class="line">img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,good,<span class="literal">None</span>,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3),plt.title(<span class="string">&#x27;SIFT&#x27;</span>),plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-基于FLANN的匹配"><a href="#2-基于FLANN的匹配" class="headerlink" title="2. 基于FLANN的匹配"></a>2. 基于FLANN的匹配</h4><p>FLANN是近似最近邻的快速库.包含了针对大型高维特征快速最近邻搜索优化的算法集.在大数据集上比BFMatcher更好.<br>使用FLANN,需要传入索引字典<code>IndexParams</code>描述所用算法及其参数.如需要使用SIFT&#x2F;SURF等,传入如下内容</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>而使用ORB,使用如下,参数要自己调整,文档中建议的不一定最符合实际使用</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FLANN_INDEX_LSH = <span class="number">6</span></span><br><span class="line">index_params= <span class="built_in">dict</span>(algorithm = FLANN_INDEX_LSH,</span><br><span class="line">    table_number = <span class="number">6</span>, <span class="comment"># 12</span></span><br><span class="line">    key_size = <span class="number">12</span>, <span class="comment"># 20</span></span><br><span class="line">    multi_probe_level = <span class="number">1</span>) <span class="comment">#2</span></span><br></pre></td></tr></table></figure>
+<p>第二个字典是SearchParams,定义应该递归遍历索引中的树的次数,这个值越高精度越高,但是同样会消耗更多的时间</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># FLANN parameters</span></span><br><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br><span class="line">search_params = <span class="built_in">dict</span>(checks=<span class="number">50</span>) <span class="comment"># or pass empty dictionary</span></span><br><span class="line"> </span><br><span class="line">flann = cv.FlannBasedMatcher(index_params,search_params)</span><br><span class="line"> </span><br><span class="line">matches = flann.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Need to draw only good matches, so create a mask</span></span><br><span class="line">matchesMask = [[<span class="number">0</span>,<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matches))]</span><br><span class="line"> </span><br><span class="line"><span class="comment"># ratio test as per Lowe&#x27;s paper</span></span><br><span class="line"><span class="keyword">for</span> i,(m,n) <span class="keyword">in</span> <span class="built_in">enumerate</span>(matches):</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.7</span>*n.distance:</span><br><span class="line">    matchesMask[i]=[<span class="number">1</span>,<span class="number">0</span>]</span><br><span class="line"> </span><br><span class="line">draw_params = <span class="built_in">dict</span>(matchColor = (<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),</span><br><span class="line"> singlePointColor = (<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),</span><br><span class="line"> matchesMask = matchesMask,</span><br><span class="line"> flags = cv.DrawMatchesFlags_DEFAULT)</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,matches,<span class="literal">None</span>,**draw_params)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3,),plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-特征匹配与单应实现物体查找"><a href="#3-特征匹配与单应实现物体查找" class="headerlink" title="3. 特征匹配与单应实现物体查找"></a>3. 特征匹配与单应实现物体查找</h4><p>前述的匹配是在另一张图片中寻找目标物体的一些部分.使用<code>cv.findHomography()</code>,传入两图片的点,可以找到物体在两个图片中的视角转换. 然后可以用<code>cv.perspectiveTransform</code>找到目标.至少需要4个正确的点来找到这个转换矩阵.</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">MIN_MATCH_COUNT = <span class="number">10</span></span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br><span class="line">search_params = <span class="built_in">dict</span>(checks = <span class="number">50</span>)</span><br><span class="line"> </span><br><span class="line">flann = cv.FlannBasedMatcher(index_params, search_params)</span><br><span class="line"> </span><br><span class="line">matches = flann.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># store all the good matches as per Lowe&#x27;s ratio test.</span></span><br><span class="line">good = []</span><br><span class="line"><span class="keyword">for</span> m,n <span class="keyword">in</span> matches:</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.7</span>*n.distance:</span><br><span class="line">    good.append(m)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(good)&gt;MIN_MATCH_COUNT:</span><br><span class="line"> src_pts = np.float32([ kp1[m.queryIdx].pt <span class="keyword">for</span> m <span class="keyword">in</span> good ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> dst_pts = np.float32([ kp2[m.trainIdx].pt <span class="keyword">for</span> m <span class="keyword">in</span> good ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"> M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,<span class="number">5.0</span>)</span><br><span class="line"> matchesMask = mask.ravel().tolist()</span><br><span class="line"> </span><br><span class="line"> h,w = img1.shape</span><br><span class="line"> pts = np.float32([ [<span class="number">0</span>,<span class="number">0</span>],[<span class="number">0</span>,h-<span class="number">1</span>],[w-<span class="number">1</span>,h-<span class="number">1</span>],[w-<span class="number">1</span>,<span class="number">0</span>] ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> dst = cv.perspectiveTransform(pts,M)</span><br><span class="line"> </span><br><span class="line"> img2 = cv.polylines(img2,[np.int32(dst)],<span class="literal">True</span>,<span class="number">255</span>,<span class="number">3</span>, cv.LINE_AA)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line"> <span class="built_in">print</span>( <span class="string">&quot;Not enough matches are found - &#123;&#125;/&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">len</span>(good), MIN_MATCH_COUNT) )</span><br><span class="line"> matchesMask = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">draw_params = <span class="built_in">dict</span>(matchColor = (<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>), <span class="comment"># draw matches in green color</span></span><br><span class="line"> singlePointColor = <span class="literal">None</span>,</span><br><span class="line"> matchesMask = matchesMask, <span class="comment"># draw only inliers</span></span><br><span class="line"> flags = <span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawMatches(img1,kp1,img2,kp2,good,<span class="literal">None</span>,**draw_params)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3, <span class="string">&#x27;gray&#x27;</span>),plt.show()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" data-id="cluglu6mb0001i8uk4q3bc161" data-title="OpenCV 特征匹配" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-OpenCV 相机畸变校准" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/" class="article-date">
@@ -526,237 +863,11 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
 
 
   
-    <article id="post-pyautogui" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/03/14/pyautogui/" class="article-date">
-  <time class="dt-published" datetime="2024-03-13T16:03:46.394Z" itemprop="datePublished">2024-03-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/03/14/pyautogui/">pyautogui</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>pyautogui可以控制鼠标移动和点击，可以用来实现一些自动化的操作，非常有趣。</p>
-<h4 id="先看注意事项"><a href="#先看注意事项" class="headerlink" title="先看注意事项"></a>先看注意事项</h4><p>为避免失控，快速甩动鼠标到屏幕角落以强行退出程序。</p>
-<h4 id="一、控制鼠标"><a href="#一、控制鼠标" class="headerlink" title="一、控制鼠标"></a>一、控制鼠标</h4><h5 id="1-安装pyautogui"><a href="#1-安装pyautogui" class="headerlink" title="1. 安装pyautogui"></a>1. 安装pyautogui</h5><p>在Windows的cmd窗口输入指令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyautogui</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-确认安装正常"><a href="#2-确认安装正常" class="headerlink" title="2. 确认安装正常"></a>2. 确认安装正常</h5><p>使用<code>pyautogui.size()</code>获取当前屏幕的宽高，返回是一个点对象。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line">wh = pyautogui.size()</span><br><span class="line"><span class="built_in">print</span>(wh.width, wh.height)</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-移动鼠标到绝对位置"><a href="#3-移动鼠标到绝对位置" class="headerlink" title="3. 移动鼠标到绝对位置"></a>3. 移动鼠标到绝对位置</h5><p>使用<code>pyautogui.moveTo()</code>可将光标移至屏幕任意位置，传入三个参数，前两个分别为位置坐标<code>x</code>与<code>y</code>，第三个<code>duration=</code>用来指定这个动作的耗时。<br>先了解一下计算机显示器的像素坐标系，屏幕左上为原点，x轴指向右侧，y轴指向屏幕底端。</p>
-<center>
-<img src="./assets/img/coordinate-system-of-screen.png" width="30%" height="30%">
-图1 分辨率为1920x1080的屏幕坐标系图片<sup>[1]<sup>
-</center>
-
-
-<p>举个例子，让鼠标自动画长方形。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    pyautogui.moveTo(<span class="number">100</span>, <span class="number">100</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">100</span>, <span class="number">400</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">400</span>, <span class="number">400</span>, duration=<span class="number">0.25</span>)</span><br><span class="line">    pyautogui.moveTo(<span class="number">400</span>, <span class="number">100</span>, duration=<span class="number">0.25</span>)</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-移动鼠标到相对位置"><a href="#4-移动鼠标到相对位置" class="headerlink" title="4. 移动鼠标到相对位置"></a>4. 移动鼠标到相对位置</h5><p>使用<code>pyautogui.move()</code>，同样是三个参数，区别是坐标为相对位移坐标。<br>如果要获得鼠标当前位于何处，可以使用<code>pyautogui.positioin()</code>，没有参数，返回一个对象包含两个坐标值。</p>
-<h5 id="5-控制鼠标点击"><a href="#5-控制鼠标点击" class="headerlink" title="5. 控制鼠标点击"></a>5. 控制鼠标点击</h5><p>让鼠标在坐标（100，100）处完成一次左键单击，使用<code>pyautogui.click()</code>，传入的第三个参数<code>button=</code>用来指定左键、中键和右键。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line">pyautogui.click(<span class="number">100</span>, <span class="number">100</span>, button=<span class="string">&#x27;left&#x27;</span>)    <span class="comment"># 点击左键</span></span><br><span class="line">pytutogui.click(<span class="number">100</span>, <span class="number">100</span>, button=<span class="string">&#x27;right&#x27;</span>)   <span class="comment"># 点击右键</span></span><br></pre></td></tr></table></figure>
-<p>完成一次点击包括两个动作，也就是按下与释放。<code>pyautogui.click()</code>使用了默认的时间间隔。如果我们想要自定义按下和释放之间的保持时间，就使用<code>pyautogui.mouseDown()</code>来按下，用<code>pyautogui.mouseUp()</code>来释放，参数相同。</p>
-<h5 id="6-拖动鼠标"><a href="#6-拖动鼠标" class="headerlink" title="6. 拖动鼠标"></a>6. 拖动鼠标</h5><p>按下后保持，再移动鼠标，可用<code>pyautogui.dragTo()</code>或者<code>pyautogui.drag()</code>实现，前者是绝对位置，后者为相对位置。<br>以下代码是用鼠标绘图的例子</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">5</span>)   <span class="comment"># 等待切换软件窗口</span></span><br><span class="line">pyautogui.click(<span class="number">800</span>, <span class="number">600</span>)   <span class="comment"># 点击画幅内的一点作为起点</span></span><br><span class="line"></span><br><span class="line">distance = <span class="number">500</span></span><br><span class="line">change = <span class="number">20</span></span><br><span class="line"><span class="keyword">while</span> distance &gt; <span class="number">0</span>:</span><br><span class="line">    pyautogui.drag(distance, <span class="number">0</span>, duration=<span class="number">0.2</span>)   <span class="comment"># Move right.</span></span><br><span class="line">    distance = distance - change</span><br><span class="line">    pyautogui.drag(<span class="number">0</span>, distance, duration=<span class="number">0.2</span>)   <span class="comment"># Move down.</span></span><br><span class="line">    pyautogui.drag(-distance, <span class="number">0</span>, duration=<span class="number">0.2</span>)  <span class="comment"># Move left.</span></span><br><span class="line">    distance = distance - change</span><br><span class="line">    pyautogui.drag(<span class="number">0</span>, -distance, duration=<span class="number">0.2</span>) </span><br></pre></td></tr></table></figure>
-<p>事先打开一个绘图软件，此处以windows绘图软件为例，选择好画笔后回到IDE启动脚本。程序中有一个5s的延时，因此启动程序后5s内将实现准备好的绘图软件窗口最大化。</p>
-<center>
-<img src="./assets/img/drag-painting.png" width="60%" height="60%">
-图2 pyautogui.drag()拖动鼠标绘制图形的结果
-</center>
-
-<h5 id="7-控制滚轮"><a href="#7-控制滚轮" class="headerlink" title="7. 控制滚轮"></a>7. 控制滚轮</h5><p>使用<code>pyautogui.scroll()</code>输入参数为整数滚动单位。</p>
-<h5 id="8-获取屏幕上某一点的像素坐标"><a href="#8-获取屏幕上某一点的像素坐标" class="headerlink" title="8. 获取屏幕上某一点的像素坐标"></a>8. 获取屏幕上某一点的像素坐标</h5><p>使用snipaste软件，启动在后台运行，需要时点击F1进入截图预览模式，此时鼠标所处的位置会有坐标值显示。<br>或者使用<code>pyautogui.displayMousePosition()</code>实时显示位置和颜色信息。</p>
-<h5 id="9-获取屏幕图像信息"><a href="#9-获取屏幕图像信息" class="headerlink" title="9. 获取屏幕图像信息"></a>9. 获取屏幕图像信息</h5><p>使用<code>pyautogui.screenshot()</code>获取全屏截图。使用<code>pyautogui.pixel(x, y)</code>获取某个像素点的颜色信息输入两个坐标值。<br>判断某个点是否与给定颜色一致，可用<code>pyautogui.pixelMatchesColor(x, y, (R, G, B))</code>，输入两个坐标值，和一个包含RGB信息的元组。<br>判断给定的图片在屏幕上的哪个位置，可用<code>pyautogui.locateOnScreen(&#39;img.jpg&#39;)</code>，传入参数为图片路径，返回xywh元组，可能有多个。如果想要点击这个区域的中心，将该元组传入<code>pyautogui.click((x, y, w, h))</code>即可。甚至可以直接这样<code>pyautogui.click(&#39;img.jpg&#39;)</code>实现查找和点击，但是有可能不成功，需和<code>try</code>以及<code>except</code>一起用。</p>
-<h5 id="10-获取窗口信息"><a href="#10-获取窗口信息" class="headerlink" title="10. 获取窗口信息"></a>10. 获取窗口信息</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line">fw = pyautogui.getActiveWindow() <span class="comment"># 获取活动的窗口信息</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">str</span>(fw))  <span class="comment"># &lt;Win32Window left=&quot;-12&quot;, top=&quot;-12&quot;, width=&quot;2584&quot;, height=&quot;1540&quot;, title=&quot;test.py - Visual Studio Code&quot;&gt;</span></span><br><span class="line"></span><br><span class="line">pyautogui.getAllWindows() <span class="comment"># 返回一个list，包含所有的窗口信息</span></span><br><span class="line"></span><br><span class="line">pyautogui.getWindowsAt(x, y) <span class="comment"># 输入xy坐标，返回包含坐标的所有窗口</span></span><br><span class="line"></span><br><span class="line">pyautogui.getWindowsWithTitle(title) <span class="comment"># 输入title，返回对应的窗口</span></span><br><span class="line"></span><br><span class="line">pyautogui.getAllTitles() <span class="comment"># 获取所有的串口标题，返回是一个list，元素为string</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>对获取到的窗口可以进行一些操作</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">fw.width = <span class="number">1000</span> <span class="comment"># 将窗口宽度调整为1000像素</span></span><br><span class="line"></span><br><span class="line">fw.topleft = (<span class="number">200</span>, <span class="number">200</span>) <span class="comment"># 将窗口左上角移动到指定位置</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(fw.isMaximized) <span class="comment"># 判断窗口是否为最大化</span></span><br><span class="line"></span><br><span class="line">fw.maximize() <span class="comment"># 最大化窗口</span></span><br><span class="line"></span><br><span class="line">fw.minimize() <span class="comment"># 最小化窗口</span></span><br><span class="line"></span><br><span class="line">fw.restore()  <span class="comment"># 恢复最大化/最小化操作</span></span><br></pre></td></tr></table></figure>
-<p>完整的使用方法，见官方文档<a target="_blank" rel="noopener" href="https://pyautogui.readthedocs.io/">https://pyautogui.readthedocs.io/</a></p>
-<h4 id="二、控制键盘"><a href="#二、控制键盘" class="headerlink" title="二、控制键盘"></a>二、控制键盘</h4><h5 id="1-输入内容"><a href="#1-输入内容" class="headerlink" title="1. 输入内容"></a>1. 输入内容</h5><p>首先通过点击确定文字输入区域，再用<code>pyautogui.write()</code>输入。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line">pyautogui.click(<span class="number">1080</span>,<span class="number">1400</span>)</span><br><span class="line">pyautogui.write(<span class="string">&#x27;hello world!&#x27;</span>) <span class="comment"># pyautogui输入&#x27;!&#x27;时会自动按下shift键</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用list传入时可以将键盘上的所有键以名称方式描述，如&#x27;left&#x27;表←键</span></span><br><span class="line">pyautogui.write([<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;X&#x27;</span>, <span class="string">&#x27;Y&#x27;</span>]) <span class="comment"># 按顺序按下a、b、←、←、shift+x、shift+y 结果 XYab</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>键盘对应的内容表格如下</p>
-<table>
-<thead>
-<tr>
-<th>键盘关键字</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>‘a’, ‘b’, ‘c’, ‘A’, ‘B’, ‘C’, ‘1’, ‘2’, ‘3’, ‘!’, ‘@’, ‘#’等</td>
-<td>单字符按键</td>
-</tr>
-<tr>
-<td>‘enter’ (或 ‘return’ 或 ‘\n’)</td>
-<td>回车键</td>
-</tr>
-<tr>
-<td>‘esc’</td>
-<td>ESC键</td>
-</tr>
-<tr>
-<td>‘shiftleft’, ‘shiftright’</td>
-<td>左右SHIFT键</td>
-</tr>
-<tr>
-<td>‘altleft’, ‘altright’</td>
-<td>左右ALT键</td>
-</tr>
-<tr>
-<td>‘ctrlleft’, ‘ctrlright’</td>
-<td>左右CTRL键</td>
-</tr>
-<tr>
-<td>‘tab’ (或 ‘\t’)</td>
-<td>TAB键</td>
-</tr>
-<tr>
-<td>‘backspace’, ‘delete’</td>
-<td>BACKSPACE 和 DELETE键</td>
-</tr>
-<tr>
-<td>‘pageup’, ‘pagedown’</td>
-<td>PAGE UP 和 PAGE DOWN 键</td>
-</tr>
-<tr>
-<td>‘home’, ‘end’</td>
-<td>HOME 和 END 键</td>
-</tr>
-<tr>
-<td>‘up’, ‘down’, ‘left’, ‘right’</td>
-<td>up, down, left 和 right 箭头键</td>
-</tr>
-<tr>
-<td>‘f1’, ‘f2’, ‘f3’, 等</td>
-<td>F1 到 F12 键</td>
-</tr>
-<tr>
-<td>‘volumemute’, ‘volumedown’, ‘volumeup’</td>
-<td>静音，音量减，音量加键（有些键盘没有这些键，但是你的电脑可以接收这些指令）</td>
-</tr>
-<tr>
-<td>‘pause’</td>
-<td>PAUSE键</td>
-</tr>
-<tr>
-<td>‘capslock’, ‘numlock’, ‘scrolllock’</td>
-<td>CAPS LOCK, NUM LOCK, 和 SCROLL LOCK 键</td>
-</tr>
-<tr>
-<td>‘insert’</td>
-<td>INS 或 INSERT 键</td>
-</tr>
-<tr>
-<td>‘printscreen’</td>
-<td>PRTSC 或 PRINT SCREEN 键</td>
-</tr>
-<tr>
-<td>‘winleft’, ‘winright’</td>
-<td>左右WIN键(Windows)</td>
-</tr>
-<tr>
-<td>‘command’</td>
-<td>Command键(macOS)</td>
-</tr>
-<tr>
-<td>‘option’</td>
-<td>OPTION键(on macOS)</td>
-</tr>
-</tbody></table>
-<h5 id="2-热键组合"><a href="#2-热键组合" class="headerlink" title="2. 热键组合"></a>2. 热键组合</h5><p>与鼠标相似，我们可以用<code>pyautogui.keyDown()</code>和<code>pyautogui.keyUp()</code>来分开控制键盘的按下与释放。<br>如在windows上实现一次复制粘贴，可以如下操作</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pyautogui.keyDown(<span class="string">&#x27;ctrl&#x27;</span>)</span><br><span class="line">pyautogui.keyDown(<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">pyautogui.keyUp(<span class="string">&#x27;c&#x27;</span>)</span><br><span class="line">pyautogui.keyUp(<span class="string">&#x27;ctrl&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>但是上面的操作未免有些复杂了，同样的操作可以这样</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyautogui.hotkey(<span class="string">&#x27;ctrl&#x27;</span>, <span class="string">&#x27;c&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h5 id="3-使用提示"><a href="#3-使用提示" class="headerlink" title="3. 使用提示"></a>3. 使用提示</h5><ul>
-<li>屏幕分辨率保持不便</li>
-<li>应用窗口应该最大化，因为这样才能保证按钮始终在同一个位置</li>
-<li>根据软件反应速度多给一些延时，你不会想在上一个动作没有完成就开始点击</li>
-<li>使用<code>locateOnScreen()</code>寻找按钮，尽量不依赖xy坐标，在没发现目标时停止比乱点击要好</li>
-<li>使用<code>getWindowsWithTitle()</code>确保你准备控制的应用程序窗口是存在的，用<code>activate()</code>让窗口进入前台</li>
-<li>增加尽可能多的检查，如弹窗、断网的情况怎么处理</li>
-<li>第一次运行时要完整地观察是否正常</li>
-</ul>
-<p>给延时的两个例子</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line">time.sleep(<span class="number">3</span>)   <span class="comment"># 等待3s</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pyautogui</span><br><span class="line">pyautogui.countdown(<span class="number">10</span>) <span class="comment"># 等待10s，在命令行倒数输出10、9、8...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>另外可以用<code>pyautogui.alert(&#39;text&#39;)</code>或<code>pyautogui.confirm(&#39;text&#39;)</code>来弹窗确认。如果需要使用到剪贴板里面的内容，需要用到<code>import pyperclip</code>然后<code>pyperclip.paste()</code></p>
-<blockquote>
-<p>关于计算机道德<br>为善去恶，学会这项技术的目的应该是提高自己的生产效率，勿做有损他人的事情。</p>
-</blockquote>
-<h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><p>[1] <a target="_blank" rel="noopener" href="https://automatetheboringstuff.com/2e/chapter20/">Automate The Boring Stuff, Al Sweigart</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/14/pyautogui/" data-id="cltse7fc20000wkukdvvh8w6f" data-title="pyautogui" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-你好世界" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/" class="article-date">
-  <time class="dt-published" datetime="2024-03-11T12:51:38.823Z" itemprop="datePublished">2024-03-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/">你好世界！</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>欢迎来到黄河水澄的技术专栏！<br>这里会分享我学习过程中的一些技术笔记，目的是督促自己学习、分享有用的知识。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/" data-id="cltmz32ci0000wsukh49adlx5" data-title="你好世界！" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -775,7 +886,7 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/05/">May 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
     </div>
   </div>
 
@@ -788,23 +899,23 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
       <ul>
         
           <li>
-            <a href="/2024/04/24/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8BDatasets%E6%A0%BC%E5%BC%8F/">目标检测Datasets格式</a>
+            <a href="/2024/08/22/Kalman%E6%BB%A4%E6%B3%A2/">Kalman滤波</a>
           </li>
         
           <li>
-            <a href="/2024/04/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5/">计算机视觉常用概念</a>
+            <a href="/2024/05/14/Python%20advanced/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/">目标识别</a>
+            <a href="/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/">配置Qt与OpenCV</a>
           </li>
         
           <li>
-            <a href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/">计算机视觉入门</a>
+            <a href="/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/">Python 赋值引用、拷贝</a>
           </li>
         
           <li>
-            <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">深度学习入门</a>
+            <a href="/2024/05/04/C++%E5%9F%BA%E7%A1%80/">C++ 基础</a>
           </li>
         
       </ul>
