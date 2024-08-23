@@ -73,6 +73,76 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-深度学习入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-04-18T10:48:46.899Z" itemprop="datePublished">2024-04-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/">深度学习入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="最简单的神经元模型"><a href="#最简单的神经元模型" class="headerlink" title="最简单的神经元模型"></a>最简单的神经元模型</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">red_wine = pd.read_csv(<span class="string">&#x27;../input/dl-course-data/red-wine.csv&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(red_wine.shape)   <span class="comment"># (1599,12)</span></span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Dense(units=<span class="number">1</span>, input_shape=[<span class="number">11</span>]),</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">x = tf.linspace(-<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">100</span>)</span><br><span class="line">y = model.predict(x)</span><br><span class="line"></span><br><span class="line">w, b = model.weights</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;weights\n&#123;&#125;\nBias\n&#123;&#125;&quot;</span>.<span class="built_in">format</span>(w,b))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="深度神经元模型"><a href="#深度神经元模型" class="headerlink" title="深度神经元模型"></a>深度神经元模型</h3><h4 id="建立Sequential-Model"><a href="#建立Sequential-Model" class="headerlink" title="建立Sequential Model"></a>建立Sequential Model</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([  <span class="comment"># 所有层都放在一个list中</span></span><br><span class="line">    <span class="comment"># the hidden ReLU layers</span></span><br><span class="line">    layers.Dense(units=<span class="number">4</span>, activation=<span class="string">&#x27;relu&#x27;</span>, input_shape=[<span class="number">2</span>]),</span><br><span class="line">    layers.Dense(units=<span class="number">3</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    <span class="comment"># the linear output layer </span></span><br><span class="line">    layers.Dense(units=<span class="number">1</span>),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<p>把Activation单独作为层来写</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Dense(<span class="number">32</span>, input_shape=[<span class="number">8</span>]),</span><br><span class="line">    layers.Activation(<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">32</span>),</span><br><span class="line">    layers.Activation(<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<h4 id="损失函数-Loss-Function"><a href="#损失函数-Loss-Function" class="headerlink" title="损失函数 Loss Function"></a>损失函数 Loss Function</h4><p>描述预测值与真实值之间的差距的一个算法，对于Regression任务的例子有MAE和MSE等</p>
+<h4 id="优化器-Optimizer"><a href="#优化器-Optimizer" class="headerlink" title="优化器 Optimizer"></a>优化器 Optimizer</h4><p>调节模型权重以尽快减小Loss的算法<br>如随机梯度下降Stochastic Gradient Decent</p>
+<ol>
+<li>随机取样一些训练数据（数量为minibatch 或 batch），经过model得到predict</li>
+<li>算出loss</li>
+<li>向loss减小的方向（梯度）调节weights</li>
+</ol>
+<p>所有数据都过一遍model叫做一个epoch</p>
+<h4 id="学习率-Learning-Rate-和-Batch-Size"><a href="#学习率-Learning-Rate-和-Batch-Size" class="headerlink" title="学习率 Learning Rate 和 Batch Size"></a>学习率 Learning Rate 和 Batch Size</h4><p>学习率和Batch Size决定SGD以多大步子和速度进行，通常不是显而易见的。<br>为此，Adam是一种自适应的SGD算法，不需要调参。</p>
+<h4 id="为模型增加Loss和Optimizer"><a href="#为模型增加Loss和Optimizer" class="headerlink" title="为模型增加Loss和Optimizer"></a>为模型增加Loss和Optimizer</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model.<span class="built_in">compile</span>(</span><br><span class="line">    opertimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;mae&#x27;</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="训练fit"><a href="#训练fit" class="headerlink" title="训练fit"></a>训练fit</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">history = model.fit(</span><br><span class="line">    X_train, y_train,</span><br><span class="line">    validation_data=(X_valid, y_valid),</span><br><span class="line">    batch_size=<span class="number">256</span>,</span><br><span class="line">    epochs=<span class="number">10</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看loss"><a href="#查看loss" class="headerlink" title="查看loss"></a>查看loss</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># convert the training history to a dataframe</span></span><br><span class="line">history_df = pd.DataFrame(history.history)</span><br><span class="line"><span class="comment"># use Pandas native plot method</span></span><br><span class="line">history_df[<span class="string">&#x27;loss&#x27;</span>].plot();</span><br></pre></td></tr></table></figure>
+
+<h3 id="Overfitting-和-Underfitting"><a href="#Overfitting-和-Underfitting" class="headerlink" title="Overfitting 和 Underfitting"></a>Overfitting 和 Underfitting</h3><p>训练数据中的信息由有用信号和噪声组成。理想模型是学习所有信号而没有噪声，但是实际上不存在。</p>
+<h4 id="信号不够为Underfitting-增加模型容量Capacity，增宽增深"><a href="#信号不够为Underfitting-增加模型容量Capacity，增宽增深" class="headerlink" title="信号不够为Underfitting,增加模型容量Capacity，增宽增深"></a>信号不够为Underfitting,增加模型容量Capacity，增宽增深</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Dense(<span class="number">16</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>),</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">wider = keras.Sequential([</span><br><span class="line">    layers.Dense(<span class="number">32</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>),</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">deeper = keras.Sequential([</span><br><span class="line">    layers.Dense(<span class="number">16</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">16</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<h4 id="噪声过多Overfitting"><a href="#噪声过多Overfitting" class="headerlink" title="噪声过多Overfitting"></a>噪声过多Overfitting</h4><p>在valid Loss开始上升时Early Stop</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.keras.callbacks <span class="keyword">import</span> EarlyStopping</span><br><span class="line"></span><br><span class="line">early_stopping = EarlyStopping(</span><br><span class="line">    min_delta=<span class="number">0.001</span>, <span class="comment"># minimium amount of change(validation loss) to count as an improvement</span></span><br><span class="line">    patience=<span class="number">20</span>, <span class="comment"># how many epochs to wait before stopping</span></span><br><span class="line">    restore_best_weights=<span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">history = model.fit(</span><br><span class="line">    X_train, y_train,</span><br><span class="line">    validation_data=(X_valid, y_valid),</span><br><span class="line">    batch_size=<span class="number">256</span>,</span><br><span class="line">    epochs=<span class="number">500</span>,</span><br><span class="line">    callbacks=[early_stopping], <span class="comment"># put your callbacks in a list  每epoch都会调用一次callback</span></span><br><span class="line">    verbose=<span class="number">0</span>,  <span class="comment"># turn off training log</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">history_df = pd.DataFrame(history.history)</span><br><span class="line">history_df.loc[:, [<span class="string">&#x27;loss&#x27;</span>, <span class="string">&#x27;val_loss&#x27;</span>]].plot();</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Minimum validation loss: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(history_df[<span class="string">&#x27;val_loss&#x27;</span>].<span class="built_in">min</span>()))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="使用Dropout减少Overfitting"><a href="#使用Dropout减少Overfitting" class="headerlink" title="使用Dropout减少Overfitting"></a>使用Dropout减少Overfitting</h4><p>Dropout让层间连接随机断开一些，直接加到你需要断开的层前面去</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">keras.Sequential([</span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    layers.Dropout(rate=<span class="number">0.3</span>), <span class="comment"># apply 30% dropout to the next layer</span></span><br><span class="line">    layers.Dense(<span class="number">16</span>),</span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<h4 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h4><p>用每一个batch数据自身的mean和deviation做normalization，还用两个可训练的参数把数据缩放到新尺度。<br>使用时适当增加网络units数量</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接在层后添加</span></span><br><span class="line">layers.Dense(<span class="number">16</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">layers.BatchNormalization(),</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在激活函数前添加</span></span><br><span class="line">layers.Dense(<span class="number">16</span>),</span><br><span class="line">layers.BatchNormalization(),</span><br><span class="line">layers.Activation(<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在第一层添加，相当于自适应的预处理，类似于sklearn的StandardScaler</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="二分类任务-Binary-Classification"><a href="#二分类任务-Binary-Classification" class="headerlink" title="二分类任务 Binary Classification"></a>二分类任务 Binary Classification</h3><p>分类精度是结果，但是不能作为Loss，因为变化是跳跃的。为此，使用cross-entropy，是概率分布的距离表示，预测正确的概率大则loss小。<br>为了将网络输出变为0到1之间的概率表示，就要用到sigmoid这种activation function了。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model.<span class="built_in">compile</span>(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[<span class="string">&#x27;binary_accuracy&#x27;</span>], <span class="comment"># 对于二分类 使用binary_accuracy</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/" data-id="clv54epb900001suk16z94v78" data-title="深度学习入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-机器学习中级" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/04/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%BA%A7/" class="article-date">
@@ -822,47 +892,6 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
 
 
   
-    <article id="post-OpenCV VideoWriter" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/03/19/OpenCV%20VideoWriter/" class="article-date">
-  <time class="dt-published" datetime="2024-03-19T09:12:17.069Z" itemprop="datePublished">2024-03-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/03/19/OpenCV%20VideoWriter/">OpenCV VideoWriter</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p>Windows 11<br>python 3.12.2<br>opencv-contrib-python 4.9.0.80</p>
-<h4 id="保存视频问题"><a href="#保存视频问题" class="headerlink" title="保存视频问题"></a>保存视频问题</h4><p>使用<code>VideoWriter</code>保存视频的时候结果只有1kb，显示文件已损坏。</p>
-<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建采集object</span></span><br><span class="line">cap = cv.VideoCapture(<span class="string">&#x27;video.mp4&#x27;</span>) <span class="comment"># 传入-1默认摄像头，也可是摄像头序号0/1/2，或视频文件名称</span></span><br><span class="line"></span><br><span class="line">frame_height = cap.get(<span class="number">3</span>)</span><br><span class="line">frame_width = cap.get(<span class="number">4</span>)</span><br><span class="line">size = (frame_width, frame_height)  <span class="comment"># 使用VideoWriter时输出必须与输入同尺寸</span></span><br><span class="line"></span><br><span class="line">writer = cv2.VideoWriter(<span class="string">&#x27;out.mov&#x27;</span>, cv2.VideoWriter_fourcc(*<span class="string">&#x27;divx&#x27;</span>), <span class="number">25.5</span>, size, isColor=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 输出格式亲测.avi .mov .mp4可用</span></span><br><span class="line"><span class="comment"># fourcc参数divx和mp4v都可用</span></span><br><span class="line"><span class="comment"># 帧率可以是浮点数</span></span><br><span class="line"><span class="comment"># 尺寸是个与源视频同样大小的元组则可用，顺序为（宽，高）</span></span><br><span class="line"><span class="comment"># 如果对图像进行了灰度处理，必须修改isColor为False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> cap.isOpened():</span><br><span class="line">    ret, frame = cap.read()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> ret:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;can\&#x27;t recieve frame, exiting...&#x27;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)</span></span><br><span class="line">    out.write(frame)</span><br><span class="line"></span><br><span class="line">    cv2.imshow(<span class="string">&#x27;frame&#x27;</span>, frame)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> cv2.waitKey(<span class="number">1</span>) == <span class="built_in">ord</span>(<span class="string">&#x27;q&#x27;</span>):</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">cap.release()</span><br><span class="line">out.release()</span><br><span class="line">cv2.destroyAllWindows()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/19/OpenCV%20VideoWriter/" data-id="clty6czx000008cukehluh2a1" data-title="OpenCV VideoWriter" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -899,6 +928,10 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
       <ul>
         
           <li>
+            <a href="/2024/08/22/MCL%20%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E5%AE%9A%E4%BD%8D/">MCL 蒙特卡洛定位</a>
+          </li>
+        
+          <li>
             <a href="/2024/08/22/Kalman%E6%BB%A4%E6%B3%A2/">Kalman滤波</a>
           </li>
         
@@ -912,10 +945,6 @@ kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
         
           <li>
             <a href="/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/">Python 赋值引用、拷贝</a>
-          </li>
-        
-          <li>
-            <a href="/2024/05/04/C++%E5%9F%BA%E7%A1%80/">C++ 基础</a>
           </li>
         
       </ul>
