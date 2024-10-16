@@ -73,6 +73,149 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-机器人路径规划" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/10/09/%E6%9C%BA%E5%99%A8%E4%BA%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" class="article-date">
+  <time class="dt-published" datetime="2024-10-09T02:04:16.528Z" itemprop="datePublished">2024-10-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/10/09/%E6%9C%BA%E5%99%A8%E4%BA%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">机器人路径规划</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="1-路径规划的方法"><a href="#1-路径规划的方法" class="headerlink" title="1 路径规划的方法"></a>1 路径规划的方法</h2><p>最直接的是离散路径规划，另外两种方法建立于离散路径规划之上，是sample-based路径规划和概率路径规划。</p>
+<h4 id="离散路径规划"><a href="#离散路径规划" class="headerlink" title="离散路径规划"></a>离散路径规划</h4><p>离散路径规划将机器人工作空间明确划分为连接的图(graph)，然后应用图搜索(graph serch)算法来计算最佳路径。<br>这种方式非常精确和彻底，因为是直接对环境进行离散化，而且可以通过调节离散化程度来改变精度。<br>但结果是，这种方式具有极大的计算成本，也就不适用于大型路径规划的问题。<br>离散路径规划具有较好的精确性，不过只适用于低维问题，在高维度路径规划问题上，使用基于样本的路径规划就更合适。</p>
+<h4 id="基于样本的路径规划"><a href="#基于样本的路径规划" class="headerlink" title="基于样本的路径规划"></a>基于样本的路径规划</h4><p>基于样本的路径规划通过探测工作空间并增量地构建图。结果精度没有离散路径规划高，但由于使用到的样本量相对较小其运行速度快很多。<br>其生成出来的路径可能不是最优的，但绝大多数情况下生成可用的路径，好于等待数小时或数天。</p>
+<h4 id="概率路径规划"><a href="#概率路径规划" class="headerlink" title="概率路径规划"></a>概率路径规划</h4><p>概率路径规划与前二者主要不同之处在于，考虑机器人运动的不确定性。在一些高度受限、敏感、高风险环境特别有用。</p>
+<h4 id="路径规划算法的评价指标"><a href="#路径规划算法的评价指标" class="headerlink" title="路径规划算法的评价指标"></a>路径规划算法的评价指标</h4><p>完整：对任何可解的问题均能提供结果，对不可解的问题不提供结果。<br>最优：能够找到最佳路径。最佳情况可以是：最短路径、最快速度、最少风险等。</p>
+<h2 id="2-离散路径规划"><a href="#2-离散路径规划" class="headerlink" title="2 离散路径规划"></a>2 离散路径规划</h2><p>第一步：构建连续的表达，如构建C-space(Configuration Space)<br>第二步：离散化<br>第三步：应用graph search算法</p>
+<h3 id="连续表达Continuous-Representation"><a href="#连续表达Continuous-Representation" class="headerlink" title="连续表达Continuous Representation"></a>连续表达Continuous Representation</h3><p>使用机器人的半径膨胀所有障碍物，然后将机器人缩小成一个点，构成C-space这使得应用路径搜索算法更容易。<br>C-space机器人所有位姿的集合，分为C_free和C_obs。</p>
+<h4 id="闵可夫斯基和Minkowski-Sum"><a href="#闵可夫斯基和Minkowski-Sum" class="headerlink" title="闵可夫斯基和Minkowski Sum"></a>闵可夫斯基和Minkowski Sum</h4><p>闵可夫斯基和是一个数学工具，给定障碍物和机器人的几何形状即可计算其C-space.<br>其背后的思想就是，将机器人几何作为笔刷，沿着障碍物描一圈轮廓，新描后内容就是C_obs.<br>对于凸多边形，计算极快，而对于非凸多边形，计算代价高很多。</p>
+<h4 id="3D-Configuration-Space"><a href="#3D-Configuration-Space" class="headerlink" title="3D Configuration Space"></a>3D Configuration Space</h4><p>在原来的C-space中增加一个旋转维度，形成3D C-space.<br>形成的方法很简单，机器人绕Z轴旋转一个角度就是一个图层，在该角度下使用闵可夫斯基和就能得到该层的C-space,<br>多层的叠加就形成了3D C-space.</p>
+<h3 id="离散化的方法"><a href="#离散化的方法" class="headerlink" title="离散化的方法"></a>离散化的方法</h3><p>路线图Roadmap、单元分解Cell Decomposition、梯度场Gradient Field.</p>
+<h4 id="可视性图法-visibility-graph"><a href="#可视性图法-visibility-graph" class="headerlink" title="可视性图法 visibility graph"></a>可视性图法 visibility graph</h4><p>可视性图法通过连接起点到所有可见障碍物的顶点生成路线图。是完整的、最短距离的算法。<br>其缺陷是，容错率较低，因为会有一些线段非常接近障碍物，容易发生撞击。</p>
+<h4 id="Voronoi-Diagram"><a href="#Voronoi-Diagram" class="headerlink" title="Voronoi Diagram"></a>Voronoi Diagram</h4><p>Voronoi Diagram法的路径离开障碍物。实现方式是将障碍物之间的自由空间二分，所有路径与其周围的障碍物等距。是完整算法。</p>
+<h4 id="Cell-Decompositon（exact）"><a href="#Cell-Decompositon（exact）" class="headerlink" title="Cell Decompositon（exact）"></a>Cell Decompositon（exact）</h4><p>在障碍物的每一个顶点增加一条竖直线，将C-space隔成非重叠单元区域。对于非常规形状，会增加计算复杂度。<br>以下方法可以解决计算复杂度问题。</p>
+<h4 id="Approximate-Cell-Decompostion"><a href="#Approximate-Cell-Decompostion" class="headerlink" title="Approximate Cell Decompostion"></a>Approximate Cell Decompostion</h4><p>将C-space分解为简单且常规的形状。同时，还支持空间的等级分解。</p>
+<h4 id="Simple-Decomposition"><a href="#Simple-Decomposition" class="headerlink" title="Simple Decomposition"></a>Simple Decomposition</h4><p>一个C-space被分解为由矩形单元组成的网格，从而每个单元可以标记成空或占有。算法就能在起点和终点之间找到一条空单元连线。<br>这种方式比精确分解更高效，却也丢失了其完整性。因为偶尔有存在路径的图被标记为占有，把99%占用和1%占用做一样看，不实用。</p>
+<h4 id="Iterative-Decompostion"><a href="#Iterative-Decompostion" class="headerlink" title="Iterative Decompostion"></a>Iterative Decompostion</h4><p>该方法不同于直接分解，而是将空间迭代地分解为4个象限。每个象限被分类为空、占有和混合的，混合即指部分占有情况。<br>如果从起点到目标都找不到一串空的单元格，就将混合的单元再次划分为4个新的象限。2维里叫做四叉树分解，3维中叫八叉树分解。</p>
+<p>Approximate Cell Decompostion常用于实践，因为计算量较Exact Cell Decompostion低很多。但是与其他的离散&#x2F;组合型的<br>路径规划算法一样，碰到多维问题时就计算量爆炸。</p>
+<h4 id="势场法-Potential-Field"><a href="#势场法-Potential-Field" class="headerlink" title="势场法 Potential Field"></a>势场法 Potential Field</h4><p>势场法生成两个函数，一个吸引机器人去目标，一个将机器人排离障碍物，两个函数可以加起来为一个离散化的表达。<br>应用梯度下降算法，就能将机器人导向目的。<br>吸引的势场：一个在目的地全局最小的方程<br>排斥的势场：在障碍物周围有斜坡<br>其缺陷是：即不完整也不最佳</p>
+<h3 id="图搜索算法-graph-search"><a href="#图搜索算法-graph-search" class="headerlink" title="图搜索算法 graph search"></a>图搜索算法 graph search</h3><p>分为不知情的盲搜和启发式搜索。<br>盲搜：广度优先搜索BFS、深度优先搜索DFS、等成本搜索Uniform cost search<br>启发式搜索：A*</p>
+<p>算法评价指标：时间复杂度、空间复杂度、泛化能力</p>
+<h4 id="广度优先搜索BFS"><a href="#广度优先搜索BFS" class="headerlink" title="广度优先搜索BFS"></a>广度优先搜索BFS</h4><p>以树结构为例，从根部结点开始，将探索到的所有根放入队列尾端，然后从队列前端依次取出一个节点，将其根都放入队列尾端。<br>complete and optimal</p>
+<h4 id="深度优先搜索DFS"><a href="#深度优先搜索DFS" class="headerlink" title="深度优先搜索DFS"></a>深度优先搜索DFS</h4><p>以树结构为例，从根部节点开始，将探索到的所有根压入栈，然后栈顶元素出栈，探索其根也压入栈。<br>nither complete or optimal</p>
+<h4 id="等成本搜索Uniform"><a href="#等成本搜索Uniform" class="headerlink" title="等成本搜索Uniform"></a>等成本搜索Uniform</h4><p>如果把每两个节点之间的路加上一个权重，就能计算某一条路的成本。<br>complete and optimal</p>
+<h4 id="A-算法"><a href="#A-算法" class="headerlink" title="A*算法"></a>A*算法</h4><p>引入一个启发函数h(n) &#x3D; 到目标的距离<br>探索图的时候计算的成本g(n) &#x3D; 当前的路径成本<br>算法目标是最小化函数 f(n) &#x3D; g(n) + h(n)</p>
+<p>算法流程：计算每个节点到目标的启发函数h(n), 计算起点周围点的路径成本g(n), 计算各周围点的f(n)后排序（或用priority queue），探索f(n)最小的点，<br>再次计算f(n)排序-探索，直到目标。<br>A*不保证每次都是optimal的，满足以下条件则可以达到optimal：<br>每条边都要比某个量长，否则会卡住；启发函数要满足三角不等式，即一边始终小于另两边之和；启发函数的值不能超过真实成本（可能导致非最优路径）。</p>
+<h4 id="附加资料"><a href="#附加资料" class="headerlink" title="附加资料"></a>附加资料</h4><p><a target="_blank" rel="noopener" href="https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html">启发式</a><br><a target="_blank" rel="noopener" href="https://qiao.github.io/PathFinding.js/visual/">Path Finding Visualization</a><br><a target="_blank" rel="noopener" href="https://movingai.com/astar-var.html">A* 变种</a></p>
+<h4 id="一些考虑"><a href="#一些考虑" class="headerlink" title="一些考虑"></a>一些考虑</h4><p>应用双向搜索，即从起点和终点一起搜，当二者汇合就产生了路径。<br>A*搜出来的通常是路径比较短，但是与障碍物之间很近，容易发生撞击，可以将靠近障碍物的路径的成本提高。<br>离散的折现状路径在现实中需要做一些smoothing，平滑的时候也要考虑与障碍物保持安全距离。</p>
+<h2 id="3-基于样本的路径规划"><a href="#3-基于样本的路径规划" class="headerlink" title="3 基于样本的路径规划"></a>3 基于样本的路径规划</h2><p>处理更高维度的问题时，比如三维地图、多自由度的机器人等，做全面的离散化较难，成本较高。<br>对于n维空间，每个节点的连接边有3^n-1个。<br>此外，在使用运动学受限的机器人时也会有困难，例如汽车不能侧向移动等。</p>
+<p>完整系统，所有约束都只与当前姿态和时间有关。<br>非完整系统，有约束和微分有关，例如安全转弯半径与速度有关。路径规划会难一点。</p>
+<p>基于样本的路径规划算法从C-space随机取样本以建立对空间的表达，具有概率完整性，在高维空间非常高效，缺陷是面对长条缝隙中的路径需要较长<br>时间发现，或者当作没有路径。</p>
+<p>两种类型：概率地图方法 PRM probabilistic roadmap method、RRT rapidly exploring random tree method</p>
+<h3 id="PRM"><a href="#PRM" class="headerlink" title="PRM"></a>PRM</h3><p>从工作空间随机取样构建一个graph，跳过c-space构建和离散化。只要一个碰撞检测函数检查一个随机生成配置点是在自由空间还是在障碍物。<br>建图的过程叫做学习阶段：生成点，判断是否在障碍物中，在给定半径内找邻居或者k近邻，检查是否能够建立到邻居的路径，建立路径，<br>当真个采样点或者路径边数达到目标结束。</p>
+<p>参数设定：迭代次数决定最终地图的精细度和计算用时；最近邻选择算法。</p>
+<h3 id="RRT"><a href="#RRT" class="headerlink" title="RRT"></a>RRT</h3><p>从起点开始，随机生成配置点，每个配置点只有一个父节点，如果配置点很长，在方向上新建一个距离短的点，可行路线连接。可以双向进行。<br>参数设定：取样方法（如何生成随机配置点）；growth rate 距离；<br>可以在几毫秒内解决7维的问题，几分钟解决20维问题，效率比PRM高很多</p>
+<h3 id="一些考虑-1"><a href="#一些考虑-1" class="headerlink" title="一些考虑"></a>一些考虑</h3><p>在生成路径后可能是非常曲折的，这时候要用到路径平滑。<br>所谓的路径平滑，也就是检查相邻的两个点之间的距离，如果小于路径中的距离，就判断两个点的连线是否有障碍物，如果没有就用连线代替原路径段。</p>
+<p>非完整：基于样本的路径规划算法不是完整的(仅概率完整)，通常在复杂的环境中（例如狭长的通道）无法找到结果。<br>非最优：虽然可以在PRM图中用A*获取图内最优路径，但是图本身就不是环境的全面表达。<br>至少，基于样本的方法在多维空间中路径规划是可行的。</p>
+<p>RRT*: 变种，通过查看子节点能否和其父节点或父节点的父节点交换，来生成更直接的路径<br>Anytime algorithm: 就算搜索被中止，也有路径返回，搜的越久越接近最优</p>
+<h2 id="4-概率路径规划"><a href="#4-概率路径规划" class="headerlink" title="4 概率路径规划"></a>4 概率路径规划</h2><h3 id="马尔可夫决策过程MDP"><a href="#马尔可夫决策过程MDP" class="headerlink" title="马尔可夫决策过程MDP"></a>马尔可夫决策过程MDP</h3><ul>
+<li>一个状态集合：S</li>
+<li>初始状态：s_0</li>
+<li>一个动作集合：A</li>
+<li>过渡模型：T(s, a, s’)，从状态s执行动作a后到达s’的概率函数，在MDP中认为此概率只与前一状态s有关而与路径无关。</li>
+<li>一个奖励集合R</li>
+</ul>
+<p>概率路径规划中的MDP和强化学习RL之间的主要区别是，前者对以上的要素都已知，而在RL中，机器人只已知状态和可执行的操作，但不知道奖励和过渡模型。</p>
+<h3 id="策略Policy"><a href="#策略Policy" class="headerlink" title="策略Policy"></a>策略Policy</h3><p>策略是从状态到动作的映射。对于每个状态，策略都会告知机器人应该采取哪些动作。<br>最佳策略，表示为π∗，告知机器人在任何状态下应采取的 最佳 行动，以最大化整体回报</p>
+<p>每个状态可以计算出其状态效用值，在某种状态下策略会选择最大效用值</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/10/09/%E6%9C%BA%E5%99%A8%E4%BA%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" data-id="cm2bitx2500015wuk1y236run" data-title="机器人路径规划" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-CMakeList教程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/09/09/CMakeList%E6%95%99%E7%A8%8B/" class="article-date">
+  <time class="dt-published" datetime="2024-09-09T00:53:50.658Z" itemprop="datePublished">2024-09-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/09/09/CMakeList%E6%95%99%E7%A8%8B/">CMakeList教程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一、在Windows上使用CMakeList"><a href="#一、在Windows上使用CMakeList" class="headerlink" title="一、在Windows上使用CMakeList"></a>一、在Windows上使用CMakeList</h2><h3 id="1、使用tdm64-gcc"><a href="#1、使用tdm64-gcc" class="headerlink" title="1、使用tdm64-gcc"></a>1、使用tdm64-gcc</h3><h4 id="google-tdm64-gcc-安装"><a href="#google-tdm64-gcc-安装" class="headerlink" title="google tdm64-gcc 安装"></a>google tdm64-gcc 安装</h4><p>确保添加的PATH</p>
+<h4 id="安装cmake"><a href="#安装cmake" class="headerlink" title="安装cmake"></a>安装cmake</h4><p>确保添加到PATH<br>然后下载ninja.exe丢到cmake.exe文件夹内</p>
+<h4 id="安装make"><a href="#安装make" class="headerlink" title="安装make"></a>安装make</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">choco install make</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>在包含CMakeList.txt的文件夹内</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir build &amp;&amp; cd build</span><br><span class="line">cmake .. -G &quot;MinGW Makefiles&quot;</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、使用MSYS2"><a href="#2、使用MSYS2" class="headerlink" title="2、使用MSYS2"></a>2、使用MSYS2</h3><h4 id="安装好MSYS2"><a href="#安装好MSYS2" class="headerlink" title="安装好MSYS2"></a>安装好MSYS2</h4><p>教程有安装细节<a target="_blank" rel="noopener" href="https://blog.csdn.net/u012294613/article/details/126430440">link1</a>  <a target="_blank" rel="noopener" href="https://www.moguf.com/post/win10installgcc">link2</a></p>
+<h4 id="设定环境变量"><a href="#设定环境变量" class="headerlink" title="设定环境变量"></a>设定环境变量</h4><p>在path中增加<code>D:\msys64\usr\bin</code></p>
+<h4 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake -G &quot;MSYS Makefiles&quot;</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、在Linux系统上使用"><a href="#二、在Linux系统上使用" class="headerlink" title="二、在Linux系统上使用"></a>二、在Linux系统上使用</h2><h4 id="安装库"><a href="#安装库" class="headerlink" title="安装库"></a>安装库</h4><p>将库安装在<code>usr/local/lib</code>，将可执行安装在<code>usr/local/bin</code>,将头文件安装在<code>usr/local/include</code><br>这样便于使用。</p>
+<p>库的CMakeLists代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 2.8)</span><br><span class="line">project(mymath)</span><br><span class="line">set_target_properties(mymath PROPERTIES PUBLIC_HEADER adder.h)</span><br><span class="line">install(TARGETS mymath LIBRARY DESTINATION lib</span><br><span class="line">        PUBLIC_HEADER DESTINATION include</span><br><span class="line">        )</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake -S ..</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h4 id="使用库"><a href="#使用库" class="headerlink" title="使用库"></a>使用库</h4><p>CMakeLists.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 2.8)</span><br><span class="line">project(sometest)</span><br><span class="line">add_executable(testsome main.cpp)</span><br><span class="line">target_link_libraries(testsome mymath)  # 由于前面安装了，这里就能找到mymath</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>main.cpp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;adder.h&quot;</span> <span class="comment">// 由于前面安装了，这里可以找到</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout&lt;&lt; <span class="string">&quot;2 + 3 = &quot;</span> &lt;&lt; mymath::<span class="built_in">add</span>(<span class="number">2</span>,<span class="number">3</span>) &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/09/09/CMakeList%E6%95%99%E7%A8%8B/" data-id="cm2bitx1z00005wukffvi2o9m" data-title="CMakeList教程" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-MCL 蒙特卡洛定位" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/08/22/MCL%20%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E5%AE%9A%E4%BD%8D/" class="article-date">
@@ -478,157 +621,6 @@
 
 
   
-    <article id="post-目标识别" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/" class="article-date">
-  <time class="dt-published" datetime="2024-04-20T09:13:48.789Z" itemprop="datePublished">2024-04-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/">目标识别</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="Deep-Residual-Learning-for-Image-Recognition"><a href="#Deep-Residual-Learning-for-Image-Recognition" class="headerlink" title="Deep Residual Learning for Image Recognition"></a>Deep Residual Learning for Image Recognition</h3><p>Kaiming He大神2015发表</p>
-<h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>越深的model越难训练。而大神的方法可以比以前网络更深（152层）的同时还易于optimize。</p>
-<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>深度学习刚开始认为model层数越多越好，然后发现到一定程度增加层数会有退化degradation的效果，所谓梯度消失&#x2F;爆炸问题。<br>所以这里提出的方法是F(x)+x，在网络中就相当于增加可以跨越一层或者多层的捷径，关键是这操作还不需要增加模型参数和计算复杂度。<br>摆试验结论：对照组层数增加误差增加，而resnet轻松享受增加层数带来的好处</p>
-<h4 id="试验结果"><a href="#试验结果" class="headerlink" title="试验结果"></a>试验结果</h4><p>单模型resnet152的top-5 error达到了4.49%，6个不同深度的模型组合达到了 3.57%<br>普通网络18层精度比34层高。而resnet18比普通18收敛快。<br>resnet1202比resnet101差，可能是因为参数相对于数据集太大导致。</p>
-<h3 id="PVANet-Lightweight-Deep-Neural-Networks-for-Real-time-Object-Detection"><a href="#PVANet-Lightweight-Deep-Neural-Networks-for-Real-time-Object-Detection" class="headerlink" title="PVANet : Lightweight Deep Neural Networks for Real-time Object Detection"></a>PVANet : Lightweight Deep Neural Networks for Real-time Object Detection</h3><p>Sanghoon Hong 2016发表</p>
-<h4 id="Abstract-1"><a href="#Abstract-1" class="headerlink" title="Abstract"></a>Abstract</h4><p>减少计算量的情况下提高多类别分类任务精度，使用less channels with more layers。结果是voc2007的mAP达83.8%，voc2012达82.5%（第二）。计算量是resnet101的12.3%。</p>
-<h3 id="Rich-feature-hierarchies-for-accurate-object-detection-and-semantic-segmentation-RCNN"><a href="#Rich-feature-hierarchies-for-accurate-object-detection-and-semantic-segmentation-RCNN" class="headerlink" title="Rich feature hierarchies for accurate object detection and semantic segmentation (RCNN)"></a>Rich feature hierarchies for accurate object detection and semantic segmentation (RCNN)</h3><p>Ross Girshick 2014发表</p>
-<h4 id="Abstract-2"><a href="#Abstract-2" class="headerlink" title="Abstract"></a>Abstract</h4><p>提出方法比先前的组合模型在VOC2012提高mAP约30%，达到53.3%。</p>
-<h4 id="Introduction-1"><a href="#Introduction-1" class="headerlink" title="Introduction"></a>Introduction</h4><p>关注如何用一个深层模型来定位目标，仅使用少量标注检测数据训练一个高容量的模型<br>定位此前滑动窗口被用了近20年，最佳模型OverFeat在ILSVRC2013的mAP是24.3%，而rcnn达到了31.4%。<br>有监督的预训练加上特定领域的微调。</p>
-<ol>
-<li>输入图片</li>
-<li>提取约2000个与类别无关的proposals</li>
-<li>使用一个大CNN模型提取每个proposal的特征</li>
-<li>使用特定类别的SVM对proposals进行分类</li>
-</ol>
-<h4 id="bbox-regression"><a href="#bbox-regression" class="headerlink" title="bbox regression"></a>bbox regression</h4><p>将预测的bbox P与gt的bbox G之间做一个映射<br>G_x &#x3D; P_w * d_x(P) + P_x<br>G_y &#x3D; P_h * d_y(P) + P_y<br>G_w &#x3D; P_w * exp(d_w(P))<br>G_h &#x3D; P_h * exp(d_h(P))</p>
-<p>第pool5特征的线性函数<br>d_#(P) &#x3D; w_#^T * phi_5(P)  其中#表示x,y,w,h</p>
-<p>用ridge regression学习w_#，而其target<br>t_x &#x3D; (G_x - P_x)&#x2F;P_w<br>t_y &#x3D; (G_y - P_y)&#x2F;P_h<br>t_w &#x3D; log(G_w&#x2F;P_w)<br>t_h &#x3D; log(G_h&#x2F;P_h)</p>
-<p>只对与gt的IoU高于0.6的P进行学习，其他的丢弃</p>
-<h3 id="Spatial-Pyramid-Pooling-in-Deep-Convolutional-Networks-for-Visual-Recognition"><a href="#Spatial-Pyramid-Pooling-in-Deep-Convolutional-Networks-for-Visual-Recognition" class="headerlink" title="Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition"></a>Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition</h3><p>Kaiming He 2014发布<br>SPP-net可以确保输出的尺寸不变，不管输入图片的尺寸。这个方法只计算一次特征图，然后对随机区域pool到固定长度的representation，然后训练detector。<br>实现比RCNN快24-102倍情况下效果还略好。<br>对特征图分别进行全部pool得1个256维的向量，再分4块pool得4个256维向量，再分16块pool得到16个256维向量，把这些向量组合起来，得到21*256维的向量（固定长度），再接全连接层。</p>
-<h3 id="Fast-R-CNN-Ross-Girshick"><a href="#Fast-R-CNN-Ross-Girshick" class="headerlink" title="Fast R-CNN Ross Girshick"></a>Fast R-CNN Ross Girshick</h3><p>训练VGG比R-CNN快9倍，测试快213倍，精度还要高些。比SPPnet训练3倍，测试快10倍，精度也高些。<br>一个模型直接包括定位和识别。<br>RCNN慢是因为每次都需要重新计算特征图，而SPPnet一次计算特征图有共享的效果所以快。这两种方法也都是需要分步操作的。</p>
-<ol>
-<li>输入图像和多个roi到全卷积网络FCN，输入的ROI被prejecting到特征图上面的roi。</li>
-<li>对特征图roi进行pool到固定尺寸，再使用全连接层FCs变成特征</li>
-<li>每个特征roi都最终连了两个输出：softmax probabilities、per-class bbox regression offsets</li>
-<li>使用多任务loss进行end-to-end 训练。</li>
-</ol>
-<p>Truncated SVD减少推理时间30%。</p>
-<h3 id="Faster-R-CNN-Towards-Real-Time-Object-Detection-with-Region-Proposal-Networks"><a href="#Faster-R-CNN-Towards-Real-Time-Object-Detection-with-Region-Proposal-Networks" class="headerlink" title="Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks"></a>Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks</h3><p>Shaoqing Ren 2015<br>提出RPN网络，将全卷积的特征与检测分享，同时给出目标位置和类别分数，达到接近零cost的proposal。拿下ILSVRC and COCO的2015第一名。</p>
-<p>在共享的特征图的最后一层上，用一个nxn的窗口进行滑动（3x3感受野约171ZF和228VGG）,nxn进行卷积引出两个分支cls和reg，每个窗口设定了最大proposal数量k，因此cls为是目标或不是目标2个因此是2k个，而reg就是4k个了</p>
-<h3 id="You-Only-Look-Once-Unified-Real-Time-Object-Detection"><a href="#You-Only-Look-Once-Unified-Real-Time-Object-Detection" class="headerlink" title="You Only Look Once: Unified, Real-Time Object Detection"></a>You Only Look Once: Unified, Real-Time Object Detection</h3><p>Joseph Redmon 2015<br>将目标检测问题构建为regression用以获得分离的边界框类别概率。极快。相较于其他方法的定位精度稍逊，但不太可能误判背景。</p>
-<ol>
-<li>resize输入到448x448</li>
-<li>运行cnn</li>
-<li>根据模型的confidence对检测结果进行阈值处理</li>
-</ol>
-<p>YOLO看全局信息，比fast rcnn少一半的背景误差。</p>
-<p>将输入图片划分为SxS的grid，每个grid预测B个bbox和C个概率，因此编成S * S * (B<em>5 + C)的预测<br>每个bbox后面附赠一个有目标的confidence，因此是B</em>5<br>类别数量C</p>
-<p>YOLO的泛化性能强。即只在VOC2007训练，然后在Picasso dataset和people-art dataset做测试，比R-CNN强（而R-CNN在VOC2007的mAP最高）</p>
-<h3 id="Inside-Outside-Net-Detecting-Objects-in-Context-with-Skip-Pooling-and-Recurrent-Neural-Networks"><a href="#Inside-Outside-Net-Detecting-Objects-in-Context-with-Skip-Pooling-and-Recurrent-Neural-Networks" class="headerlink" title="Inside-Outside Net: Detecting Objects in Context with Skip Pooling and Recurrent Neural Networks"></a>Inside-Outside Net: Detecting Objects in Context with Skip Pooling and Recurrent Neural Networks</h3><p>Sean Bell 2015<br>PASCAL VOC 2012的mAP达到76.4%，在MS COCO dataset，mAP有33.1%<br>将roi外部的contextual信息用RNNs考虑进来，其余部分有点像SPPnet的操作+RCNN的detection</p>
-<h3 id="R-FCN-Object-Detection-via-Region-based-Fully-Convolutional-Networks"><a href="#R-FCN-Object-Detection-via-Region-based-Fully-Convolutional-Networks" class="headerlink" title="R-FCN: Object Detection via Region-based Fully Convolutional Networks"></a>R-FCN: Object Detection via Region-based Fully Convolutional Networks</h3><p>Jifeng Dai</p>
-<p>VOC2007的mAP达83.6%，比Faster R-CNN快2.5-40倍</p>
-<h3 id="SSD-Single-Shot-MultiBox-Detector"><a href="#SSD-Single-Shot-MultiBox-Detector" class="headerlink" title="SSD: Single Shot MultiBox Detector"></a>SSD: Single Shot MultiBox Detector</h3><p>Wei Liu</p>
-<p>voc2007达到mAP 72.1%，比Faster rcnn快<br>有8x8和4x4的特征图grid，在每一个位置有几个不同长宽比的默认框，将其与gt框重叠的为positive，其余作为negative，每个框有4个坐标和c个confidence</p>
-<h3 id="YOLO9000-YOLO-V2"><a href="#YOLO9000-YOLO-V2" class="headerlink" title="YOLO9000 (YOLO V2)"></a>YOLO9000 (YOLO V2)</h3><p>应用了BN，提高了输入resolution，不限定输入图像尺寸，等操作，better、faster、stronger</p>
-<h3 id="YOLOv3"><a href="#YOLOv3" class="headerlink" title="YOLOv3"></a>YOLOv3</h3><p>借鉴Resnet设计的darknet53，提高了小目标检测能力；增加了多尺度特征融合，即下采样和上采样融合。将softmax改为logistic支持多标签。<br>YOLO原作者因为技术被用作军事和隐私而退出。</p>
-<h3 id="YOLOv4"><a href="#YOLOv4" class="headerlink" title="YOLOv4"></a>YOLOv4</h3><p>ultralytics 增加了一些功能，权序列连接 (WRC)、跨阶段部分连接 (CSP)、交叉迷你批归一化 (CmBN)、自对抗训练 (SAT)、误激活、马赛克数据增强、DropBlock 正则化和 CIoU 损失</p>
-<h3 id="YOLOv5"><a href="#YOLOv5" class="headerlink" title="YOLOv5"></a>YOLOv5</h3><p>ultralytics 无锚点分割Ultralytics Head，优化准确性与速度之间的权衡，多种预训练模型</p>
-<h3 id="YOLOv6"><a href="#YOLOv6" class="headerlink" title="YOLOv6"></a>YOLOv6</h3><p>美团<br>双向串行 (BiC) 模块：YOLOv6 在探测器的颈部引入了双向并联（BiC）模块，可增强定位信号并提高性能，而速度降低可忽略不计。<br>锚点辅助训练（AAT）策略：该模型提出的 AAT 可同时享受基于锚和无锚范式的优势，而不会降低推理效率。<br>增强型骨干和颈部设计：通过深化 YOLOv6，在骨干和颈部加入另一个阶段，该模型在高分辨率输入的 COCO 数据集上实现了最先进的性能。<br>自蒸馏策略：为了提高 YOLOv6 较小模型的性能，我们采用了一种新的自蒸馏策略，在训练过程中增强辅助回归分支，在推理过程中去除辅助回归分支，以避免速度明显下降。</p>
-<h3 id="YOLOv7-Trainable-bag-of-freebies-sets-new-state-of-the-art-for-real-time-object-detectors"><a href="#YOLOv7-Trainable-bag-of-freebies-sets-new-state-of-the-art-for-real-time-object-detectors" class="headerlink" title="YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors"></a>YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors</h3><p>Chien-Yao Wang 2022<br>模型重新参数化：YOLOv7 提出了一种有计划的重新参数化模型，这是一种适用于不同网络层的策略，具有梯度传播路径的概念。</p>
-<p>动态标签分配：多输出层模型的训练提出了一个新问题：”如何为不同分支的输出分配动态目标？为了解决这个问题，YOLOv7 引入了一种新的标签分配方法，即从粗到细的引导标签分配法。</p>
-<p>扩展和复合缩放YOLOv7 为实时对象检测器提出了 “扩展 “和 “复合缩放 “方法，可有效利用参数和计算。</p>
-<p>效率：YOLOv7 提出的方法能有效减少最先进的实时物体检测器约 40% 的参数和 50% 的计算量，推理速度更快，检测精度更高。</p>
-<h3 id="YOLOv8"><a href="#YOLOv8" class="headerlink" title="YOLOv8"></a>YOLOv8</h3><p>Ultralytics<br>先进的骨干和颈部架构： YOLOv8 采用了最先进的骨干和颈部架构，从而提高了特征提取和物体检测性能。<br>无锚分裂Ultralytics 头： YOLOv8 采用无锚分裂Ultralytics 头，与基于锚的方法相比，它有助于提高检测过程的准确性和效率。<br>优化精度与速度之间的权衡： YOLOv8 专注于保持精度与速度之间的最佳平衡，适用于各种应用领域的实时目标检测任务。<br>各种预训练模型： YOLOv8 提供一系列预训练模型，以满足各种任务和性能要求，从而更容易为您的特定用例找到合适的模型。</p>
-<h3 id="YOLOv9"><a href="#YOLOv9" class="headerlink" title="YOLOv9"></a>YOLOv9</h3><p>YOLOv9 在其架构中加入了可逆函数，以降低信息退化的风险<br>PGI 是 YOLOv9 为解决信息瓶颈问题而引入的一个新概念，可确保在深层网络中保留重要数据。这样就能生成可靠的梯度，促进模型的准确更新，提高整体检测性能。<br>GELAN 是一项战略性的架构进步，使 YOLOv9 能够实现更高的参数利用率和计算效率。<br>YOLOv9c 模型尤其凸显了架构优化的有效性。与 YOLOv7 AF 相比，它的运行参数减少了 42%，计算需求减少了 21%，但精度却不相上下，这表明 YOLOv9 的效率有了显著提高。此外，YOLOv9e 模型还为大型模型设立了新标准，其参数比 YOLOv7 AF 少 15%，计算需求比 YOLOv7 AF 少 25%。 YOLOv8x相比，参数减少了 15%，计算需求减少了 25%，同时 AP 增量提高了 1.7%。<br>这些结果展示了 YOLOv9 在模型设计方面的战略性进步，强调了它在提高效率的同时并没有降低实时物体检测任务所必需的精度。该模型不仅突破了性能指标的界限，而且强调了计算效率的重要性，使其成为计算机视觉领域的一项关键性发展。</p>
-<h3 id="Segment-Anything"><a href="#Segment-Anything" class="headerlink" title="Segment Anything"></a>Segment Anything</h3><p>Alexander Kirillov 2023<br>在大语言模型中网络级别的大数据训练可以让NLP模型泛化到未见数据。这种容量与prompt engineering常在一起使用。cv目前缺少大量的数据。<br>提出SA-1B分割数据集，比现有任何都大400倍以上</p>
-<p>自动标注是SAM 的一项重要功能，允许用户使用预先训练好的检测模型生成分割数据集。这一功能可以快速、准确地标注大量图像，避免了耗时的人工标注。</p>
-<h3 id="RT-DTER"><a href="#RT-DTER" class="headerlink" title="RT-DTER"></a>RT-DTER</h3><p>百度 2023<br>极快，效果好的一个detection model</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/04/20/%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB/" data-id="clvg47z9s000020ukftzs6qae" data-title="目标识别" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-计算机视觉入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/" class="article-date">
-  <time class="dt-published" datetime="2024-04-20T01:07:41.765Z" itemprop="datePublished">2024-04-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/">计算机视觉入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="卷积网络图像分类器"><a href="#卷积网络图像分类器" class="headerlink" title="卷积网络图像分类器"></a>卷积网络图像分类器</h3><p>一个卷积神经网络通常包含了base和head两个部分。base是用于提取特征，head用于对特征进行分类（就与机器学习里面的一样）。</p>
-<h4 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Imports</span></span><br><span class="line"><span class="keyword">import</span> os, warnings</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> gridspec</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.preprocessing <span class="keyword">import</span> image_dataset_from_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Reproducability</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">set_seed</span>(<span class="params">seed=<span class="number">31415</span></span>):</span><br><span class="line">    np.random.seed(seed)</span><br><span class="line">    tf.random.set_seed(seed)</span><br><span class="line">    os.environ[<span class="string">&#x27;PYTHONHASHSEED&#x27;</span>] = <span class="built_in">str</span>(seed)</span><br><span class="line">    os.environ[<span class="string">&#x27;TF_DETERMINISTIC_OPS&#x27;</span>] = <span class="string">&#x27;1&#x27;</span></span><br><span class="line">set_seed(<span class="number">31415</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set Matplotlib defaults</span></span><br><span class="line">plt.rc(<span class="string">&#x27;figure&#x27;</span>, autolayout=<span class="literal">True</span>)</span><br><span class="line">plt.rc(<span class="string">&#x27;axes&#x27;</span>, labelweight=<span class="string">&#x27;bold&#x27;</span>, labelsize=<span class="string">&#x27;large&#x27;</span>,</span><br><span class="line">       titleweight=<span class="string">&#x27;bold&#x27;</span>, titlesize=<span class="number">18</span>, titlepad=<span class="number">10</span>)</span><br><span class="line">plt.rc(<span class="string">&#x27;image&#x27;</span>, cmap=<span class="string">&#x27;magma&#x27;</span>)</span><br><span class="line">warnings.filterwarnings(<span class="string">&quot;ignore&quot;</span>) <span class="comment"># to clean up output cells</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load training and validation sets</span></span><br><span class="line">ds_train_ = image_dataset_from_directory(</span><br><span class="line">    <span class="string">&#x27;../input/car-or-truck/train&#x27;</span>,</span><br><span class="line">    labels=<span class="string">&#x27;inferred&#x27;</span>,</span><br><span class="line">    label_mode=<span class="string">&#x27;binary&#x27;</span>,</span><br><span class="line">    image_size=[<span class="number">128</span>, <span class="number">128</span>],</span><br><span class="line">    interpolation=<span class="string">&#x27;nearest&#x27;</span>,</span><br><span class="line">    batch_size=<span class="number">64</span>,</span><br><span class="line">    shuffle=<span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line">ds_valid_ = image_dataset_from_directory(</span><br><span class="line">    <span class="string">&#x27;../input/car-or-truck/valid&#x27;</span>,</span><br><span class="line">    labels=<span class="string">&#x27;inferred&#x27;</span>,</span><br><span class="line">    label_mode=<span class="string">&#x27;binary&#x27;</span>,</span><br><span class="line">    image_size=[<span class="number">128</span>, <span class="number">128</span>],</span><br><span class="line">    interpolation=<span class="string">&#x27;nearest&#x27;</span>,</span><br><span class="line">    batch_size=<span class="number">64</span>,</span><br><span class="line">    shuffle=<span class="literal">False</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Data Pipeline</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">convert_to_float</span>(<span class="params">image, label</span>):</span><br><span class="line">    image = tf.image.convert_image_dtype(image, dtype=tf.float32)</span><br><span class="line">    <span class="keyword">return</span> image, label</span><br><span class="line"></span><br><span class="line">AUTOTUNE = tf.data.experimental.AUTOTUNE</span><br><span class="line">ds_train = (</span><br><span class="line">    ds_train_</span><br><span class="line">    .<span class="built_in">map</span>(convert_to_float)</span><br><span class="line">    .cache()</span><br><span class="line">    .prefetch(buffer_size=AUTOTUNE)</span><br><span class="line">)</span><br><span class="line">ds_valid = (</span><br><span class="line">    ds_valid_</span><br><span class="line">    .<span class="built_in">map</span>(convert_to_float)</span><br><span class="line">    .cache()</span><br><span class="line">    .prefetch(buffer_size=AUTOTUNE)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<h4 id="读取预训练base"><a href="#读取预训练base" class="headerlink" title="读取预训练base"></a>读取预训练base</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pretrained_base = tf.keras.models.load_model(</span><br><span class="line">    <span class="string">&#x27;../input/cv-course-models/cv-course-models/vgg16-pretrained-base&#x27;</span>,</span><br><span class="line">)</span><br><span class="line">pretrained_base.trainable = <span class="literal">False</span> <span class="comment"># 直接使用在大规模数据训练好的head也叫Transfer Learning，不在小规模数据中改动</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="接上head后训练"><a href="#接上head后训练" class="headerlink" title="接上head后训练"></a>接上head后训练</h4><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    pretrained_base,</span><br><span class="line">    layers.Flatten(),</span><br><span class="line">    layers.Dense(<span class="number">6</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>, activation=<span class="string">&#x27;sigmoid&#x27;</span>),</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(</span><br><span class="line">    optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">    loss=<span class="string">&#x27;binary_crossentropy&#x27;</span>,</span><br><span class="line">    metrics=[<span class="string">&#x27;binary_accuracy&#x27;</span>],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">history = model.fit(</span><br><span class="line">    ds_train,</span><br><span class="line">    validation_data=ds_valid,</span><br><span class="line">    epochs=<span class="number">30</span>,</span><br><span class="line">    verbose=<span class="number">0</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">history_frame = pd.DataFrame(history.history)</span><br><span class="line">history_frame.loc[:, [<span class="string">&#x27;loss&#x27;</span>, <span class="string">&#x27;val_loss&#x27;</span>]].plot()</span><br><span class="line">history_frame.loc[:, [<span class="string">&#x27;binary_accuracy&#x27;</span>, <span class="string">&#x27;val_binary_accuracy&#x27;</span>]].plot()</span><br></pre></td></tr></table></figure>
-
-<h4 id="filter-detect-condense"><a href="#filter-detect-condense" class="headerlink" title="filter detect condense"></a>filter detect condense</h4><p>在head中，使用filters对input图像进行过滤，然后使用relu实现detect效果，再用maxpooling实现condense<br>先relu后maxpooling就有intensifying的效果</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Conv2D(filters=<span class="number">64</span>, kernel_size=<span class="number">3</span>), <span class="comment"># activation is None</span></span><br><span class="line">    layers.MaxPool2D(pool_size=<span class="number">2</span>),</span><br><span class="line">    <span class="comment"># More layers follow</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure>
-<h4 id="Maxpooling-具有平移不变性"><a href="#Maxpooling-具有平移不变性" class="headerlink" title="Maxpooling 具有平移不变性"></a>Maxpooling 具有平移不变性</h4><p>原理是将shape以内的最大数据作为shape的新数据，因此对于最大值所在的位置是不在乎的，因此位置不敏感了</p>
-<h4 id="关于滑动窗口"><a href="#关于滑动窗口" class="headerlink" title="关于滑动窗口"></a>关于滑动窗口</h4><p>特征提取过程有：1. 使用conv层filter；2. 使用relu层detect；3. 使用maximum pooling来condense<br>其中，conv和maximum的操作都是按照滑动窗口来实现的。<br>滑动窗口大小由<code>kernel_size</code>给定，每次滑动距离由<code>strides</code>给定，使用何种类型边缘处理由<code>padding</code>给定。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    layers.Conv2D(filters=<span class="number">64</span>,</span><br><span class="line">                  kernel_size=<span class="number">3</span>,</span><br><span class="line">                  strides=<span class="number">1</span>,</span><br><span class="line">                  padding=<span class="string">&#x27;same&#x27;</span>,</span><br><span class="line">                  activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.MaxPool2D(pool_size=<span class="number">2</span>,</span><br><span class="line">                     strides=<span class="number">1</span>,</span><br><span class="line">                     padding=<span class="string">&#x27;same&#x27;</span>)</span><br><span class="line">    <span class="comment"># More layers follow</span></span><br><span class="line">])</span><br></pre></td></tr></table></figure>
-<p>为了获得更多的特征用于分类，conv的strides一般是（1，1）。而maximum pooling的strides通常为（2，2），（3，3）而不超过窗口本身。</p>
-<p>边界处理使用<code>padding=&#39;valid&#39;</code>会让conv完全在图内部运行，会导致输出尺寸缩小。使用<code>padding=&#39;same&#39;</code>会在输入图像周围加上几圈0，使得输出尺寸不变。</p>
-<h4 id="感受野-receptive-field"><a href="#感受野-receptive-field" class="headerlink" title="感受野 receptive field"></a>感受野 receptive field</h4><p>多层conv和maximum pooling后的一个unit对应input的区域</p>
-<h3 id="数据扩增-Data-Augmentation"><a href="#数据扩增-Data-Augmentation" class="headerlink" title="数据扩增 Data Augmentation"></a>数据扩增 Data Augmentation</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"><span class="comment"># these are a new feature in TF 2.2</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.layers.experimental <span class="keyword">import</span> preprocessing</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pretrained_base = tf.keras.models.load_model(</span><br><span class="line">    <span class="string">&#x27;../input/cv-course-models/cv-course-models/vgg16-pretrained-base&#x27;</span>,</span><br><span class="line">)</span><br><span class="line">pretrained_base.trainable = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">model = keras.Sequential([</span><br><span class="line">    <span class="comment"># Preprocessing</span></span><br><span class="line">    preprocessing.RandomFlip(<span class="string">&#x27;horizontal&#x27;</span>), <span class="comment"># flip left-to-right</span></span><br><span class="line">    preprocessing.RandomContrast(<span class="number">0.5</span>), <span class="comment"># contrast change by up to 50%</span></span><br><span class="line">    <span class="comment"># Base</span></span><br><span class="line">    pretrained_base,</span><br><span class="line">    <span class="comment"># Head</span></span><br><span class="line">    layers.Flatten(),</span><br><span class="line">    layers.Dense(<span class="number">6</span>, activation=<span class="string">&#x27;relu&#x27;</span>),</span><br><span class="line">    layers.Dense(<span class="number">1</span>, activation=<span class="string">&#x27;sigmoid&#x27;</span>),</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%85%A5%E9%97%A8/" data-id="clvg47z9x000220uk6dm887i1" data-title="计算机视觉入门" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -652,7 +644,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/05/">May 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/05/">May 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
     </div>
   </div>
 
@@ -665,6 +657,14 @@
       <ul>
         
           <li>
+            <a href="/2024/10/09/%E6%9C%BA%E5%99%A8%E4%BA%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">机器人路径规划</a>
+          </li>
+        
+          <li>
+            <a href="/2024/09/09/CMakeList%E6%95%99%E7%A8%8B/">CMakeList教程</a>
+          </li>
+        
+          <li>
             <a href="/2024/08/22/MCL%20%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E5%AE%9A%E4%BD%8D/">MCL 蒙特卡洛定位</a>
           </li>
         
@@ -674,14 +674,6 @@
         
           <li>
             <a href="/2024/05/14/Python%20advanced/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/">配置Qt与OpenCV</a>
-          </li>
-        
-          <li>
-            <a href="/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/">Python 赋值引用、拷贝</a>
           </li>
         
       </ul>
