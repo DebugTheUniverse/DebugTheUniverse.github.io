@@ -61,10 +61,10 @@
         
           <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
         
-        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DebugTheUniverse.github.io"></form>
       </div>
     </div>
   </div>
@@ -72,6 +72,213 @@
 
       <div class="outer">
         <section id="main">
+  
+    <article id="post-OpenCV 特征匹配" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" class="article-date">
+  <time class="dt-published" datetime="2024-04-01T07:04:04.768Z" itemprop="datePublished">2024-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/">OpenCV 特征匹配</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="1-暴力匹配"><a href="#1-暴力匹配" class="headerlink" title="1. 暴力匹配"></a>1. 暴力匹配</h4><p>暴力匹配使用一些距离计算两组特征描述之间的匹配度</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 ORB </span></span><br><span class="line"><span class="comment"># Initiate ORB detector</span></span><br><span class="line">orb = cv.ORB_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with ORB</span></span><br><span class="line">kp1, des1 = orb.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = orb.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># create BFMatcher object</span></span><br><span class="line">bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck=<span class="literal">True</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Match descriptors.</span></span><br><span class="line">matches = bf.<span class="keyword">match</span>(des1,des2)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Sort them in the order of their distance.</span></span><br><span class="line">matches = <span class="built_in">sorted</span>(matches, key = <span class="keyword">lambda</span> x:x.distance)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Draw first 10 matches.</span></span><br><span class="line">img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:<span class="number">15</span>],<span class="literal">None</span>,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3),plt.title(<span class="string">&#x27;ORB&#x27;</span>),plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 SIFT</span></span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># BFMatcher with default params</span></span><br><span class="line">bf = cv.BFMatcher()</span><br><span class="line">matches = bf.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Apply ratio test</span></span><br><span class="line">good = []</span><br><span class="line"><span class="keyword">for</span> m,n <span class="keyword">in</span> matches:</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.35</span>*n.distance:</span><br><span class="line">    good.append([m])</span><br><span class="line"> </span><br><span class="line"><span class="comment"># cv.drawMatchesKnn expects list of lists as matches.</span></span><br><span class="line">img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,good,<span class="literal">None</span>,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3),plt.title(<span class="string">&#x27;SIFT&#x27;</span>),plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-基于FLANN的匹配"><a href="#2-基于FLANN的匹配" class="headerlink" title="2. 基于FLANN的匹配"></a>2. 基于FLANN的匹配</h4><p>FLANN是近似最近邻的快速库.包含了针对大型高维特征快速最近邻搜索优化的算法集.在大数据集上比BFMatcher更好.<br>使用FLANN,需要传入索引字典<code>IndexParams</code>描述所用算法及其参数.如需要使用SIFT&#x2F;SURF等,传入如下内容</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>而使用ORB,使用如下,参数要自己调整,文档中建议的不一定最符合实际使用</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FLANN_INDEX_LSH = <span class="number">6</span></span><br><span class="line">index_params= <span class="built_in">dict</span>(algorithm = FLANN_INDEX_LSH,</span><br><span class="line">    table_number = <span class="number">6</span>, <span class="comment"># 12</span></span><br><span class="line">    key_size = <span class="number">12</span>, <span class="comment"># 20</span></span><br><span class="line">    multi_probe_level = <span class="number">1</span>) <span class="comment">#2</span></span><br></pre></td></tr></table></figure>
+<p>第二个字典是SearchParams,定义应该递归遍历索引中的树的次数,这个值越高精度越高,但是同样会消耗更多的时间</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>,cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># FLANN parameters</span></span><br><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br><span class="line">search_params = <span class="built_in">dict</span>(checks=<span class="number">50</span>) <span class="comment"># or pass empty dictionary</span></span><br><span class="line"> </span><br><span class="line">flann = cv.FlannBasedMatcher(index_params,search_params)</span><br><span class="line"> </span><br><span class="line">matches = flann.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Need to draw only good matches, so create a mask</span></span><br><span class="line">matchesMask = [[<span class="number">0</span>,<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matches))]</span><br><span class="line"> </span><br><span class="line"><span class="comment"># ratio test as per Lowe&#x27;s paper</span></span><br><span class="line"><span class="keyword">for</span> i,(m,n) <span class="keyword">in</span> <span class="built_in">enumerate</span>(matches):</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.7</span>*n.distance:</span><br><span class="line">    matchesMask[i]=[<span class="number">1</span>,<span class="number">0</span>]</span><br><span class="line"> </span><br><span class="line">draw_params = <span class="built_in">dict</span>(matchColor = (<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),</span><br><span class="line"> singlePointColor = (<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),</span><br><span class="line"> matchesMask = matchesMask,</span><br><span class="line"> flags = cv.DrawMatchesFlags_DEFAULT)</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,matches,<span class="literal">None</span>,**draw_params)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3,),plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-特征匹配与单应实现物体查找"><a href="#3-特征匹配与单应实现物体查找" class="headerlink" title="3. 特征匹配与单应实现物体查找"></a>3. 特征匹配与单应实现物体查找</h4><p>前述的匹配是在另一张图片中寻找目标物体的一些部分.使用<code>cv.findHomography()</code>,传入两图片的点,可以找到物体在两个图片中的视角转换. 然后可以用<code>cv.perspectiveTransform</code>找到目标.至少需要4个正确的点来找到这个转换矩阵.</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">MIN_MATCH_COUNT = <span class="number">10</span></span><br><span class="line"> </span><br><span class="line">img1 = cv.imread(<span class="string">&#x27;images/box.png&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># queryImage</span></span><br><span class="line">img2 = cv.imread(<span class="string">&#x27;images/box_in_scene.png&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># trainImage</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate SIFT detector</span></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints and descriptors with SIFT</span></span><br><span class="line">kp1, des1 = sift.detectAndCompute(img1,<span class="literal">None</span>)</span><br><span class="line">kp2, des2 = sift.detectAndCompute(img2,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line">FLANN_INDEX_KDTREE = <span class="number">1</span></span><br><span class="line">index_params = <span class="built_in">dict</span>(algorithm = FLANN_INDEX_KDTREE, trees = <span class="number">5</span>)</span><br><span class="line">search_params = <span class="built_in">dict</span>(checks = <span class="number">50</span>)</span><br><span class="line"> </span><br><span class="line">flann = cv.FlannBasedMatcher(index_params, search_params)</span><br><span class="line"> </span><br><span class="line">matches = flann.knnMatch(des1,des2,k=<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># store all the good matches as per Lowe&#x27;s ratio test.</span></span><br><span class="line">good = []</span><br><span class="line"><span class="keyword">for</span> m,n <span class="keyword">in</span> matches:</span><br><span class="line"> <span class="keyword">if</span> m.distance &lt; <span class="number">0.7</span>*n.distance:</span><br><span class="line">    good.append(m)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(good)&gt;MIN_MATCH_COUNT:</span><br><span class="line"> src_pts = np.float32([ kp1[m.queryIdx].pt <span class="keyword">for</span> m <span class="keyword">in</span> good ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> dst_pts = np.float32([ kp2[m.trainIdx].pt <span class="keyword">for</span> m <span class="keyword">in</span> good ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line"> M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,<span class="number">5.0</span>)</span><br><span class="line"> matchesMask = mask.ravel().tolist()</span><br><span class="line"> </span><br><span class="line"> h,w = img1.shape</span><br><span class="line"> pts = np.float32([ [<span class="number">0</span>,<span class="number">0</span>],[<span class="number">0</span>,h-<span class="number">1</span>],[w-<span class="number">1</span>,h-<span class="number">1</span>],[w-<span class="number">1</span>,<span class="number">0</span>] ]).reshape(-<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"> dst = cv.perspectiveTransform(pts,M)</span><br><span class="line"> </span><br><span class="line"> img2 = cv.polylines(img2,[np.int32(dst)],<span class="literal">True</span>,<span class="number">255</span>,<span class="number">3</span>, cv.LINE_AA)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line"> <span class="built_in">print</span>( <span class="string">&quot;Not enough matches are found - &#123;&#125;/&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">len</span>(good), MIN_MATCH_COUNT) )</span><br><span class="line"> matchesMask = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">draw_params = <span class="built_in">dict</span>(matchColor = (<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>), <span class="comment"># draw matches in green color</span></span><br><span class="line"> singlePointColor = <span class="literal">None</span>,</span><br><span class="line"> matchesMask = matchesMask, <span class="comment"># draw only inliers</span></span><br><span class="line"> flags = <span class="number">2</span>)</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawMatches(img1,kp1,img2,kp2,good,<span class="literal">None</span>,**draw_params)</span><br><span class="line"> </span><br><span class="line">plt.imshow(img3, <span class="string">&#x27;gray&#x27;</span>),plt.show()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/04/01/OpenCV%20%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" data-id="cluglu6mb0001i8uk4q3bc161" data-title="OpenCV 特征匹配" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OpenCV 相机畸变校准" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/" class="article-date">
+  <time class="dt-published" datetime="2024-03-28T09:24:44.689Z" itemprop="datePublished">2024-03-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/">OpenCV相机畸变校准</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h4><p>相机包含了径向畸变和切向畸变。<br>径向畸变可以让实际中的直线在图像中弯曲，这种效应离图像中心越远越强烈。<br>径向畸变表示为</p>
+<center>
+<img src="./assets/img/radial_dist.jpg" width="80%" height="80%">
+</center>
+切向畸变来自于镜片与传感器之间的平行度误差，导致有一些区域图像看起来比实际要近。
+切向畸变表示为
+<center>
+<img src="./assets/img/tangential_dist.jpg" width="80%" height="80%">
+</center>
+因此需要找到如下畸变系数
+<center>
+<img src="./assets/img/dist_coef.jpg" width="50%" height="50%">
+</center>
+
+<p>此外，我们还需要获取相机的内参和外参。内参包括了焦距（f_x, f_y）和光学中心（c_x, c_y），可用来创建一个相机矩阵。而相机矩阵也是消除一个相机畸变需要的。相机矩阵是相机固有的属性，一旦求得，可以复用到同一相机的所有图片。</p>
+<center>
+<img src="./assets/img/camera_mtx.jpg" width="50%" height="50%">
+</center>
+外参对应了将3D点转换到一个坐标系的平移向量和旋转向量
+
+<p>通常在立体视觉应用中，校正镜头畸变是必须的事情。校正的原理是，提供一些完好定义的样本图片（例如，棋盘图、圆点图），已知其上特征点的真实相对坐标，也知道对应点在图像上的坐标，就可以计算出来畸变系数。至少提供10张样本图片以确保好的效果。</p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><p>相机校正需要的输入是一系列3D真实点坐标和对应的2D图像坐标。在图像中找到2D坐标没有任何问题。但真实3D点坐标有点难了。为了简化，认为棋盘格都是在XY平面固定的，这样Z全是0，事情好办了起来。<br>在代码中,3D点是<code>object points</code>, 2D点是<code>image points</code></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"></span><br><span class="line">criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, <span class="number">30</span>, <span class="number">0.001</span>)</span><br><span class="line"></span><br><span class="line">objp = np.zeros((<span class="number">6</span>*<span class="number">9</span>, <span class="number">3</span>), np.float32)</span><br><span class="line">objp[:,:<span class="number">2</span>] = np.mgrid[<span class="number">0</span>:<span class="number">9</span>, <span class="number">0</span>:<span class="number">6</span>].T.reshape(-<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">objpoints = []  <span class="comment"># 真实世界的3D坐标</span></span><br><span class="line">imgpoints = []  <span class="comment"># 图像中的2D坐标</span></span><br><span class="line"></span><br><span class="line">images = glob.glob(<span class="string">&#x27;chessboard/*.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> images:</span><br><span class="line">    img = cv.imread(fname)</span><br><span class="line">    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 寻找棋盘的角点</span></span><br><span class="line">    ret, corners = cv.findChessboardCorners(gray, (<span class="number">9</span>,<span class="number">6</span>),<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果找到了，加入目标点、图像点</span></span><br><span class="line">    <span class="keyword">if</span> ret == <span class="literal">True</span>:</span><br><span class="line">        objpoints.append(objp)</span><br><span class="line">        corners2 = cv.cornerSubPix(gray, corners, (<span class="number">11</span>,<span class="number">11</span>),(-<span class="number">1</span>,-<span class="number">1</span>),criteria)</span><br><span class="line">        imgpoints.append(corners2)</span><br><span class="line"></span><br><span class="line">        cv.drawChessboardCorners(img,(<span class="number">9</span>,<span class="number">6</span>),corners2,ret)</span><br><span class="line">        cv.imshow(<span class="string">&#x27;img&#x27;</span>, img)</span><br><span class="line">        cv.waitKey(<span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 校正 返回：ret、相机矩阵、扭曲系数、旋转向量s、平移向量s</span></span><br><span class="line">ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-<span class="number">1</span>], <span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 存储为npz文件，便于读取使用</span></span><br><span class="line">np.savez(<span class="string">&#x27;cameracalib&#x27;</span>,mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)</span><br><span class="line">calib_file = np.load(<span class="string">&#x27;cameracalib.npz&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(calib_file[<span class="string">&#x27;mtx&#x27;</span>])</span><br><span class="line"></span><br><span class="line">img = cv.imread(<span class="string">&#x27;chessboard/left12.jpg&#x27;</span>)</span><br><span class="line">h, w = img.shape[:<span class="number">2</span>]</span><br><span class="line">newcameramtx, roi = cv.getOptimalNewCameraMatrix(calib_file[<span class="string">&#x27;mtx&#x27;</span>], calib_file[<span class="string">&#x27;dist&#x27;</span>], (w,h), <span class="number">1</span>, (w,h))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 消除畸变</span></span><br><span class="line">dst = cv.undistort(img,mtx, dist, <span class="literal">None</span>, newcameramtx)</span><br><span class="line">x,y,w,h = roi</span><br><span class="line">dst1 = dst[y:y+h, x:x+w]</span><br><span class="line">cv.imshow(<span class="string">&#x27;ds1&#x27;</span>,dst1)</span><br><span class="line">cv.imwrite(<span class="string">&#x27;calibresult.png&#x27;</span>, dst1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 另一种方法消除畸变</span></span><br><span class="line">mapx, mapy = cv.initUndistortRectifyMap(mtx, dist, <span class="literal">None</span>, newcameramtx, (w,h), <span class="number">5</span>)</span><br><span class="line">dst2 = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)</span><br><span class="line">dst2 = dst2[y:y+h, x:x+w]</span><br><span class="line">cv.imshow(<span class="string">&#x27;ds2&#x27;</span>,dst2)</span><br><span class="line"></span><br><span class="line">cv.waitKey(<span class="number">0</span>)</span><br><span class="line">cv.destroyAllWindows()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/03/28/OpenCV%20%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E6%A0%A1%E5%87%86/" data-id="club3o6ez0000skukhea93hpf" data-title="OpenCV相机畸变校准" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OpenCV 特征提取" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/21/OpenCV%20%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/" class="article-date">
+  <time class="dt-published" datetime="2024-03-21T08:49:51.831Z" itemprop="datePublished">2024-03-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/03/21/OpenCV%20%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/">OpenCV 特征提取与描述</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="1-什么是特征"><a href="#1-什么是特征" class="headerlink" title="1. 什么是特征"></a>1. 什么是特征</h4><p>图像中的小区域，向周围小范围移动时变化最大，即特征。寻找到这些特征的过程叫做特征检测（Feature Detection）。<br>比如一个白色背景的矩形图像，位于四个角落的小区域是特征点，位于边线上的次要特征，位于纯色区域的没有特征</p>
+<h4 id="2-Harris-角落检测"><a href="#2-Harris-角落检测" class="headerlink" title="2. Harris 角落检测"></a>2. Harris 角落检测</h4><p>寻找在全方向的（u,v）位移的亮度变化，形成函数，使用泰勒展开，推为矩阵M。创建一个分数R，取决于矩阵M的两个特征值之间的相对大小关系，判断为平区域、边界、角点</p>
+<blockquote>
+<p>R &#x3D; det(M) - k(trace(M))<sup>2</sup></p>
+</blockquote>
+<p>其中</p>
+<ul>
+<li>det(M) &#x3D; λ<sub>1</sub>λ<sub>2</sub></li>
+<li>trace(M) &#x3D; λ<sub>1</sub> + λ<sub>2</sub></li>
+<li>λ<sub>1</sub>和λ<sub>2</sub>是M的特征值</li>
+</ul>
+<p>代码使用<code>cv.cornerHarris()</code></p>
+<ul>
+<li>img -输入图像，灰度float32</li>
+<li>blockSize -角点检测考虑的邻域大小</li>
+<li>kSize -Sobel 微分使用的Aperture参数</li>
+<li>k -Harris检测公式中的自由参数</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"> </span><br><span class="line">filename = <span class="string">&#x27;calibresult.png&#x27;</span></span><br><span class="line">img = cv.imread(filename)</span><br><span class="line">gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)</span><br><span class="line"> </span><br><span class="line">gray = np.float32(gray)</span><br><span class="line">dst = cv.cornerHarris(gray,<span class="number">2</span>,<span class="number">3</span>,<span class="number">0.1</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment">#result is dilated for marking the corners, not important</span></span><br><span class="line">dst = cv.dilate(dst,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Threshold for an optimal value, it may vary depending on the image.</span></span><br><span class="line">img[dst&gt;<span class="number">0.01</span>*dst.<span class="built_in">max</span>()]=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>]</span><br><span class="line"> </span><br><span class="line">cv.imshow(<span class="string">&#x27;dst&#x27;</span>,img)</span><br><span class="line"><span class="keyword">if</span> cv.waitKey(<span class="number">0</span>) &amp; <span class="number">0xff</span> == <span class="number">27</span>:</span><br><span class="line"> cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+<p>如果要获得亚像素精度的焦点，使用cv.cornerSubPix()</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># find centroids</span></span><br><span class="line">ret, labels, stats, centroids = cv.connectedComponentsWithStats(dst)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># define the criteria to stop and refine the corners</span></span><br><span class="line">criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, <span class="number">100</span>, <span class="number">0.001</span>)</span><br><span class="line">corners = cv.cornerSubPix(gray,np.float32(centroids),(<span class="number">5</span>,<span class="number">5</span>),(-<span class="number">1</span>,-<span class="number">1</span>),criteria)</span><br></pre></td></tr></table></figure>
+<h4 id="3-Shi-Tomasi-角点检测-Good-Features-to-Track"><a href="#3-Shi-Tomasi-角点检测-Good-Features-to-Track" class="headerlink" title="3. Shi-Tomasi 角点检测 Good Features to Track"></a>3. Shi-Tomasi 角点检测 Good Features to Track</h4><p>将分数定义为了</p>
+<blockquote>
+<p>R &#x3D; min(λ<sub>1</sub>, λ<sub>2</sub>)</p>
+</blockquote>
+<p>若R大于某个阈值，则认为是角点。</p>
+<p>使用<code>cv.goodFeaturesToTrack()</code></p>
+<ul>
+<li>输入图像</li>
+<li>需要寻找的角点数目</li>
+<li>0-1之间的质量等级</li>
+<li>角点之间的最小欧式距离<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">corners = cv.goodFeaturesToTrack(gray,<span class="number">250</span>,<span class="number">0.01</span>,<span class="number">20</span>)</span><br><span class="line">corners = np.int0(corners)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> corners:</span><br><span class="line">    x,y = i.ravel()</span><br><span class="line">    cv.circle(img,(x,y),<span class="number">3</span>,<span class="number">255</span>,-<span class="number">1</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="4-SIFT-尺度不变特征转换"><a href="#4-SIFT-尺度不变特征转换" class="headerlink" title="4. SIFT 尺度不变特征转换"></a>4. SIFT 尺度不变特征转换</h4><p>小窗口中的角点图被放大后，用同样大的窗口观察看起来变得平滑了。SIFT中，分别进行尺度空间极值检测、关键点定位、方向赋值、关键点描述、关键点匹配。这个算法在2020年专利已经到期，可放心使用。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">filename = <span class="string">&#x27;images/home.jpg&#x27;</span></span><br><span class="line">img = cv.imread(filename)</span><br><span class="line">gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line">sift = cv.SIFT_create()</span><br><span class="line">kp = sift.detect(gray,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line">img=cv.drawKeypoints(gray,kp,img)</span><br><span class="line"> </span><br><span class="line">cv.imwrite(<span class="string">&#x27;sift_keypoints.jpg&#x27;</span>,img)</span><br></pre></td></tr></table></figure>
+<p><code>sift.detect()</code>可以输入mask指定寻找区域<br><code>cv.drawKeyPoints()</code>用于绘制关键点的圆圈，如果传入<code>flag=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS</code>，会绘制关键点直径的圆圈并显示其方向。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">img=cv.drawKeypoints(gray,kp,img,flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)</span><br></pre></td></tr></table></figure>
+
+<p>计算特征描述(Descriptor)</p>
+<ol>
+<li>已知关键点kp，用sift.compute(),&#96;&#96;kp, des &#x3D; sift.compute(gray, kp)</li>
+<li>一步到位，用sift.detectdAndCompute()<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sift = cv.SIFT_create()</span><br><span class="line">kp, des = sift.detectAndCompute(gray,<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+kp是关键点列表，des是numpy数组形状是（关键点数）*128</li>
+</ol>
+<p>通常获得了关键点和描述，我们就可以在之后的操作中匹配不同图片中的关键点了。</p>
+<h4 id="5-SURF-快速鲁棒特征"><a href="#5-SURF-快速鲁棒特征" class="headerlink" title="5. SURF 快速鲁棒特征"></a>5. SURF 快速鲁棒特征</h4><p>SURF在每个步骤增加了很多特征，达到同样效果比SIFT快3倍，适用于带有模糊和旋转的图片，但不适用视角转变和光线变化的情况。</p>
+<p>如何在OpenCV中还处于专利保护阶段，要想使用，需要卸载当前高版本，重新安装opencv-contrib-python&#x3D;&#x3D;3.4.2.17</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 寻找SURF关键点和描述符并绘制</span></span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img = cv2.imread(<span class="string">&#x27;images/fly.png&#x27;</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建SURF对象，可以在创建时指定参数也可以稍后设置参数</span></span><br><span class="line"><span class="comment"># 此处设置 Hessian阈值为 400</span></span><br><span class="line">sift = cv2.xfeatures2d.SIFT_create()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;sift: &#x27;</span>, sift)</span><br><span class="line">surf = cv2.xfeatures2d.SURF_create(<span class="number">400</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;surf: &#x27;</span>, surf,</span><br><span class="line">      <span class="string">&#x27; \ndefaultParameter\thessianThreshold: &#x27;</span>, surf.getHessianThreshold(),</span><br><span class="line">      <span class="string">&#x27; upright: &#x27;</span>, surf.getUpright(),</span><br><span class="line">      <span class="string">&#x27; extended: &#x27;</span>, surf.getExtended(),</span><br><span class="line">      <span class="string">&#x27; descriptors: &#x27;</span>,surf.descriptorSize())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 寻找SURF关键点和描述符</span></span><br><span class="line"><span class="comment"># kp:返回的关键点列表，des：numpy数组</span></span><br><span class="line">kp, des = surf.detectAndCompute(img, <span class="literal">None</span>)</span><br><span class="line"><span class="comment"># 绘制关键点在图片上</span></span><br><span class="line">img2 = cv2.drawKeypoints(img, kp, <span class="literal">None</span>, (<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">4</span>)</span><br><span class="line">plt.imshow(img2), plt.xticks([]), plt.yticks([]), plt.title(<span class="string">&#x27;more keypoints&#x27;</span>), plt.show()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;keypoints: &#x27;</span>, <span class="built_in">len</span>(kp))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查当前Hessian阈值</span></span><br><span class="line"><span class="comment"># print(surf.getHessianThreshold())</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整Hessian阈值，此处设置为50000，但一般最佳设置为300~500</span></span><br><span class="line">surf.setHessianThreshold(<span class="number">50000</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27; parameters\thessianThreshold: &#x27;</span>, surf.getHessianThreshold(),</span><br><span class="line">      <span class="string">&#x27; upright: &#x27;</span>, surf.getUpright(),</span><br><span class="line">      <span class="string">&#x27; extended: &#x27;</span>, surf.getExtended(),</span><br><span class="line">      <span class="string">&#x27; descriptors: &#x27;</span>,surf.descriptorSize())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 再一次计算关键点和描述符</span></span><br><span class="line">kp, des = surf.detectAndCompute(img, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;keypoints: &#x27;</span>, <span class="built_in">len</span>(kp))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制关键点在图片上</span></span><br><span class="line">img2 = cv2.drawKeypoints(img, kp, <span class="literal">None</span>, (<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">plt.imshow(img2), plt.xticks([]), plt.yticks([]), plt.title(<span class="string">&#x27;less than 50 keypoints&#x27;</span>), plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># U-SURF不会计算方向</span></span><br><span class="line"><span class="comment"># print(surf.getUpright())</span></span><br><span class="line">surf.setUpright(<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27; parameters\thessianThreshold: &#x27;</span>, surf.getHessianThreshold(),</span><br><span class="line">      <span class="string">&#x27; upright: &#x27;</span>, surf.getUpright(),</span><br><span class="line">      <span class="string">&#x27; extended: &#x27;</span>, surf.getExtended(),</span><br><span class="line">      <span class="string">&#x27; descriptors: &#x27;</span>,surf.descriptorSize())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新计算关键点和描述符，并绘制</span></span><br><span class="line">kp = surf.detect(img, <span class="literal">None</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;keypoints: &#x27;</span>, <span class="built_in">len</span>(kp))</span><br><span class="line">img2 = cv2.drawKeypoints(img, kp, <span class="literal">None</span>, (<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">plt.imshow(img2), plt.xticks([]), plt.yticks([]), plt.title(<span class="string">&#x27;U-SURF&#x27;</span>), plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 所有方向显示在同一方向，它比以前快多了。如果您正在处理方向不成问题的情况（如全景缝合）等，使用U-SURF会更好。</span></span><br><span class="line"><span class="comment"># 寻找描述符的大小</span></span><br><span class="line"><span class="comment"># print(surf.descriptorSize())</span></span><br><span class="line"><span class="comment"># extended为false，默认为64D</span></span><br><span class="line"><span class="comment"># print(surf.getExtended())</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置描述符为128D</span></span><br><span class="line">surf.setExtended(<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27; parameters\thessianThreshold: &#x27;</span>, surf.getHessianThreshold(),</span><br><span class="line">      <span class="string">&#x27; upright: &#x27;</span>, surf.getUpright(),</span><br><span class="line">      <span class="string">&#x27; extended: &#x27;</span>, surf.getExtended(),</span><br><span class="line">      <span class="string">&#x27; descriptors: &#x27;</span>,surf.descriptorSize())</span><br><span class="line"></span><br><span class="line">kp, des = surf.detectAndCompute(img, <span class="literal">None</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;keypoints: &#x27;</span>,<span class="built_in">len</span>(kp))</span><br><span class="line">img2 = cv2.drawKeypoints(img, kp, <span class="literal">None</span>, (<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">plt.imshow(img2), plt.xticks([]), plt.yticks([]), plt.title(<span class="string">&#x27;128D res&#x27;</span>), plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>代码<a target="_blank" rel="noopener" href="https://juejin.cn/post/7023698517327609887">来自这</a></p>
+<h4 id="6-FAST-快速角点检测方法"><a href="#6-FAST-快速角点检测方法" class="headerlink" title="6. FAST 快速角点检测方法"></a>6. FAST 快速角点检测方法</h4><p>比前几种方法快几倍，但对高噪音不鲁棒。有一个阈值参数。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img = cv.imread(<span class="string">&#x27;images/blox.jpg&#x27;</span>, cv.IMREAD_GRAYSCALE) <span class="comment"># `&lt;opencv_root&gt;/samples/data/blox.jpg`</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate FAST object with default values</span></span><br><span class="line">fast = cv.FastFeatureDetector_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find and draw the keypoints</span></span><br><span class="line">kp = fast.detect(img,<span class="literal">None</span>)</span><br><span class="line">img2 = cv.drawKeypoints(img, kp, <span class="literal">None</span>, color=(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>))</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Print all default params</span></span><br><span class="line"><span class="built_in">print</span>( <span class="string">&quot;Threshold: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(fast.getThreshold()) )</span><br><span class="line"><span class="built_in">print</span>( <span class="string">&quot;nonmaxSuppression:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(fast.getNonmaxSuppression()) )</span><br><span class="line"><span class="built_in">print</span>( <span class="string">&quot;neighborhood: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(fast.getType()) )</span><br><span class="line"><span class="built_in">print</span>( <span class="string">&quot;Total Keypoints with nonmaxSuppression: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">len</span>(kp)) )</span><br><span class="line"> </span><br><span class="line">cv.imwrite(<span class="string">&#x27;fast_true.png&#x27;</span>, img2)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Disable nonmaxSuppression</span></span><br><span class="line">fast.setNonmaxSuppression(<span class="number">0</span>)</span><br><span class="line">kp = fast.detect(img, <span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>( <span class="string">&quot;Total Keypoints without nonmaxSuppression: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">len</span>(kp)) )</span><br><span class="line"> </span><br><span class="line">img3 = cv.drawKeypoints(img, kp, <span class="literal">None</span>, color=(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>))</span><br><span class="line"> </span><br><span class="line">cv.imwrite(<span class="string">&#x27;fast_false.png&#x27;</span>, img3)</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-BRIEF-二元鲁棒独立基本特征"><a href="#7-BRIEF-二元鲁棒独立基本特征" class="headerlink" title="7. BRIEF 二元鲁棒独立基本特征"></a>7. BRIEF 二元鲁棒独立基本特征</h4><p>一种更快的特征描述与匹配方法，需要使用其他的方法检测到关键点，适用于CenSurE（STAR）方法</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img = cv.imread(<span class="string">&#x27;images/aero1.jpg&#x27;</span>, cv.IMREAD_GRAYSCALE)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate FAST detector</span></span><br><span class="line">fast = cv.xfeatures2d.StarDetector_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate BRIEF extractor</span></span><br><span class="line">brief = cv.xfeatures2d.BriefDescriptorExtractor_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints with STAR</span></span><br><span class="line">kp = fast.detect(img,<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"><span class="comment"># compute the descriptors with BRIEF</span></span><br><span class="line">kp, des = brief.compute(img, kp)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>( brief.descriptorSize() )</span><br><span class="line"><span class="built_in">print</span>( des.shape )</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-ORB（Oriented-FAST-and-Rotated-BRIEF）"><a href="#8-ORB（Oriented-FAST-and-Rotated-BRIEF）" class="headerlink" title="8. ORB（Oriented FAST and Rotated BRIEF）"></a>8. ORB（Oriented FAST and Rotated BRIEF）</h4><p>没有专利，安全使用，更快更好。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line">img = cv.imread(<span class="string">&#x27;images/blox.jpg&#x27;</span>, cv.IMREAD_GRAYSCALE)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># Initiate ORB detector</span></span><br><span class="line">orb = cv.ORB_create()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># find the keypoints with ORB</span></span><br><span class="line">kp = orb.detect(img,<span class="literal">None</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># compute the descriptors with ORB</span></span><br><span class="line">kp, des = orb.compute(img, kp)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># draw only keypoints location,not size and orientation</span></span><br><span class="line">img2 = cv.drawKeypoints(img, kp, <span class="literal">None</span>, color=(<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>), flags=<span class="number">0</span>)</span><br><span class="line">plt.imshow(img2), plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>具体使用直接看<a target="_blank" rel="noopener" href="https://docs.opencv.org/4.x/db/d27/tutorial_py_table_of_contents_feature2d.html">官方教程</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://debugtheuniverse.github.io/2024/03/21/OpenCV%20%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/" data-id="clu1zw4kt0000oguk8svc9jox" data-title="OpenCV 特征提取与描述" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-OpenCV 图像处理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
@@ -215,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" data-id="cltzuur5n0001mcuk7dabhpeq" data-title="OpenCV 图像处理" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      <a data-url="https://debugtheuniverse.github.io/2024/03/20/OpenCV%20%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" data-id="cltzuur5n0001mcuk7dabhpeq" data-title="OpenCV 图像处理" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -316,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" data-id="cltyl7mrj0000uouk2kd75vha" data-title="OpenCV 快速使用" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      <a data-url="https://debugtheuniverse.github.io/2024/03/20/OpenCV%20%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" data-id="cltyl7mrj0000uouk2kd75vha" data-title="OpenCV 快速使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -357,7 +564,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/19/OpenCV%20VideoWriter/" data-id="clty6czx000008cukehluh2a1" data-title="OpenCV VideoWriter" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      <a data-url="https://debugtheuniverse.github.io/2024/03/19/OpenCV%20VideoWriter/" data-id="clty6czx000008cukehluh2a1" data-title="OpenCV VideoWriter" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -544,7 +751,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/14/pyautogui/" data-id="cltse7fc20000wkukdvvh8w6f" data-title="pyautogui" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      <a data-url="https://debugtheuniverse.github.io/2024/03/14/pyautogui/" data-id="cltse7fc20000wkukdvvh8w6f" data-title="pyautogui" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -583,7 +790,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/" data-id="cltmz32ci0000wsukh49adlx5" data-title="你好世界！" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      <a data-url="https://debugtheuniverse.github.io/2024/03/11/%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C/" data-id="cltmz32ci0000wsukh49adlx5" data-title="你好世界！" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -599,7 +806,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; zurück</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
   </nav>
 
 </section>
@@ -616,9 +823,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/05/">May 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/05/">May 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li></ul>
     </div>
   </div>
 
@@ -626,9 +833,21 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/12/22/dotnet%20%E5%BA%94%E7%94%A8%E7%AC%94%E8%AE%B0/">dotnet Application Notes</a>
+          </li>
+        
+          <li>
+            <a href="/2024/10/28/%E8%BF%90%E8%A1%8C%E6%97%B6so%E5%8A%A8%E6%80%81%E5%BA%93%E6%89%BE%E4%B8%8D%E5%88%B0/">运行时so动态库找不到.md</a>
+          </li>
+        
+          <li>
+            <a href="/2024/10/17/dotnet%E4%B8%AD%E4%BD%BF%E7%94%A8gRPC/">dotnet中使用gRPC</a>
+          </li>
         
           <li>
             <a href="/2024/10/09/%E6%9C%BA%E5%99%A8%E4%BA%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">机器人路径规划</a>
@@ -636,18 +855,6 @@
         
           <li>
             <a href="/2024/09/09/CMakeList%E6%95%99%E7%A8%8B/">CMakeList教程</a>
-          </li>
-        
-          <li>
-            <a href="/2024/08/22/MCL%20%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E5%AE%9A%E4%BD%8D/">MCL 蒙特卡洛定位</a>
-          </li>
-        
-          <li>
-            <a href="/2024/08/22/Kalman%E6%BB%A4%E6%B3%A2/">Kalman滤波</a>
-          </li>
-        
-          <li>
-            <a href="/2024/05/14/Python%20advanced/">(no title)</a>
           </li>
         
       </ul>
@@ -663,7 +870,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       
-      &copy; 2024 Jim Huang<br>
+      &copy; 2025 Jim Huang<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

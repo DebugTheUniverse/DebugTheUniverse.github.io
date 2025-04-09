@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   
   
-  <title>配置Qt与OpenCV | 黄河水澄的技术专栏</title>
+  <title>运行时so动态库找不到.md | 黄河水澄的技术专栏</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="教程 碰到错误 1Fatal error: can&#x27;t write 9 bytes to section .text$_ZNSt14numeric_limitsIfE9quiet_NaNEv of CMakeFiles\opencv_perf_core.dir\perf\opencl\perf_arithm.cpp.obj: &#x27;file too big&#x27; 解决方案在“">
+  <meta name="description" content="检查执行文件的依赖库1ldd myprogram.out 假如显示有libA和libB找不到 根据结果显示的内容，找到对应的库文件目录，更新到~&#x2F;.bashrc12export LD_LIBRARY_PATH&#x3D;&#x2F;path&#x2F;to&#x2F;libA&#x2F;dir:$LD_LIBRARY_PATHexport LD_LIBRARY_PATH&#x3D;&#x2F;path&#x2F;to&#x2F;libB&#x2F;dir:$LD_LIBRARY_PAT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="配置Qt与OpenCV">
-<meta property="og:url" content="https://debugtheuniverse.github.io/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/index.html">
+<meta property="og:title" content="运行时so动态库找不到.md">
+<meta property="og:url" content="https://debugtheuniverse.github.io/2024/10/28/%E8%BF%90%E8%A1%8C%E6%97%B6so%E5%8A%A8%E6%80%81%E5%BA%93%E6%89%BE%E4%B8%8D%E5%88%B0/index.html">
 <meta property="og:site_name" content="黄河水澄的技术专栏">
-<meta property="og:description" content="教程 碰到错误 1Fatal error: can&#x27;t write 9 bytes to section .text$_ZNSt14numeric_limitsIfE9quiet_NaNEv of CMakeFiles\opencv_perf_core.dir\perf\opencl\perf_arithm.cpp.obj: &#x27;file too big&#x27; 解决方案在“">
+<meta property="og:description" content="检查执行文件的依赖库1ldd myprogram.out 假如显示有libA和libB找不到 根据结果显示的内容，找到对应的库文件目录，更新到~&#x2F;.bashrc12export LD_LIBRARY_PATH&#x3D;&#x2F;path&#x2F;to&#x2F;libA&#x2F;dir:$LD_LIBRARY_PATHexport LD_LIBRARY_PATH&#x3D;&#x2F;path&#x2F;to&#x2F;libB&#x2F;dir:$LD_LIBRARY_PAT">
 <meta property="og:locale">
-<meta property="article:published_time" content="2024-05-13T11:26:00.146Z">
-<meta property="article:modified_time" content="2024-05-13T12:17:30.207Z">
+<meta property="article:published_time" content="2024-10-28T09:50:22.630Z">
+<meta property="article:modified_time" content="2024-10-28T09:54:15.647Z">
 <meta property="article:author" content="Jim Huang">
 <meta name="twitter:card" content="summary">
   
@@ -75,10 +75,10 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-配置Qt与OpenCV" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-运行时so动态库找不到" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/" class="article-date">
-  <time class="dt-published" datetime="2024-05-13T11:26:00.146Z" itemprop="datePublished">2024-05-13</time>
+    <a href="/2024/10/28/%E8%BF%90%E8%A1%8C%E6%97%B6so%E5%8A%A8%E6%80%81%E5%BA%93%E6%89%BE%E4%B8%8D%E5%88%B0/" class="article-date">
+  <time class="dt-published" datetime="2024-10-28T09:50:22.630Z" itemprop="datePublished">2024-10-28</time>
 </a>
     
   </div>
@@ -89,7 +89,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      配置Qt与OpenCV
+      运行时so动态库找不到.md
     </h1>
   
 
@@ -97,15 +97,13 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wangz76/article/details/124641714">教程</a></p>
-<p>碰到错误</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fatal error: can&#x27;t write 9 bytes to section .text$_ZNSt14numeric_limitsIfE9quiet_NaNEv of CMakeFiles\opencv_perf_core.dir\perf\opencl\perf_arithm.cpp.obj: &#x27;file too big&#x27;</span><br></pre></td></tr></table></figure>
-<p>解决方案<br>在<br>“C:\dev\opencv-4.5.2\release\CMakeFiles\3.21.0-rc2\CMakeCXXCompiler.cmake”<br>增加<br>set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} “-O3”)</p>
-
+        <h4 id="检查执行文件的依赖库"><a href="#检查执行文件的依赖库" class="headerlink" title="检查执行文件的依赖库"></a>检查执行文件的依赖库</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldd myprogram.out</span><br></pre></td></tr></table></figure>
+<p>假如显示有libA和libB找不到</p>
+<h4 id="根据结果显示的内容，找到对应的库文件目录，更新到-bashrc"><a href="#根据结果显示的内容，找到对应的库文件目录，更新到-bashrc" class="headerlink" title="根据结果显示的内容，找到对应的库文件目录，更新到~&#x2F;.bashrc"></a>根据结果显示的内容，找到对应的库文件目录，更新到~&#x2F;.bashrc</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/path/to/libA/dir:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/path/to/libB/dir:<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://debugtheuniverse.github.io/2024/05/13/%E9%85%8D%E7%BD%AEQt%E4%B8%8EOpenCV/" data-id="cm04p1s1l0004nguk5f53aoum" data-title="配置Qt与OpenCV" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://debugtheuniverse.github.io/2024/10/28/%E8%BF%90%E8%A1%8C%E6%97%B6so%E5%8A%A8%E6%80%81%E5%BA%93%E6%89%BE%E4%B8%8D%E5%88%B0/" data-id="cm998qf7y0002tgukb8b795gz" data-title="运行时so动态库找不到.md" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -115,19 +113,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2024/05/14/Python%20advanced/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2024/12/22/dotnet%20%E5%BA%94%E7%94%A8%E7%AC%94%E8%AE%B0/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Python advanced
+          dotnet Application Notes
         
       </div>
     </a>
   
   
-    <a href="/2024/05/06/Python%20%E8%B5%8B%E5%80%BC%E5%BC%95%E7%94%A8%E3%80%81%E6%8B%B7%E8%B4%9D/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2024/10/17/dotnet%E4%B8%AD%E4%BD%BF%E7%94%A8gRPC/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Python 赋值引用、拷贝</div>
+      <div class="article-nav-title">dotnet中使用gRPC</div>
     </a>
   
 </nav>
